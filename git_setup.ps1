@@ -74,15 +74,25 @@ Chaine complete d'evaluation OCR pour factures vietnamiennes photographiees.
 - Deux venv incompatibles (PaddleOCR vs transformers 5.x), verifies au
   demarrage de chaque script."
 
+Step "Remote"
+$remote = "https://github.com/Halfaa/PTITOcr.git"
+if (git remote | Select-String -Quiet "^origin$") {
+    git remote set-url origin $remote
+    Write-Host "  origin mis a jour -> $remote"
+} else {
+    git remote add origin $remote
+    Write-Host "  origin ajoute -> $remote"
+}
+git branch -M main
+
+Step "Push"
+Write-Host "  Si le depot GitHub contient deja un README ou un .gitignore," -ForegroundColor Yellow
+Write-Host "  le push sera refuse. Dans ce cas :" -ForegroundColor Yellow
+Write-Host "      git pull --rebase origin main" -ForegroundColor Yellow
+Write-Host "      git push -u origin main`n" -ForegroundColor Yellow
+
+git push -u origin main
+
 Step "Termine"
 git log --oneline -1
-Write-Host @"
-
-Pour pousser sur GitHub, cree d'abord un depot VIDE (sans README ni
-.gitignore, sinon il faudra fusionner), puis :
-
-    git remote add origin https://github.com/<utilisateur>/<depot>.git
-    git branch -M main
-    git push -u origin main
-
-"@ -ForegroundColor Yellow
+Write-Host "`n  https://github.com/Halfaa/PTITOcr`n" -ForegroundColor Green
