@@ -1,0 +1,58 @@
+{
+    "version": "4.5.9",
+    "flags": {
+        "document image": false,
+        "excel": false,
+        "ingredints of foods": true,
+        "invoice": false
+    },
+    "shapes": [
+        {
+            "label": "table0",
+            "points": [
+                [
+                    876.0,
+                    13.0
+                ],
+                [
+                    870.0,
+                    10.0
+                ],
+                [
+                    413.0,
+                    11.0
+                ],
+                [
+                    400.0,
+                    21.0
+                ],
+                [
+                    400.0,
+                    158.0
+                ],
+                [
+                    415.0,
+                    831.0
+                ],
+                [
+                    871.0,
+                    831.0
+                ],
+                [
+                    883.0,
+                    23.0
+                ]
+            ],
+            "group_id": 0,
+            "shape_type": "polygon",
+            "flags": {}
+        }
+    ],
+    "lineColor": null,
+    "fillColor": null,
+    "imagePath": "table_spider_00416.jpg",
+    "imageData": null,
+    "imageHeight": 956,
+    "imageWidth": 1300,
+    "checked": true
+}

@@ -1,0 +1,134 @@
+{
+    "version": "4.5.9",
+    "flags": {
+        "document image": true,
+        "excel": false,
+        "ingredints of foods": false,
+        "invoice": false
+    },
+    "shapes": [
+        {
+            "label": "table0",
+            "points": [
+                [
+                    27.0,
+                    97.0
+                ],
+                [
+                    20.0,
+                    219.0
+                ],
+                [
+                    623.0,
+                    218.0
+                ],
+                [
+                    609.0,
+                    101.0
+                ],
+                [
+                    329.0,
+                    103.0
+                ],
+                [
+                    106.0,
+                    96.0
+                ]
+            ],
+            "group_id": 0,
+            "shape_type": "polygon",
+            "flags": {}
+        },
+        {
+            "label": "table1",
+            "points": [
+                [
+                    626.0,
+                    242.0
+                ],
+                [
+                    384.0,
+                    246.0
+                ],
+                [
+                    30.0,
+                    245.0
+                ],
+                [
+                    18.0,
+                    246.0
+                ],
+                [
+                    17.0,
+                    275.0
+                ],
+                [
+                    331.0,
+                    275.0
+                ],
+                [
+                    626.0,
+                    271.0
+                ]
+            ],
+            "group_id": 1,
+            "shape_type": "polygon",
+            "flags": {}
+        },
+        {
+            "label": "table2",
+            "points": [
+                [
+                    630.0,
+                    295.0
+                ],
+                [
+                    15.0,
+                    298.0
+                ],
+                [
+                    14.0,
+                    314.0
+                ],
+                [
+                    632.0,
+                    310.0
+                ]
+            ],
+            "group_id": 2,
+            "shape_type": "polygon",
+            "flags": {}
+        },
+        {
+            "label": "table3",
+            "points": [
+                [
+                    637.0,
+                    330.0
+                ],
+                [
+                    13.0,
+                    334.0
+                ],
+                [
+                    13.0,
+                    350.0
+                ],
+                [
+                    639.0,
+                    346.0
+                ]
+            ],
+            "group_id": 3,
+            "shape_type": "polygon",
+            "flags": {}
+        }
+    ],
+    "lineColor": null,
+    "fillColor": null,
+    "imagePath": "9558143260.jpg",
+    "imageData": null,
+    "imageHeight": 404,
+    "imageWidth": 640,
+    "checked": true
+}

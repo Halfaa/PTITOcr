@@ -1,0 +1,434 @@
+{
+    "version": "4.5.9",
+    "flags": {
+        "document image": false,
+        "excel": false,
+        "ingredints of foods": true,
+        "invoice": false
+    },
+    "shapes": [
+        {
+            "label": "1-1-1-1-Nutrition Facts\nValeur nutritive",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    399.9906967337456,
+                    23.26392961876809
+                ],
+                [
+                    405.8651026392954,
+                    15.023460410557163
+                ],
+                [
+                    414.0762463343108,
+                    11.211143695013561
+                ],
+                [
+                    870.7964601769918,
+                    10.079646017699815
+                ],
+                [
+                    877.6363636363631,
+                    14.181818181818016
+                ],
+                [
+                    883.4424778761058,
+                    23.04424778761131
+                ],
+                [
+                    881.0,
+                    139.0
+                ],
+                [
+                    400.0,
+                    138.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "2-1-1-1-Per 1 carton (250 mL)\nPar 1 carton (250 mL)\na",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    400.0,
+                    138.0
+                ],
+                [
+                    881.0,
+                    139.0
+                ],
+                [
+                    880.0,
+                    220.0
+                ],
+                [
+                    402.0,
+                    220.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "3-1-1-1-Amount % Daily Value\nTeneur % valeur quotidienne",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    402.0,
+                    220.0
+                ],
+                [
+                    880.0,
+                    220.0
+                ],
+                [
+                    879.0,
+                    288.0
+                ],
+                [
+                    403.0,
+                    288.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "4-1-1-1-Calories / Calories 130",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    403.0,
+                    288.0
+                ],
+                [
+                    879.0,
+                    288.0
+                ],
+                [
+                    878.0,
+                    326.0
+                ],
+                [
+                    404.0,
+                    326.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "5-1-1-1-Fat/ Lipides 4 g 6%",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    404.0,
+                    326.0
+                ],
+                [
+                    878.0,
+                    326.0
+                ],
+                [
+                    878.0,
+                    368.0
+                ],
+                [
+                    405.0,
+                    368.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "6-1-1-1-Saturated / saturés 1 g\n+ Trans / trans 0 g\n5%",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    405.0,
+                    368.0
+                ],
+                [
+                    878.0,
+                    368.0
+                ],
+                [
+                    876.0,
+                    440.0
+                ],
+                [
+                    407.0,
+                    438.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "7-1-1-1-Cholesterol/ Cholestérol 0 mg 0%",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    407.0,
+                    438.0
+                ],
+                [
+                    876.0,
+                    440.0
+                ],
+                [
+                    876.0,
+                    484.0
+                ],
+                [
+                    408.0,
+                    485.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "8-1-1-1-Sodium / Sodium 60 mg 3%",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    408.0,
+                    485.0
+                ],
+                [
+                    876.0,
+                    484.0
+                ],
+                [
+                    875.0,
+                    528.0
+                ],
+                [
+                    409.0,
+                    530.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "9-1-1-1-Carbohydrate / Glucides 17 g 6%",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    409.0,
+                    530.0
+                ],
+                [
+                    875.0,
+                    528.0
+                ],
+                [
+                    875.0,
+                    571.0
+                ],
+                [
+                    410.0,
+                    572.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "10-1-1-1-Fiber / Fibres 0 g 0%",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    410.0,
+                    572.0
+                ],
+                [
+                    875.0,
+                    571.0
+                ],
+                [
+                    874.0,
+                    608.0
+                ],
+                [
+                    410.0,
+                    610.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "11-1-1-1-Sugars / Sucres 16 g",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    410.0,
+                    610.0
+                ],
+                [
+                    874.0,
+                    608.0
+                ],
+                [
+                    873.0,
+                    648.0
+                ],
+                [
+                    411.0,
+                    650.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "12-1-1-1-Protein / Protéines 7 g",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    411.0,
+                    650.0
+                ],
+                [
+                    873.0,
+                    648.0
+                ],
+                [
+                    873.0,
+                    695.0
+                ],
+                [
+                    412.0,
+                    695.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "13-1-1-1-Vitamin A/Vitamine A 0%\nVitamin C / Vitamine C 0%\nCalcium / Calcium 0%\nIron / Fer 10%",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    412.0,
+                    695.0
+                ],
+                [
+                    873.0,
+                    695.0
+                ],
+                [
+                    871.0,
+                    831.0
+                ],
+                [
+                    415.0,
+                    831.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        }
+    ],
+    "lineColor": [
+        0,
+        255,
+        0,
+        128
+    ],
+    "fillColor": [
+        255,
+        0,
+        0,
+        128
+    ],
+    "imagePath": "table_spider_00416.jpg",
+    "imageData": null,
+    "imageHeight": 956,
+    "imageWidth": 1300,
+    "checked": false
+}

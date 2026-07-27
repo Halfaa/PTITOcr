@@ -1,0 +1,18 @@
+# --- Coeur PaddleOCR / PP-StructureV3 (detection + extraction de tableaux) ---
+paddlepaddle>=2.6.0        # remplace par paddlepaddle-gpu==<version> si tu as un GPU + CUDA compatible
+paddleocr[doc-parser]>=3.4.0   # extra doc-parser = PP-StructureV3 + PaddleOCR-VL-0.9B (tableaux, poids auto-downloades au 1er run)
+
+# --- Pretraitement image (Phase 1 du pipeline) ---
+opencv-python>=4.8.0,<4.12   # >=4.12 exige NumPy 2.x, incompatible avec paddlex/matplotlib qui veulent NumPy 1.x
+
+# --- Chandra OCR 2 (3e modele compare, VLM 5B, base Qwen3.5) ---
+# GPU (RTX 3050 Ti 4 Go) insuffisant pour ce modele meme en 4-bit -> execution en CPU.
+# [hf] installe torch + transformers. Le poids du modele (~10 Go en bf16) est
+# telecharge au 1er lancement depuis HuggingFace (datalab-to/chandra-ocr-2).
+chandra-ocr[hf]
+numpy>=1.24,<2       # matplotlib (dependance de paddlex) n'est pas encore compatible NumPy 2.x
+pillow>=10.0
+
+# TEDS (metrique d'evaluation de reconnaissance de tableaux)
+apted
+PyMuPDF

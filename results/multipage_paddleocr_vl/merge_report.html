@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fusion tableaux multi-pages</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #1e1e1e; color: #eee; }
+  h1 { padding: 20px; margin: 0; border-bottom: 2px solid #444; }
+  .pair { border-bottom: 4px solid #444; padding: 20px; }
+  .pair h2 { color: #4da3ff; }
+  .decision-yes { color: #4dff88; font-weight: bold; }
+  .decision-no { color: #ff6666; font-weight: bold; }
+  .signals { background: #2a2a2a; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.85em; margin: 10px 0; }
+  .cols { display: flex; gap: 20px; }
+  .cols > div { flex: 1; }
+  table { border-collapse: collapse; margin: 8px 0; width: 100%; background: #fff; color: #000; font-size: 0.85em; }
+  table, th, td { border: 1px solid #999; }
+  td { padding: 4px 8px; }
+</style>
+</head>
+<body>
+<h1>Fusion des tableaux multi-pages — multipage_paddleocr_vl</h1>
+
+<div class="pair">
+  <h2>page_1-concave_mesh_10001 -> page_2-concave_mesh_1070001</h2>
+  <div class="decision-yes">FUSIONNE (confiance : forte)</div>
+  <div class="signals">{'same_col_count': True, 'table_a_ends_with_total': False, 'table_a_has_next_page_marker': True, 'table_b_has_continuation_marker': False, 'header_similarity': 0.8333333333333334, 'last_index_a': 19, 'first_index_b': 20, 'index_continuity': True, 'index_near_continuity': True, 'table_b_restarts_at_1': False, 'table_b_starts_mid_numbering': True, 'compatible_shape': True, 'decision': True, 'confidence': 'forte'}</div>
+</div>
+<div class="pair">
+  <h2>page_2-concave_mesh_1070001 -> page_3-concave_mesh_1080001</h2>
+  <div class="decision-no">PAS fusionne (tables independantes) (confiance : aucune)</div>
+  <div class="signals">{'same_col_count': True, 'table_a_ends_with_total': True, 'table_a_has_next_page_marker': False, 'table_b_has_continuation_marker': False, 'header_similarity': 0.8333333333333334, 'last_index_a': 32, 'first_index_b': 1, 'index_continuity': False, 'index_near_continuity': False, 'table_b_restarts_at_1': True, 'table_b_starts_mid_numbering': False, 'compatible_shape': True, 'decision': False, 'confidence': 'aucune'}</div>
+</div>
+<div class="pair">
+  <h2>page_3-concave_mesh_1080001 -> page_4-concave_mesh_1090001</h2>
+  <div class="decision-yes">FUSIONNE (confiance : forte)</div>
+  <div class="signals">{'same_col_count': False, 'table_a_ends_with_total': False, 'table_a_has_next_page_marker': True, 'table_b_has_continuation_marker': False, 'header_similarity': 0.5, 'last_index_a': 19, 'first_index_b': 21, 'index_continuity': False, 'index_near_continuity': True, 'table_b_restarts_at_1': False, 'table_b_starts_mid_numbering': True, 'compatible_shape': True, 'decision': True, 'confidence': 'forte'}</div>
+</div>
+<div class="pair">
+  <h2>page_4-concave_mesh_1090001 -> page_5-concave_mesh_110001</h2>
+  <div class="decision-no">PAS fusionne (tables independantes) (confiance : aucune)</div>
+  <div class="signals">{'same_col_count': False, 'table_a_ends_with_total': True, 'table_a_has_next_page_marker': False, 'table_b_has_continuation_marker': False, 'header_similarity': 0.8333333333333334, 'last_index_a': 22, 'first_index_b': 1, 'index_continuity': False, 'index_near_continuity': False, 'table_b_restarts_at_1': True, 'table_b_starts_mid_numbering': False, 'compatible_shape': True, 'decision': False, 'confidence': 'aucune'}</div>
+</div><h1>Tables finales (apres fusion)</h1>
+<div class="pair">
+  <h2>Table finale 1 (33 lignes de donnees)</h2>
+  <table><tr><td>Tên một hàng/Dich vụ</td></tr><tr><td>STT</td><td>Tên một hàng/Dich vụ</td><td>Đ存VT</td><td>Số lượng</td><td>Đơn giá</td><td>Thành tiến</td></tr><tr><td>1</td><td>Hydrocortisone 1%</td><td>tيف</td><td>1</td><td>2900</td><td>2900</td></tr><tr><td>2</td><td>Diclofenac Sodium 50mg</td><td>viên</td><td>5</td><td>1600</td><td>8000</td></tr><tr><td>3</td><td>Celecoxib 200mg</td><td>h民族文化</td><td>6</td><td>63000</td><td>378000</td></tr><tr><td>4</td><td>Clarithromycin 500mg</td><td>viên</td><td>9</td><td>2400</td><td>21600</td></tr><tr><td>5</td><td>Efferalgan 500mg</td><td>viên</td><td>8</td><td>5000</td><td>40000</td></tr><tr><td>6</td><td>Insulin</td><td>chai</td><td>4</td><td>100000</td><td>400000</td></tr><tr><td>7</td><td>Metformin 500mg</td><td>h�</td><td>10</td><td>36000</td><td>360000</td></tr><tr><td>8</td><td>Codeine Phosphate 15mg</td><td>viên</td><td>9</td><td>1800</td><td>16200</td></tr><tr><td>9</td><td>Diclofenac Potassium 50mg</td><td>viên</td><td>10</td><td>1700</td><td>17000</td></tr><tr><td>10</td><td>Codeine Phosphate 15mg</td><td>h�</td><td>6</td><td>54000</td><td>324000</td></tr><tr><td>11</td><td>Losartan 50mg</td><td>viên</td><td>1</td><td>2000</td><td>2000</td></tr><tr><td>12</td><td>Tramadol Hydrochloride 50mg</td><td>viên</td><td>7</td><td>2100</td><td>14700</td></tr><tr><td>13</td><td>Bestimac Q10 30mg</td><td>viên</td><td>9</td><td>4950</td><td>44550</td></tr><tr><td>14</td><td>Furosemide 40mg</td><td>viên</td><td>7</td><td>1700</td><td>11900</td></tr><tr><td>15</td><td>Amoxicillin 500mg</td><td>h�</td><td>9</td><td>40000</td><td>360000</td></tr><tr><td>16</td><td>Piroxicam 20mg</td><td>h�</td><td>10</td><td>51000</td><td>510000</td></tr><tr><td>17</td><td>Lisinopril 10mg</td><td>h�</td><td>8</td><td>42000</td><td>336000</td></tr><tr><td>18</td><td>Paracetamol 500mg</td><td>viên</td><td>9</td><td>1500</td><td>13500</td></tr><tr><td>19</td><td>Ketoprofen 250mg</td><td>h�</td><td>7</td><td>51000</td><td>357000</td></tr><tr><td>20</td><td>Gabapentin 300mg</td><td>hộp</td><td>6</td><td>51000</td><td>306000</td></tr><tr><td>21</td><td>Digoxin 0.25mg</td><td>viên</td><td>9</td><td>2000</td><td>18000</td></tr><tr><td>22</td><td>Omeprazole 20mg</td><td>hộp</td><td>1</td><td>75000</td><td>75000</td></tr><tr><td>23</td><td>Tebarat</td><td>hộp</td><td>3</td><td>70000</td><td>210000</td></tr><tr><td>24</td><td>Indomethacin 50mg</td><td>hộp</td><td>2</td><td>48000</td><td>96000</td></tr><tr><td>25</td><td>Ibuprofen 400mg</td><td>viên</td><td>8</td><td>1600</td><td>12800</td></tr><tr><td>26</td><td>Metformin 500mg</td><td>viên</td><td>5</td><td>1200</td><td>6000</td></tr><tr><td>27</td><td>Devodil 50mg</td><td>viên</td><td>3</td><td>2860</td><td>8580</td></tr><tr><td>28</td><td>Montelukusib 10mg</td><td>viên</td><td>6</td><td>3000</td><td>18000</td></tr><tr><td>29</td><td>Ketoprofen 250mg</td><td>viên</td><td>6</td><td>1700</td><td>10200</td></tr><tr><td>30</td><td>Metronidazole 500mg</td><td>viên</td><td>9</td><td>1500</td><td>13500</td></tr><tr><td>31</td><td>Paroxetin 20mg</td><td>viên</td><td>7</td><td>2500</td><td>17500</td></tr><tr><td>32</td><td>Hydrochlorothiazide 25mg</td><td>hộp</td><td>2</td><td>48000</td><td>96000</td></tr><tr><td>Tổng tiến:</td><td>4104930</td></tr></table>
+</div>
+<div class="pair">
+  <h2>Table finale 2 (22 lignes de donnees)</h2>
+  <table><tr><td>Tên mất hàng/Dịch vụ</td></tr><tr><td>STT</td><td>Tên mất hàng/Dịch vụ</td><td>ĐV/T</td><td>Số lượng</td><td>Đơn g位数</td><td>Thành niên</td></tr><tr><td>1</td><td>Naproxen Sodium 500mg</td><td>hộp</td><td>1</td><td>45000</td><td>45000</td></tr><tr><td>2</td><td>Metoprolol 50mg</td><td>hộp</td><td>1</td><td>48000</td><td>48000</td></tr><tr><td>3</td><td>Bestimac Q10 30mg</td><td>hộp</td><td>3</td><td>148500</td><td>445500</td></tr><tr><td>4</td><td>Metoprolol 50mg</td><td>viên</td><td>8</td><td>1600</td><td>12800</td></tr><tr><td>5</td><td>Simvastatin 20mg</td><td>viên</td><td>4</td><td>1500</td><td>6000</td></tr><tr><td>6</td><td>Warfarin 3mg</td><td>viên</td><td>1</td><td>1900</td><td>1900</td></tr><tr><td>7</td><td>Hydrocortisone 1%</td><td>t他说</td><td>5</td><td>2900</td><td>14500</td></tr><tr><td>8</td><td>Terbutaline Sulfate 90mcg</td><td>lo</td><td>6</td><td>2500</td><td>15000</td></tr><tr><td>9</td><td>Efferalgan 500mg</td><td>hộp</td><td>5</td><td>50000</td><td>250000</td></tr><tr><td>10</td><td>Indomethacin 50mg</td><td>viên</td><td>7</td><td>1600</td><td>11200</td></tr><tr><td>11</td><td>Atorvastatin 20mg</td><td>hộp</td><td>7</td><td>66000</td><td>462000</td></tr><tr><td>12</td><td>Fluticasone Propionate 100mcg</td><td>lo</td><td>1</td><td>3000</td><td>3000</td></tr><tr><td>13</td><td>Diclofenac Potassium 50mg</td><td>hộp</td><td>2</td><td>51000</td><td>102000</td></tr><tr><td>14</td><td>Tramadol Hydrochloride 50mg</td><td>hộp</td><td>10</td><td>63000</td><td>630000</td></tr><tr><td>15</td><td>Prednisolone 5mg</td><td>lo</td><td>2</td><td>3100</td><td>6200</td></tr><tr><td>16</td><td>Metronidazole 500mg</td><td>viên</td><td>9</td><td>1500</td><td>13500</td></tr><tr><td>17</td><td>Eye Drops</td><td>lo</td><td>6</td><td>2000</td><td>12000</td></tr><tr><td>18</td><td>Ibuprofen 400mg</td><td>hộp</td><td>2</td><td>48000</td><td>96000</td></tr><tr><td>19</td><td>Pentazocine 50mg</td><td>hộp</td><td>2</td><td>60000</td><td>120000</td></tr><tr><td>21</td><td>Lisinopril 10mg</td><td>hộp</td><td>7</td><td>51000</td><td>357000</td><td></td></tr><tr><td>22</td><td>Hydrochlorothiazide 25mg</td><td>hộp</td><td>1</td><td>42000</td><td>42000</td><td></td></tr><tr><td>Tổng tiến:</td></tr></table>
+</div>
+<div class="pair">
+  <h2>Table finale 3 (20 lignes de donnees)</h2>
+  <table><tr><td>Tên mất hàng/Dịch vụ</td></tr><tr><td>STT</td><td>Tên mất hàng/Dịch vụ</td><td>ĐVT</td><td>Số lượng</td><td>Đơn gả</td></tr><tr><td>1</td><td>Hydrochlorothiazide 25mg</td><td>hộp</td><td>6</td><td>48000</td></tr><tr><td>2</td><td>Tebarat</td><td>long</td><td>9</td><td>3500</td></tr><tr><td>3</td><td>Diclofenac Sodium 50mg</td><td>viên</td><td>2</td><td>1600</td></tr><tr><td>4</td><td>Celecoxib 200mg</td><td>hộp</td><td>3</td><td>63000</td></tr><tr><td>5</td><td>Allopurinol 100mg</td><td>viên</td><td>10</td><td>1800</td></tr><tr><td>6</td><td>Clarithromycin 500mg</td><td>hộp</td><td>7</td><td>240000</td></tr><tr><td>7</td><td>Devodil 50mg</td><td>hộp</td><td>7</td><td>171600</td></tr><tr><td>8</td><td>Indomethacin 50mg</td><td>viên</td><td>1</td><td>1600</td></tr><tr><td>9</td><td>Pentazocine 50mg</td><td>viên</td><td>3</td><td>2000</td></tr><tr><td>10</td><td>Insulin</td><td>chai</td><td>8</td><td>100000</td></tr><tr><td>11</td><td>Tramadol Hydrochloride 50mg</td><td>hộp</td><td>1</td><td>63000</td></tr><tr><td>12</td><td>Paracetamol 500mg</td><td>viên</td><td>6</td><td>1500</td></tr><tr><td>13</td><td>Ibuprofen 400mg</td><td>viên</td><td>8</td><td>1600</td></tr><tr><td>14</td><td>Lisinopril 10mg</td><td>viên</td><td>8</td><td>1400</td></tr><tr><td>15</td><td>Simvastatin 20mg</td><td>hộp</td><td>5</td><td>45000</td></tr><tr><td>16</td><td>Amoxicillin 500mg</td><td>viên</td><td>7</td><td>2000</td></tr><tr><td>17</td><td>Naproxen Sodium 500mg</td><td>hộp</td><td>1</td><td>45000</td></tr><tr><td>18</td><td>Efferalgan 500mg</td><td>hộp</td><td>3</td><td>50000</td></tr><tr><td>19</td><td>Albuterol Sulfate 90mcg</td><td>lo</td><td>9</td><td>2700</td></tr><tr><td>Xem tiếp trang sau...</td></tr></table>
+</div></body></html>

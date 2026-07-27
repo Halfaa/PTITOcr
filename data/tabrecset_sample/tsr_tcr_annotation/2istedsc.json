@@ -1,0 +1,152 @@
+{
+    "version": "4.5.9",
+    "flags": {
+        "document image": true,
+        "excel": false,
+        "ingredints of foods": false,
+        "invoice": false
+    },
+    "shapes": [
+        {
+            "label": "2-2-1-1-Part-time Cleaning Help\nAre you looking for a vacation job? Can\nyou clean house and cook? Then, I need\nyou. The work is boring, but the pay is\nvery good, I need you from 2:00-5:00.\nMonday to Ssturday. Please call Emily\nMartin at 393-7741.",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    224.80622837370265,
+                    183.40484429065737
+                ],
+                [
+                    446.409090909091,
+                    177.43181818181847
+                ],
+                [
+                    445.0,
+                    337.0
+                ],
+                [
+                    226.73126142595993,
+                    339.5594149908593
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "2-1-1-1-Teacher Wanted\nCan you speak English? Do you like\nkids? I need somseone to help my\ndaughters learm English during their\nvacation. Please call Mrs. Johansson at\n555-3721. The pay is good.",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    3.5761821366024833,
+                    185.05078809106817
+                ],
+                [
+                    224.80622837370265,
+                    183.40484429065737
+                ],
+                [
+                    226.73126142595993,
+                    339.5594149908593
+                ],
+                [
+                    11.645390070922076,
+                    344.0
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "1-2-1-1-New T4 Music Show\nCan you sing? Can you dance? We are\nlooking for a number of people to come\nand join us, If you love music, dancing\nand look good. we would love to\nwelcome you. Time: 12:45 p. m. or\n7:45 p. m. Call Jeff at 556-3826,",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    221.65771812080538,
+                    22.32885906040292
+                ],
+                [
+                    444.53908355795147,
+                    16.382749326145586
+                ],
+                [
+                    446.409090909091,
+                    177.43181818181847
+                ],
+                [
+                    224.80622837370265,
+                    183.40484429065737
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        },
+        {
+            "label": "1-1-1-1-Musician Wanted\nCan you play the drums or the guitar?\nWould you like to make some morey this\nvacation? We need two new band\nmembers(成员) for our group.  Are you\ninterested? Then come on Saturday\nafternoon at 2:00 p. m. Call Mr. Smith\nat 667-8973.",
+            "line_color": null,
+            "fill_color": [
+                255,
+                0,
+                0,
+                0
+            ],
+            "points": [
+                [
+                    0.0,
+                    24.059322033898297
+                ],
+                [
+                    100.21367521367506,
+                    25.213675213675288
+                ],
+                [
+                    221.65771812080538,
+                    22.32885906040292
+                ],
+                [
+                    224.80622837370265,
+                    183.40484429065737
+                ],
+                [
+                    3.5761821366024833,
+                    185.05078809106817
+                ]
+            ],
+            "shape_type": "polygon",
+            "group_id": 0
+        }
+    ],
+    "lineColor": [
+        0,
+        255,
+        0,
+        128
+    ],
+    "fillColor": [
+        255,
+        0,
+        0,
+        128
+    ],
+    "imagePath": "2istedsc.jpg",
+    "imageData": null,
+    "imageHeight": 600,
+    "imageWidth": 450,
+    "checked": false
+}

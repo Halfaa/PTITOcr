@@ -1,0 +1,50 @@
+{
+    "version": "4.5.9",
+    "flags": {
+        "document image": true,
+        "excel": false,
+        "ingredints of foods": false,
+        "invoice": false
+    },
+    "shapes": [
+        {
+            "label": "table0",
+            "points": [
+                [
+                    670.0,
+                    71.0
+                ],
+                [
+                    466.0,
+                    77.0
+                ],
+                [
+                    114.0,
+                    76.0
+                ],
+                [
+                    93.0,
+                    212.0
+                ],
+                [
+                    466.0,
+                    213.0
+                ],
+                [
+                    686.0,
+                    207.0
+                ]
+            ],
+            "group_id": 0,
+            "shape_type": "polygon",
+            "flags": {}
+        }
+    ],
+    "lineColor": null,
+    "fillColor": null,
+    "imagePath": "7841115378_yf.jpg",
+    "imageData": null,
+    "imageHeight": 405,
+    "imageWidth": 715,
+    "checked": true
+}

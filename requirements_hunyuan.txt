@@ -1,0 +1,27 @@
+# Dependances du venv SEPARE pour HunyuanOCR-1.5 (venv_hunyuan).
+#
+# A NE PAS installer dans le venv principal : transformers 5.x casserait
+# PaddleOCR-VL / PP-StructureV3, qui sont sur la branche 4.x.
+#
+# Creation complete (Python 3.11 suffit, malgre la doc Tencent qui dit 3.12) :
+#
+#     py -3.11 -m venv venv_hunyuan
+#     .\venv_hunyuan\Scripts\Activate.ps1
+#     pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+#     pip install -r requirements_hunyuan.txt
+#     hf download tencent/HunyuanOCR --local-dir .\HunyuanOCR --exclude "v1.0/*"
+#
+# Verification avant de lancer quoi que ce soit :
+#     python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+#   -> doit afficher une version en +cu128 et True
+
+# torch et torchvision ne sont PAS listes ici : ils doivent venir de l'index
+# PyTorch (--index-url ci-dessus), sinon pip installe la variante CPU et
+# l'inference tombe a ~10 min/image au lieu de quelques dizaines de secondes.
+# torchvision est indispensable : le processeur d'images de HunyuanOCR en depend.
+
+transformers>=5.13.0   # < 5.13 : le module hunyuan_vl n'existe pas
+accelerate
+pillow
+numpy                  # absent d'un venv neuf, mais requis par torch
+huggingface_hub[cli]   # commande `hf` (l'ancien `huggingface-cli` est supprime)

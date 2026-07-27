@@ -1,0 +1,40 @@
+# --- Environnements virtuels -------------------------------------------
+# Deux venv incompatibles, recreables depuis requirements*.txt
+venv/
+venv_hunyuan/
+__pycache__/
+*.pyc
+
+# --- Poids de modeles --------------------------------------------------
+# ~2,2 Go, retelechargeables : hf download tencent/HunyuanOCR
+HunyuanOCR/
+
+# --- Datasets volumineux -----------------------------------------------
+TabRecSet/
+data/TabRecSet/
+
+# --- Sorties de benchmark ----------------------------------------------
+# Regenerables en relancant scripts/bench_deformed.py.
+# Les rapports report.html font 17 a 24 Mo piece (images en base64) et les
+# sous-dossiers pages/ contiennent les images pretraitees des modeles :
+# aucun interet a les versionner, ils gonfleraient le depot pour rien.
+results/*/pages/
+results/*/report.html
+results/_premiers_tests/
+results/smoke_hunyuan.md
+
+# On GARDE en revanche les livrables legers et interessants a relire :
+#   results/*/merge_report.html        decisions de fusion
+#   results/*/demo_fusion_invoice*.html demonstration commentee
+# (3 a 4 Mo, acceptable, et ce sont eux qu'on montre)
+
+# --- Residus de l'ancienne arborescence --------------------------------
+# Produits par des runs lances avant la reorganisation, quand les sorties
+# atterrissaient a la racine. Redondants avec results/ -> a supprimer.
+output_*/
+benchmark_report_*.html
+
+# --- Divers ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.log
