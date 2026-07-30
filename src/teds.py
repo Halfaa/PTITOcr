@@ -1,51 +1,50 @@
 """
 TEDS -- Tree-Edit-Distance-based Similarity.
 
-Metrique standard d'evaluation de la reconnaissance de tableaux, introduite
-avec PubTabNet (Zhong et al., 2020, "Image-based table recognition: data,
-model, and evaluation") et reprise dans les competitions ICDAR. L'interet
-d'utiliser CETTE metrique plutot qu'un score maison : les chiffres obtenus
-sont directement comparables a la litterature.
+The standard metric for table recognition, introduced with PubTabNet (Zhong
+et al., 2020, "Image-based table recognition: data, model, and evaluation")
+and reused in the ICDAR competitions. Using THIS metric rather than a
+home-grown score means the numbers are directly comparable to the
+literature.
 
-Principe
---------
-Un tableau HTML est un arbre (table -> tr -> td, avec colspan/rowspan et le
-texte dans les feuilles). On mesure le nombre minimal d'operations d'edition
-(inserer / supprimer / renommer un noeud) pour transformer l'arbre predit en
-l'arbre attendu, puis on normalise :
+Principle
+---------
+An HTML table is a tree (table -> tr -> td, with colspan/rowspan and text in
+the leaves). We measure the minimum number of edit operations (insert /
+delete / rename a node) needed to turn the predicted tree into the expected
+one, then normalise:
 
-    TEDS = 1 - distance_edition / max(nb_noeuds_predit, nb_noeuds_vrai)
+    TEDS = 1 - edit_distance / max(n_nodes_pred, n_nodes_true)
 
-Resultat entre 0 (rien ne correspond) et 1 (identique).
+Result between 0 (nothing matches) and 1 (identical).
 
-Le cout de "renommage" d'une cellule n'est pas binaire : c'est la distance
-d'edition normalisee entre les deux textes. Lire "Aspirin 300mq" au lieu de
-"Aspirin 300mg" coute donc beaucoup moins cher que de rater la cellule.
+Renaming a cell is not a binary cost: it is the normalised edit distance
+between the two strings. Reading "Aspirin 300mq" instead of "Aspirin 300mg"
+is therefore far cheaper than missing the cell entirely.
 
-Deux variantes
---------------
-  TEDS         : structure + contenu textuel
-  TEDS-Struct  : structure seule (le texte des cellules est ignore)
+Two variants
+------------
+  TEDS         : structure + text content
+  TEDS-Struct  : structure only (cell text ignored)
 
-Les rapporter toutes les deux permet de separer deux erreurs de nature tres
-differente : une grille mal reconstruite (colonnes fusionnees, lignes
-decalees) et un texte mal lu (diacritiques vietnamiens abimes par la
-deformation 3D). Un ecart important entre les deux scores dit laquelle des
-deux domine.
+Reporting both separates two very different kinds of error: a badly
+reconstructed grid (merged columns, shifted rows) versus badly read text
+(Vietnamese diacritics damaged by the 3D warping). A large gap between the
+two scores tells you which one dominates.
 """
 
 from html.parser import HTMLParser
 
 from apted import APTED, Config
-from apted.helpers import Tree  # noqa: F401  (dependance apted requise)
+from apted.helpers import Tree  # noqa: F401  (apted dependency required)
 
 
 # --------------------------------------------------------------------------
-# Representation en arbre
+# Tree representation
 # --------------------------------------------------------------------------
 
 class TableTree:
-    """Noeud d'arbre de tableau, au format attendu par APTED."""
+    """Table tree node, in the shape APTED expects."""
 
     def __init__(self, tag, colspan=1, rowspan=1, content=None, children=None):
         self.tag = tag
@@ -55,7 +54,7 @@ class TableTree:
         self.children = children if children is not None else []
 
     def bracket(self):
-        """Representation utilisee par APTED pour identifier le noeud."""
+        """Representation APTED uses to identify the node."""
         if self.tag == "td":
             result = f'"tag": {self.tag}, "colspan": {self.colspan}, ' \
                      f'"rowspan": {self.rowspan}, "text": {"".join(self.content)}'
@@ -70,14 +69,14 @@ class TableTree:
 
 
 class _Config(Config):
-    """Couts d'edition. `structure_only` ignore le texte des cellules."""
+    """Edit costs. `structure_only` ignores cell text."""
 
     def __init__(self, structure_only=False):
         self.structure_only = structure_only
 
     @staticmethod
     def _normalized_levenshtein(a, b) -> float:
-        """Distance d'edition entre deux chaines, ramenee entre 0 et 1."""
+        """Edit distance between two strings, scaled to 0..1."""
         a, b = list(a), list(b)
         if not a and not b:
             return 0.0
@@ -88,8 +87,8 @@ class _Config(Config):
             current = [i]
             for j, cb in enumerate(b, start=1):
                 current.append(min(
-                    previous[j] + 1,            # suppression
-                    current[j - 1] + 1,         # insertion
+                    previous[j] + 1,              # deletion
+                    current[j - 1] + 1,           # insertion
                     previous[j - 1] + (ca != cb)  # substitution
                 ))
             previous = current
@@ -110,11 +109,11 @@ class _Config(Config):
 
 
 # --------------------------------------------------------------------------
-# HTML -> arbre
+# HTML -> tree
 # --------------------------------------------------------------------------
 
 class _TreeBuilder(HTMLParser):
-    """Construit l'arbre TableTree a partir du premier <table> rencontre."""
+    """Builds the TableTree from the first <table> encountered."""
 
     _STRUCTURAL = {"table", "thead", "tbody", "tr"}
 
@@ -134,8 +133,8 @@ class _TreeBuilder(HTMLParser):
                 self._stack[-1].children.append(node)
             self._stack.append(node)
         elif tag in ("td", "th"):
-            # th et td sont traites pareil : les modeles OCR ne distinguent
-            # pas de facon fiable l'entete du corps du tableau.
+            # th and td are treated alike: OCR models do not reliably
+            # distinguish the header from the body of a table.
             self._cell = TableTree(
                 "td",
                 colspan=int(attrs.get("colspan", 1) or 1),
@@ -158,18 +157,18 @@ class _TreeBuilder(HTMLParser):
 
 
 def html_to_tree(html: str):
-    """Retourne l'arbre du premier tableau trouve, ou None."""
+    """Return the tree of the first table found, or None."""
     builder = _TreeBuilder()
     builder.feed(html)
     return builder.root
 
 
 # --------------------------------------------------------------------------
-# Metrique
+# Metric
 # --------------------------------------------------------------------------
 
 def teds(pred_html: str, true_html: str, structure_only: bool = False) -> float:
-    """Score TEDS entre deux tableaux HTML. 0.0 si l'un des deux est vide."""
+    """TEDS score between two HTML tables. 0.0 if either one is empty."""
     pred_tree = html_to_tree(pred_html)
     true_tree = html_to_tree(true_html)
     if pred_tree is None or true_tree is None:
@@ -180,7 +179,7 @@ def teds(pred_html: str, true_html: str, structure_only: bool = False) -> float:
 
 
 def rows_to_html(rows) -> str:
-    """Serialise une liste de lignes (listes de cellules) en tableau HTML."""
+    """Serialise a list of rows (lists of cells) into an HTML table."""
     def esc(cell):
         return (str(cell).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 

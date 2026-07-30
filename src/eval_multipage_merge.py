@@ -1,15 +1,15 @@
 """
-Evalue l'algorithme de fusion (table_merge.py) contre une verite terrain.
+Evaluate the merging algorithm (table_merge.py) against ground truth.
 
-La verite terrain est extraite du PDF source des factures multi-pages : on y
-lit directement, page par page, la presence des marqueurs "Tiep trang truoc"
-/ "Xem tiep trang sau". Une page portant le marqueur de continuation est, par
-construction, la suite de la page precedente.
+Ground truth is extracted from the source PDF of the multi-page invoices: we
+read, page by page, whether the "Tiep trang truoc" / "Xem tiep trang sau"
+markers are present. By construction, a page carrying the continuation marker
+is the continuation of the previous one.
 
-C'est la seule facon honnete de chiffrer l'algo : le comparer aux sorties OCR
-elles-memes reviendrait a le juger sur les donnees qui l'ont inspire.
+This is the only honest way to put a number on the algorithm: comparing it to
+the OCR output itself would mean grading it on the very data that inspired it.
 
-Usage :
+Usage:
     python src/eval_multipage_merge.py --run multipage_ppstructure
 """
 
@@ -22,10 +22,7 @@ _require_env("eval")
 
 import argparse
 import re
-import sys
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 from table_merge import extract_tables, is_continuation  # noqa: E402
 
 DEFAULT_PDF = Path("..") / "synthetic_invoice_generator" / "hospital_pharmacy" / "invoices_multipage_xelatex.pdf"
@@ -42,7 +39,7 @@ def page_number(name: str):
 
 
 def ground_truth_continuations(pdf_path: Path) -> set:
-    """Retourne l'ensemble des N tels que la page N+1 continue la page N."""
+    """Return the set of N such that page N+1 continues page N."""
     import fitz  # PyMuPDF
 
     doc = fitz.open(str(pdf_path))
@@ -55,8 +52,8 @@ def ground_truth_continuations(pdf_path: Path) -> set:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run", required=True, help="Nom d'un run dans results/")
-    parser.add_argument("--pdf", default=None, help="PDF source des factures multi-pages")
+    parser.add_argument("--run", required=True, help="Name of a run under results/")
+    parser.add_argument("--pdf", default=None, help="Source PDF of the multi-page invoices")
     args = parser.parse_args()
 
     project_root = Path(__file__).resolve().parent.parent
@@ -64,10 +61,10 @@ def main():
     pdf_path = Path(args.pdf) if args.pdf else (project_root / DEFAULT_PDF).resolve()
 
     truth = ground_truth_continuations(pdf_path)
-    print(f"Verite terrain : {len(truth)} continuation(s) reelle(s) -> "
+    print(f"Ground truth: {len(truth)} real continuation(s) -> "
           f"{sorted((n, n + 1) for n in truth)}\n")
 
-    # Chargement des sorties OCR, une table principale par page
+    # Load OCR output, one main table per page
     tables, nums, texts = [], [], []
     lost = []
     for d in sorted([p for p in pages_dir.iterdir() if p.is_dir()], key=natural_sort_key):
@@ -86,9 +83,9 @@ def main():
         texts.append(text)
 
     if lost:
-        print(f"Pages ou l'OCR n'a extrait AUCUN tableau : {sorted(lost)}")
-        print("  -> les continuations qui les impliquent sont hors de portee "
-              "de l'algo (echec en amont, pas un echec de la fusion)\n")
+        print(f"Pages where OCR extracted NO table: {sorted(lost)}")
+        print("  -> continuations involving them are out of the algorithm's "
+              "reach (upstream failure, not a merging failure)\n")
 
     tp = fp = fn = tn = 0
     rows = []
@@ -97,24 +94,24 @@ def main():
         a, b = nums[i], nums[i + 1]
         signals = is_continuation(tables[i], tables[i + 1], current_text, texts[i + 1])
         predicted = signals["decision"]
-        # Verite : uniquement si les deux pages sont bien consecutives
+        # True only if the two pages really are consecutive
         expected = (b == a + 1) and (a in truth)
 
         if predicted and expected:
-            tp += 1; verdict = "OK  (fusion correcte)"
+            tp += 1; verdict = "OK  (correct merge)"
         elif predicted and not expected:
-            fp += 1; verdict = "FAUX POSITIF"
+            fp += 1; verdict = "FALSE POSITIVE"
         elif not predicted and expected:
-            fn += 1; verdict = "RATE (continuation manquee)"
+            fn += 1; verdict = "MISSED (continuation not found)"
         else:
-            tn += 1; verdict = "OK  (non-fusion correcte)"
+            tn += 1; verdict = "OK  (correctly not merged)"
 
         rows.append((a, b, predicted, expected, verdict, signals))
         current_text = texts[i + 1]
 
     for a, b, pred, exp, verdict, s in rows:
-        print(f"page {a:>2} -> {b:<2}  predit={'oui' if pred else 'non'}  "
-              f"attendu={'oui' if exp else 'non'}  {verdict:<28} "
+        print(f"page {a:>2} -> {b:<2}  predicted={'yes' if pred else 'no ':<3} "
+              f"expected={'yes' if exp else 'no ':<3} {verdict:<32} "
               f"[hdr={s['header_similarity']:.2f} lastA={s['last_index_a']} "
               f"firstB={s['first_index_b']} total_A={s['table_a_ends_with_total']}]")
 
@@ -122,11 +119,11 @@ def main():
     recall = tp / (tp + fn) if (tp + fn) else 0.0
     f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
 
-    print(f"\nVrais positifs  : {tp}")
-    print(f"Faux positifs   : {fp}   (fusions a tort -- le plus grave : elles corrompent les donnees)")
-    print(f"Rates           : {fn}")
-    print(f"Vrais negatifs  : {tn}")
-    print(f"\nPrecision {precision:.0%}   Rappel {recall:.0%}   F1 {f1:.0%}")
+    print(f"\nTrue positives  : {tp}")
+    print(f"False positives : {fp}   (wrong merges -- the worst kind: they corrupt the data)")
+    print(f"Missed          : {fn}")
+    print(f"True negatives  : {tn}")
+    print(f"\nPrecision {precision:.0%}   Recall {recall:.0%}   F1 {f1:.0%}")
 
 
 if __name__ == "__main__":

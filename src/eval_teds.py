@@ -1,19 +1,19 @@
 """
-Evaluation TEDS des sorties OCR sur les factures multi-pages.
+TEDS evaluation of OCR output on multi-page invoices.
 
-Repond a deux questions distinctes :
+Answers two distinct questions:
 
-  1. Quelle est la qualite d'extraction du modele (TEDS / TEDS-Struct) ?
-  2. Qu'apporte concretement l'etape de fusion multi-pages ?
+  1. How good is the model's extraction (TEDS / TEDS-Struct)?
+  2. What does the multi-page merging step actually bring?
 
-Pour (2), chaque facture est evaluee DEUX fois contre la meme verite terrain
-(la facture complete) :
-    - "sans fusion" : on ne garde que le tableau de la 1re page, comme le
-      ferait un pipeline qui ignore le probleme multi-pages ;
-    - "avec fusion" : on evalue le tableau reconstitue par table_merge.
-L'ecart entre les deux chiffre exactement le gain apporte par l'algorithme.
+For (2), every invoice is scored TWICE against the same ground truth (the
+complete invoice):
+    - "without merging": only the first page's table is kept, as a pipeline
+      ignoring the multi-page problem would do;
+    - "with merging": the table reconstructed by table_merge is scored.
+The gap between the two quantifies exactly what the algorithm contributes.
 
-Usage :
+Usage:
     python src/eval_teds.py --run multipage_ppstructure
 """
 
@@ -27,10 +27,7 @@ _require_env("eval")
 import argparse
 import json
 import re
-import sys
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 from table_merge import extract_tables, merge_table_sequence  # noqa: E402
 from teds import teds, rows_to_html  # noqa: E402
 
@@ -51,12 +48,12 @@ def page_number(name: str):
 
 
 def normalize_number(cell: str) -> str:
-    """Retire les separateurs de milliers.
+    """Strip thousand separators.
 
-    Le generateur choisit au hasard, par facture, entre '2900', '2 900',
-    '2.900' et '2,900'. Ce choix est une variable parasite du generateur,
-    pas une difficulte de lecture : on l'annule des deux cotes pour ne pas
-    penaliser un modele qui a parfaitement lu le montant.
+    The generator picks at random, per invoice, between '2900', '2 900',
+    '2.900' and '2,900'. That choice is a nuisance variable of the generator,
+    not a reading difficulty: we cancel it on both sides so as not to
+    penalise a model that read the amount perfectly.
     """
     text = str(cell).strip()
     stripped = re.sub(r"[.,\s]", "", text)
@@ -70,17 +67,16 @@ def normalize_rows(rows, enabled=True):
 
 
 # --------------------------------------------------------------------------
-# Verite terrain
+# Ground truth
 # --------------------------------------------------------------------------
 
 def ground_truth_rows(invoice: dict) -> list:
-    """Tableau logique attendu : entete + lignes de medicaments + total.
+    """The expected logical table: header + medication rows + total.
 
-    On NE met pas les artefacts de mise en page (banniere de titre, marqueurs
-    '-- Tiep trang truoc --', entetes repetes) : ce sont precisement les
-    elements que la fusion doit supprimer. Les inclure reviendrait a noter
-    l'algorithme sur sa capacite a reproduire une coupure de page, alors que
-    l'objectif est de la faire disparaitre.
+    Layout artefacts (title banner, '-- Tiep trang truoc --' markers,
+    repeated headers) are deliberately excluded: they are precisely what the
+    merging step must remove. Including them would grade the algorithm on its
+    ability to reproduce a page break, when the goal is to make it disappear.
     """
     rows = [list(HEADER)]
     for i, med in enumerate(invoice["medications"], start=1):
@@ -93,11 +89,11 @@ def ground_truth_rows(invoice: dict) -> list:
 
 
 def page_groups_from_pdf(pdf_path: Path) -> list:
-    """Regroupe les pages du PDF par facture.
+    """Group the PDF pages by invoice.
 
-    Une page ouvre une nouvelle facture si elle n'a pas de marqueur de
-    continuation ET contient un tableau. Les pages sans tableau (debordement
-    du pied de page) sont rattachees a la facture precedente.
+    A page opens a new invoice if it has no continuation marker AND contains
+    a table. Pages without a table (footer overflow) are attached to the
+    previous invoice.
     """
     import fitz
 
@@ -117,7 +113,7 @@ def page_groups_from_pdf(pdf_path: Path) -> list:
 # --------------------------------------------------------------------------
 
 def load_ocr_pages(pages_dir: Path) -> dict:
-    """{numero_de_page: (table_principale | None, markdown_complet)}"""
+    """{page_number: (main_table | None, full_markdown)}"""
     pages = {}
     for d in sorted([p for p in pages_dir.iterdir() if p.is_dir()], key=natural_sort_key):
         n = page_number(d.name)
@@ -133,11 +129,11 @@ def load_ocr_pages(pages_dir: Path) -> dict:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run", required=True, help="Nom d'un run dans results/")
+    parser.add_argument("--run", required=True, help="Name of a run under results/")
     parser.add_argument("--pdf", default=None)
     parser.add_argument("--gt-dir", default=None)
     parser.add_argument("--strict-numbers", action="store_true",
-                        help="Ne pas neutraliser les separateurs de milliers")
+                        help="Do not neutralise thousand separators")
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parent.parent
@@ -149,16 +145,16 @@ def main():
     groups = page_groups_from_pdf(pdf_path)
     ocr = load_ocr_pages(pages_dir)
 
-    print(f"Run : {args.run}")
-    print(f"{len(groups)} facture(s), {len(ocr)} page(s) OCR disponible(s)")
-    print(f"Separateurs de milliers neutralises : {'oui' if norm else 'non'}\n")
+    print(f"Run: {args.run}")
+    print(f"{len(groups)} invoice(s), {len(ocr)} OCR page(s) available")
+    print(f"Thousand separators neutralised: {'yes' if norm else 'no'}\n")
 
-    header = (f"{'facture':<10}{'pages':<12}{'TEDS sans':>10}{'TEDS avec':>11}"
-              f"{'gain':>8}{'  Struct sans':>14}{'Struct avec':>13}")
+    header = (f"{'invoice':<10}{'pages':<12}{'TEDS w/o':>10}{'TEDS with':>11}"
+              f"{'gain':>8}{'  Struct w/o':>14}{'Struct with':>13}")
     print(header)
     print("-" * len(header))
 
-    totals = {"sans": [], "avec": [], "s_sans": [], "s_avec": []}
+    totals = {"without": [], "with": [], "s_without": [], "s_with": []}
 
     for k, pages in enumerate(groups, start=1):
         gt_file = gt_dir / f"invoice_{k}.json"
@@ -169,46 +165,46 @@ def main():
 
         available = [(p, ocr[p][0], ocr[p][1]) for p in pages if p in ocr and ocr[p][0]]
         if not available:
-            print(f"invoice_{k:<3}{str(pages):<12}{'aucune table extraite':>40}")
+            print(f"invoice_{k:<3}{str(pages):<12}{'no table extracted':>40}")
             continue
 
-        # Sans fusion : seule la 1re page est vue par le pipeline
+        # Without merging: the pipeline only ever sees the first page
         first_html = rows_to_html(normalize_rows(available[0][1].rows, norm))
 
-        # Avec fusion
+        # With merging
         merged, _ = merge_table_sequence([t for _, t, _ in available],
                                          [txt for _, _, txt in available])
         merged_html = rows_to_html(normalize_rows(merged[0].rows, norm))
 
         scores = {
-            "sans": teds(first_html, true_html),
-            "avec": teds(merged_html, true_html),
-            "s_sans": teds(first_html, true_html, structure_only=True),
-            "s_avec": teds(merged_html, true_html, structure_only=True),
+            "without": teds(first_html, true_html),
+            "with": teds(merged_html, true_html),
+            "s_without": teds(first_html, true_html, structure_only=True),
+            "s_with": teds(merged_html, true_html, structure_only=True),
         }
         for key, value in scores.items():
             totals[key].append(value)
 
-        gain = scores["avec"] - scores["sans"]
-        print(f"invoice_{k:<3}{str(pages):<12}{scores['sans']:>10.3f}{scores['avec']:>11.3f}"
-              f"{gain:>+8.3f}{scores['s_sans']:>14.3f}{scores['s_avec']:>13.3f}")
+        gain = scores["with"] - scores["without"]
+        print(f"invoice_{k:<3}{str(pages):<12}{scores['without']:>10.3f}{scores['with']:>11.3f}"
+              f"{gain:>+8.3f}{scores['s_without']:>14.3f}{scores['s_with']:>13.3f}")
 
-    if not totals["sans"]:
-        print("\nAucune facture evaluable.")
+    if not totals["without"]:
+        print("\nNo invoice could be scored.")
         return
 
     mean = lambda xs: sum(xs) / len(xs)
     print("-" * len(header))
-    print(f"{'MOYENNE':<22}{mean(totals['sans']):>10.3f}{mean(totals['avec']):>11.3f}"
-          f"{mean(totals['avec']) - mean(totals['sans']):>+8.3f}"
-          f"{mean(totals['s_sans']):>14.3f}{mean(totals['s_avec']):>13.3f}")
+    print(f"{'MEAN':<22}{mean(totals['without']):>10.3f}{mean(totals['with']):>11.3f}"
+          f"{mean(totals['with']) - mean(totals['without']):>+8.3f}"
+          f"{mean(totals['s_without']):>14.3f}{mean(totals['s_with']):>13.3f}")
 
-    print(f"\nTEDS         {mean(totals['avec']):.3f}  (structure + contenu)")
-    print(f"TEDS-Struct  {mean(totals['s_avec']):.3f}  (structure seule)")
-    ecart = mean(totals["s_avec"]) - mean(totals["avec"])
-    print(f"Ecart        {ecart:.3f}  -> " + (
-        "l'erreur vient surtout de la LECTURE du texte" if ecart > 0.1
-        else "structure et contenu se degradent ensemble"))
+    print(f"\nTEDS         {mean(totals['with']):.3f}  (structure + content)")
+    print(f"TEDS-Struct  {mean(totals['s_with']):.3f}  (structure only)")
+    gap = mean(totals["s_with"]) - mean(totals["with"])
+    print(f"Gap          {gap:.3f}  -> " + (
+        "errors come mostly from READING the text" if gap > 0.1
+        else "structure and content degrade together"))
 
 
 if __name__ == "__main__":

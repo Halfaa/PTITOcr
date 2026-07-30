@@ -1,40 +1,39 @@
 """
-Fusion de tableaux coupes sur plusieurs pages.
+Merging of tables split across multiple pages.
 
-Detecte quand un tableau extrait d'une page N est la continuation d'un
-tableau extrait de la page N-1 (meme facture, tableau de medicaments qui
-deborde), et les fusionne en un tableau logique unique.
+Detects when a table extracted from page N is the continuation of a table
+extracted from page N-1 (same invoice, medication table overflowing) and
+merges them into a single logical table.
 
-Fonctionne sur les sorties PaddleOCR-VL / PP-StructureV3 (tableaux en HTML
-<table>...</table> a l'interieur du markdown de sortie).
+Works on PaddleOCR-VL / PP-StructureV3 / HunyuanOCR output (tables emitted as
+<table>...</table> inside the markdown).
 
-Principe : on ne se fie jamais a un seul signal (trop fragile en presence de
-bruit OCR). La decision combine plusieurs signaux independants :
+Principle: never rely on a single signal -- far too fragile under OCR noise.
+The decision combines several independent signals:
 
-  1. marqueur de continuation explicite ("Tiep trang truoc" / "continued")
-     cherche dans TOUT le texte de la page B, pas seulement dans le tableau
-     -- en pratique l'OCR sort ce marqueur comme bloc de texte separe.
-  2. continuite de la colonne d'index (STT) : derniere ligne de A = N,
-     premiere ligne de B = N+1
-  3. meme nombre de colonnes + entetes similaires
-  4. absence de ligne "Total" a la fin du tableau A (un tableau qui se
-     termine normalement n'est pas coupe)
+  1. explicit continuation marker ("Tiep trang truoc" / "continued"), searched
+     in the WHOLE page text rather than in the table alone -- in practice OCR
+     emits that marker as a separate text block.
+  2. index (STT) continuity: last row of A = N, first row of B = N+1
+  3. same column count + similar headers
+  4. no "Total" row at the end of table A (a table that ends normally is not
+     split)
 
-Un signal fort (1 ou 2) suffit a lui seul. A defaut, il faut la combinaison
-du signal 3 sans le signal 4 contraire.
+A strong signal (1 or 2) is sufficient on its own. Otherwise signal 3 is
+required, and signal 4 must not contradict it.
 
 --------------------------------------------------------------------------
-Robustesse au bruit OCR reel (constate sur les sorties PP-StructureV3) :
+Robustness to real OCR noise (observed on PP-StructureV3 output):
 
-  * la 1re ligne du <table> n'est PAS forcement l'entete : l'OCR y insere
-    souvent une ligne parasite ("vien 3 200"). L'entete est donc *cherchee*
-    par mots-cles (STT / Ten mat hang / DVT / ...) au lieu d'etre supposee.
-  * les cellules sont parfois permutees : l'index STT peut se retrouver en
-    derniere colonne. On regarde donc la 1re ET la derniere cellule.
-  * les montants (2900, 24000...) ne doivent jamais etre pris pour des
-    index -> plafond _MAX_PLAUSIBLE_INDEX.
-  * comparaisons de texte tolerantes (difflib) : "so luong" / "so lugng" /
-    "soluong" doivent matcher.
+  * the first <table> row is NOT necessarily the header: OCR often inserts a
+    spurious row there ("vien 3 200"). The header is therefore *searched* by
+    keyword (STT / Ten mat hang / DVT / ...) rather than assumed.
+  * cells are sometimes permuted: the STT index may end up in the last
+    column. We therefore inspect both the first AND the last cell.
+  * amounts (2900, 24000...) must never be mistaken for indices -> capped by
+    _MAX_PLAUSIBLE_INDEX.
+  * text comparisons are tolerant (difflib): "so luong" / "so lugng" /
+    "soluong" must all match.
 """
 
 from dataclasses import dataclass
@@ -46,7 +45,7 @@ import unicodedata
 
 @dataclass
 class Table:
-    rows: list  # liste de lignes, chaque ligne = liste de cellules (texte)
+    rows: list  # list of rows, each row a list of cell strings
     raw_html: str = ""
 
     @property
@@ -64,12 +63,14 @@ class Table:
 
 
 class _TableHTMLParser(HTMLParser):
-    """Parseur HTML minimaliste (stdlib, pas de dependance externe) : extrait
-    toutes les <table> d'un bloc de texte sous forme de Table()."""
+    """Minimal HTML parser (stdlib only, no external dependency): extracts
+    every <table> from a blob of text as Table() objects."""
 
     def __init__(self):
         super().__init__()
         self.tables = []
+        self.spans = []          # (first_line, last_line) of each <table>
+        self._current_start_line = 0
         self._in_table = False
         self._in_row = False
         self._in_cell = False
@@ -83,6 +84,7 @@ class _TableHTMLParser(HTMLParser):
             self._in_table = True
             self._current_table_rows = []
             self._current_table_html = ["<table>"]
+            self._current_start_line = self.getpos()[0]
             return
         if not self._in_table:
             return
@@ -113,6 +115,7 @@ class _TableHTMLParser(HTMLParser):
         elif tag == "table":
             self.tables.append(Table(rows=self._current_table_rows,
                                      raw_html="".join(self._current_table_html)))
+            self.spans.append((self._current_start_line, self.getpos()[0]))
             self._in_table = False
 
     def handle_data(self, data):
@@ -120,28 +123,104 @@ class _TableHTMLParser(HTMLParser):
             self._current_cell_text.append(data)
 
 
+_MD_SEPARATOR = re.compile(r"^:?-{2,}:?$")
+
+
+def _split_pipe_row(line: str) -> list:
+    """Split a Markdown table row into cells."""
+    line = line.strip()
+    if line.startswith("|"):
+        line = line[1:]
+    if line.endswith("|"):
+        line = line[:-1]
+    return [c.strip() for c in line.split("|")]
+
+
+def _extract_markdown_tables(text: str, skip_lines: set) -> list:
+    """Extract Markdown pipe tables as (first_line, Table) pairs.
+
+    HunyuanOCR does not always answer in HTML: on some pages it renders the
+    table as a Markdown pipe table instead. The content is complete and
+    correct, but a parser that only looks for <table> discards it entirely --
+    and, being a well-formed page with a plausible amount of text, nothing
+    signals the loss. Two pages of the benchmark were being thrown away this
+    way, which is also why their continuation could never be merged.
+
+    skip_lines holds the lines already covered by an HTML <table>, so a pipe
+    table nested inside HTML is not counted twice.
+    """
+    tables, block, start = [], [], None
+
+    def flush():
+        # A separator row (|---|---|) is Markdown syntax, not data.
+        rows = [_split_pipe_row(l) for l in block
+                if not all(_MD_SEPARATOR.match(c) for c in _split_pipe_row(l) if c != "")
+                or not any(_split_pipe_row(l))]
+        rows = [r for r in rows if any(c for c in r)]
+        if len(rows) >= 2:
+            width = max(len(r) for r in rows)
+            html = ["<table>"]
+            for row in rows:
+                padded = row + [""] * (width - len(row))
+                html.append("<tr>" + "".join(f"<td>{c}</td>" for c in padded) + "</tr>")
+            html.append("</table>")
+            tables.append((start, Table(rows=rows, raw_html="".join(html))))
+
+    for number, line in enumerate(text.splitlines(), start=1):
+        is_row = number not in skip_lines and line.count("|") >= 2 and "|" in line.strip()
+        if is_row:
+            if not block:
+                start = number
+            block.append(line)
+        elif block:
+            flush()
+            block, start = [], None
+    if block:
+        flush()
+    return tables
+
+
 def extract_tables(markdown_or_html: str) -> list:
-    """Retourne la liste des Table() trouvees dans un texte (markdown ou HTML brut)."""
+    """Return every Table() found in a text blob (markdown or raw HTML).
+
+    Both notations are handled, and the tables come back in document order:
+    merge_table_sequence() reasons about "the table before" and "the table
+    after", so the ordering is part of the contract.
+    """
     parser = _TableHTMLParser()
     parser.feed(markdown_or_html)
-    return parser.tables
+
+    skip = {n for first, last in parser.spans for n in range(first, last + 1)}
+    found = [(first, table) for (first, _), table in zip(parser.spans, parser.tables)]
+    found += _extract_markdown_tables(markdown_or_html, skip)
+    return [table for _, table in sorted(found, key=lambda pair: pair[0])]
 
 
 # --------------------------------------------------------------------------
-# Normalisation / comparaison tolerante au bruit OCR
+# Normalisation / OCR-tolerant comparison
 # --------------------------------------------------------------------------
+
+# Vietnamese "đ" is a letter in its own right, not a "d" with a diacritic:
+# NFKD leaves it untouched. Without this explicit mapping, "ĐVT" normalises
+# to "đvt" and never matches the keyword "dvt" -- the unit column was
+# silently dropped from every parsed invoice because of it.
+_VN_LETTERS = str.maketrans({"đ": "d", "Đ": "d", "ð": "d", "Ð": "d"})
+
 
 def _normalize(s) -> str:
-    """Minuscules, sans accents, espaces normalises."""
-    s = unicodedata.normalize("NFKD", str(s).lower().strip())
+    """Lowercase, strip diacritics, collapse whitespace."""
+    s = str(s).lower().strip().translate(_VN_LETTERS)
+    s = unicodedata.normalize("NFKD", s)
     s = "".join(c for c in s if not unicodedata.combining(c))
     return re.sub(r"\s+", " ", s)
 
 
 def _fuzzy_eq(a, b, threshold: float = 0.75) -> bool:
-    """Egalite tolerante : 'so luong' == 'so lugng' == 'soluong'.
-    L'OCR confond regulierement u/g/y et avale les espaces ; une egalite
-    stricte rejetterait des entetes pourtant identiques."""
+    """Tolerant equality: 'so luong' == 'so lugng' == 'soluong'.
+
+    OCR routinely confuses u/g/y and swallows spaces; strict equality would
+    reject headers that are in fact identical.
+    """
     a, b = _normalize(a), _normalize(b)
     if not a or not b:
         return False
@@ -150,7 +229,7 @@ def _fuzzy_eq(a, b, threshold: float = 0.75) -> bool:
     return SequenceMatcher(None, a, b).ratio() >= threshold
 
 
-# Mots-cles de l'entete du tableau de medicaments (facture vietnamienne).
+# Header keywords of the medication table (Vietnamese invoice).
 _HEADER_KEYWORDS = [
     "stt", "ten mat hang", "dich vu", "dvt",
     "so luong", "don gia", "thanh tien",
@@ -159,8 +238,8 @@ _CONTINUATION_KEYWORDS = ["tiep trang truoc", "suite", "continued", "tiep theo"]
 _END_KEYWORDS = ["tong tien", "total", "grand total", "tong cong"]
 _NEXT_PAGE_KEYWORDS = ["xem tiep trang sau", "continued on next page", "suite page suivante"]
 
-# Un index STT plausible reste petit. Sans ce plafond, un montant (2900,
-# 24000...) mal place serait pris pour un numero de ligne.
+# A plausible STT index stays small. Without this cap, a misplaced amount
+# (2900, 24000...) would be mistaken for a row number.
 _MAX_PLAUSIBLE_INDEX = 200
 
 
@@ -170,8 +249,8 @@ def _row_contains_any(row, keywords) -> bool:
 
 
 def _text_contains_any(text: str, keywords) -> bool:
-    """Cherche des mots-cles dans du texte libre (markdown d'une page entiere).
-    Les balises HTML sont retirees pour eviter les faux positifs."""
+    """Search keywords in free text (the full markdown of one page).
+    HTML tags are stripped first to avoid false positives."""
     if not text:
         return False
     plain = _normalize(re.sub(r"<[^>]+>", " ", text))
@@ -179,11 +258,11 @@ def _text_contains_any(text: str, keywords) -> bool:
 
 
 # --------------------------------------------------------------------------
-# Detection de la ligne d'entete
+# Header row detection
 # --------------------------------------------------------------------------
 
 def _header_score(row) -> int:
-    """Nombre de mots-cles d'entete retrouves dans la ligne."""
+    """How many header keywords appear in this row."""
     if not row:
         return 0
     return sum(1 for kw in _HEADER_KEYWORDS
@@ -191,12 +270,12 @@ def _header_score(row) -> int:
 
 
 def _find_header_index(table: "Table", search_depth: int = 4) -> int:
-    """Indice de la VRAIE ligne d'entete.
+    """Index of the REAL header row.
 
-    L'OCR insere frequemment une ligne parasite avant l'entete (fragment de
-    texte de la page capture dans le tableau), et le marqueur de continuation
-    peut aussi occuper la 1re ligne. On cherche donc, parmi les premieres
-    lignes, celle qui ressemble le plus a un entete.
+    OCR frequently inserts a spurious row before the header (a fragment of
+    page text captured inside the table), and the continuation marker may
+    also occupy row 0. So we look among the first few rows for the one that
+    looks most like a header.
     """
     rows = table.rows
     if not rows:
@@ -211,16 +290,16 @@ def _find_header_index(table: "Table", search_depth: int = 4) -> int:
     if best_score >= 2:
         return best_idx
 
-    # Repli : au minimum, sauter une ligne "marqueur de continuation".
+    # Fallback: at the very least, skip a continuation-marker row.
     if _row_contains_any(rows[0], _CONTINUATION_KEYWORDS) and len(rows) > 1:
         return 1
     return 0
 
 
 def _header_similarity(h1, h2) -> float:
-    """0.0 a 1.0. Comparaison ENSEMBLISTE (et non colonne par colonne) car
-    l'OCR permute parfois les colonnes : deux entetes identiques peuvent
-    apparaitre dans un ordre different."""
+    """0.0 to 1.0. SET-based comparison (not column by column) because OCR
+    sometimes permutes columns: two identical headers may show up in a
+    different order."""
     if not h1 or not h2:
         return 0.0
     matches = sum(1 for c in h1 if any(_fuzzy_eq(c, d) for d in h2))
@@ -228,7 +307,7 @@ def _header_similarity(h1, h2) -> float:
 
 
 # --------------------------------------------------------------------------
-# Detection de la colonne d'index (STT)
+# Index (STT) column detection
 # --------------------------------------------------------------------------
 
 def _numeric_index(cell):
@@ -240,10 +319,10 @@ def _numeric_index(cell):
 
 
 def _row_index_candidates(row):
-    """Valeurs pouvant etre l'index STT de la ligne.
+    """Values that could be this row's STT index.
 
-    On regarde la 1re ET la derniere cellule : l'OCR fait parfois glisser la
-    colonne STT en fin de ligne (constate sur les sorties PP-StructureV3)."""
+    We look at the first AND the last cell: OCR sometimes shifts the STT
+    column to the end of the row (observed on PP-StructureV3 output)."""
     if not row:
         return []
     cells = [row[0]] if len(row) == 1 else [row[0], row[-1]]
@@ -251,10 +330,10 @@ def _row_index_candidates(row):
 
 
 def _index_sequence(table: "Table"):
-    """Suite des index STT des lignes de donnees (valeurs manquantes ignorees).
+    """Sequence of STT indices across data rows (missing values skipped).
 
-    Quand une ligne offre deux candidats (index en 1re et en derniere
-    position), on retient celui qui prolonge la suite deja construite."""
+    When a row offers two candidates (index in first and in last position),
+    we keep the one that continues the sequence built so far."""
     seq = []
     for row in table.data_rows:
         candidates = _row_index_candidates(row)
@@ -269,17 +348,17 @@ def _index_sequence(table: "Table"):
 
 
 def _last_data_index(table: "Table"):
-    """Plus grand index du tableau -- et non le dernier de la suite : une
-    seule ligne bruitee en fin de tableau (cellules permutees, quantite lue
-    a la place du STT) suffirait sinon a fausser completement le signal."""
+    """Largest index in the table -- not the last one in the sequence: a
+    single noisy row at the end (permuted cells, quantity read in place of
+    the STT) would otherwise wreck the signal entirely."""
     seq = _index_sequence(table)
     return max(seq) if seq else None
 
 
 def _first_data_index(table: "Table"):
-    """Premier index rencontre -- ici on garde bien la 1re valeur brute :
-    c'est elle qui dit si le tableau *redemarre a 1* (nouvelle facture) ou
-    reprend en cours de numerotation (continuation)."""
+    """First index encountered -- here we deliberately keep the raw first
+    value: it is what tells us whether the table *restarts at 1* (new
+    invoice) or resumes mid-numbering (continuation)."""
     seq = _index_sequence(table)
     return seq[0] if seq else None
 
@@ -292,15 +371,15 @@ def is_continuation(table_a: Table, table_b: Table,
                     page_text_a: str = "", page_text_b: str = "",
                     min_header_similarity: float = 0.6) -> dict:
     """
-    Determine si table_b est la suite de table_a. Retourne un dict avec la
-    decision ET le detail des signaux (utile pour justifier/debugger,
-    important dans un contexte de recherche ou il faut pouvoir expliquer
-    pourquoi une fusion a (ou n'a pas) eu lieu).
+    Decide whether table_b continues table_a. Returns a dict holding the
+    decision AND every individual signal -- useful for debugging and, in a
+    research context, essential to be able to explain why a merge did (or
+    did not) happen.
 
-    page_text_a / page_text_b : markdown complet des pages correspondantes.
-    Les marqueurs "suite page suivante" / "suite de la page precedente" sont
-    presque toujours extraits comme texte HORS du tableau -- les chercher
-    uniquement dans les lignes du tableau les manque systematiquement.
+    page_text_a / page_text_b: full markdown of the corresponding pages.
+    The "continued on next page" / "continued from previous page" markers are
+    almost always extracted OUTSIDE the table -- looking for them only in
+    table rows misses them systematically.
     """
     signals = {}
 
@@ -329,30 +408,29 @@ def is_continuation(table_a: Table, table_b: Table,
     signals["index_continuity"] = (
         last_idx_a is not None and first_idx_b is not None and first_idx_b == last_idx_a + 1
     )
-    # Tolerance : l'OCR perd parfois une ligne entiere a la charniere entre
-    # deux pages. Un saut de 1 a 3 reste compatible avec une continuation,
-    # alors qu'un retour en arriere ne l'est pas.
+    # Tolerance: OCR sometimes drops a whole row at the page boundary. A gap
+    # of 1 to 3 is still compatible with a continuation, whereas going
+    # backwards is not.
     signals["index_near_continuity"] = (
         last_idx_a is not None and first_idx_b is not None
         and 0 < first_idx_b - last_idx_a <= 3
     )
-    # Disqualifiant : si table_b redemarre a 1, c'est presque surement une
-    # NOUVELLE table (nouvelle facture), meme si les entetes se ressemblent
-    # (toutes les factures de ce generateur partagent le meme gabarit de
-    # colonnes -> la similarite d'entete seule ne suffit jamais a distinguer
-    # "continuation" de "nouvelle facture identique en forme").
+    # Disqualifier: if table_b restarts at 1 it is almost certainly a NEW
+    # table (new invoice), even when the headers match -- every invoice from
+    # this generator shares the same column template, so header similarity
+    # alone can never tell "continuation" from "another identical-looking
+    # invoice" apart.
     signals["table_b_restarts_at_1"] = first_idx_b == 1
-    # Symetrique du precedent, et signal le plus robuste en pratique : si B
-    # commence a un index > 1, la numerotation vient forcement d'ailleurs.
-    # Hypothese metier assumee : le STT redemarre a 1 a chaque facture.
-    # C'est ce signal qui rattrape les cas ou l'OCR a massacre la fin du
-    # tableau A (index de fin illisible) -- la continuite +1 est alors
-    # inverifiable, mais "B commence a 20" reste parlant.
+    # Mirror image of the above, and the most robust signal in practice: if B
+    # starts at an index > 1, the numbering necessarily comes from elsewhere.
+    # Domain assumption, deliberately made: STT restarts at 1 on every
+    # invoice. This is the signal that rescues the cases where OCR mangled
+    # the end of table A -- +1 continuity is then unverifiable, but "B starts
+    # at 20" still speaks for itself.
     signals["table_b_starts_mid_numbering"] = first_idx_b is not None and first_idx_b > 1
-    # Garde-fou "meme tableau" : exiger un nombre de colonnes strictement
-    # identique est trop dur, l'OCR ajoute ou perd regulierement une colonne
-    # d'une page a l'autre. Un entete suffisamment ressemblant fait aussi
-    # bien l'affaire.
+    # "Same table" guard: requiring a strictly identical column count is too
+    # harsh, OCR regularly adds or loses a column from one page to the next.
+    # A sufficiently similar header does the job just as well.
     signals["compatible_shape"] = signals["same_col_count"] or signals["header_similarity"] >= 0.5
 
     strong_signal = (
@@ -373,23 +451,23 @@ def is_continuation(table_a: Table, table_b: Table,
 
     disqualified = signals["table_b_restarts_at_1"] and not signals["table_b_has_continuation_marker"]
     signals["decision"] = bool(strong_signal or weak_signal) and not disqualified
-    signals["confidence"] = "forte" if strong_signal else ("faible" if weak_signal else "aucune")
+    signals["confidence"] = "strong" if strong_signal else ("weak" if weak_signal else "none")
     return signals
 
 
 def merge_tables(table_a: Table, table_b: Table, decision: dict = None) -> Table:
-    """Fusionne table_b a la suite de table_a : retire la ligne "marqueur de
-    continuation" et l'entete repetee de table_b, garde un seul entete."""
+    """Append table_b to table_a, dropping the continuation marker row and
+    the repeated header, keeping a single header."""
     merged_rows = list(table_a.rows)
 
-    # Si la derniere ligne de A est un marqueur "voir page suivante" (et pas
-    # une vraie ligne de donnees), on la retire de la fusion.
+    # If A's last row is a "see next page" marker (rather than actual data),
+    # drop it from the merge.
     if merged_rows and _row_contains_any(merged_rows[-1], _NEXT_PAGE_KEYWORDS):
         merged_rows = merged_rows[:-1]
 
-    # De table_b on ne garde que les lignes de donnees : tout ce qui precede
-    # son entete (parasite OCR, marqueur de continuation) et l'entete elle-meme
-    # sont des artefacts de la coupure de page.
+    # From table_b we keep only data rows: everything before its header
+    # (OCR noise, continuation marker) and the header itself are artefacts of
+    # the page break.
     merged_rows.extend(table_b.data_rows)
     return Table(rows=merged_rows)
 
@@ -397,21 +475,21 @@ def merge_tables(table_a: Table, table_b: Table, decision: dict = None) -> Table
 def merge_table_sequence(tables: list, page_texts: list = None,
                          min_header_similarity: float = 0.6):
     """
-    Prend une liste de Table() (une par page, dans l'ordre) et retourne une
-    liste de Table() fusionnees : chaque element est soit une table qui ne
-    continue pas ailleurs, soit le resultat de la fusion de plusieurs pages
-    consecutives. Retourne aussi le detail des decisions prises.
+    Take a list of Table() (one per page, in order) and return the merged
+    list: each element is either a table that continues nowhere, or the
+    result of merging several consecutive pages. Also returns the detail of
+    every decision taken.
 
-    page_texts : markdown complet de chaque page, meme ordre que `tables`
-    (optionnel mais fortement recommande, cf. is_continuation).
+    page_texts: full markdown of each page, same order as `tables` (optional
+    but strongly recommended, see is_continuation).
     """
     if not tables:
         return [], []
 
     texts = list(page_texts) if page_texts else [""] * len(tables)
     merged = [tables[0]]
-    # Texte de la derniere page du groupe courant : c'est elle qui porte
-    # l'eventuel marqueur "suite page suivante".
+    # Text of the last page of the current group: that is the one carrying
+    # any "continued on next page" marker.
     current_text = texts[0]
     decisions = []
 

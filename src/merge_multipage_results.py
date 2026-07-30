@@ -1,22 +1,24 @@
 """
-Applique table_merge.py aux resultats d'un benchmark (dossier output_* genere
-par benchmark_deformed/run_benchmark_deformed.py) : detecte les tableaux
-coupes entre pages consecutives et les fusionne, avec un rapport HTML
-montrant, pour chaque paire de pages, la decision prise et les signaux qui
-l'ont motivee (essentiel pour pouvoir juger/discuter les cas limites).
+Apply table_merge.py to a benchmark run: detect tables split across
+consecutive pages and merge them, producing an HTML report that shows, for
+each page pair, the decision taken and the signals behind it (essential in
+order to judge and discuss the borderline cases).
 
-Usage (depuis n'importe quel dossier) :
+Usage (from any directory):
     python src/merge_multipage_results.py --run multipage_ppstructure
 
---run est le nom d'un dossier de results/ (cf. results/<run>/pages/).
-Le rapport est ecrit dans results/<run>/merge_report.html.
+--run is the name of a folder under results/ (see results/<run>/pages/).
+The report is written to results/<run>/merge_report.html.
 """
 
-import argparse
-import re
+import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from table_merge import extract_tables, merge_table_sequence
+import argparse  # noqa: E402
+import re  # noqa: E402
+
+from table_merge import extract_tables, merge_table_sequence  # noqa: E402
 
 
 def natural_sort_key(path: Path):
@@ -32,10 +34,10 @@ def table_to_html(table) -> str:
 
 
 HTML_HEADER = """<!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Fusion tableaux multi-pages</title>
+<title>Multi-page table merging</title>
 <style>
   body { font-family: Arial, sans-serif; margin: 0; background: #1e1e1e; color: #eee; }
   h1 { padding: 20px; margin: 0; border-bottom: 2px solid #444; }
@@ -52,72 +54,72 @@ HTML_HEADER = """<!DOCTYPE html>
 </style>
 </head>
 <body>
-<h1>Fusion des tableaux multi-pages — __SOURCE__</h1>
+<h1>Multi-page table merging — __SOURCE__</h1>
 """
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run", required=True, help="Nom d'un run dans results/ (ex: multipage_ppstructure)")
-    parser.add_argument("--report", default=None, help="Chemin du rapport HTML (defaut: results/<run>/merge_report.html)")
+    parser.add_argument("--run", required=True, help="Name of a run under results/ (e.g. multipage_ppstructure)")
+    parser.add_argument("--report", default=None, help="HTML report path (default: results/<run>/merge_report.html)")
     args = parser.parse_args()
 
     project_root = Path(__file__).resolve().parent.parent
     run_dir = project_root / "results" / args.run
     output_dir = run_dir / "pages"
     if not output_dir.exists():
-        print(f"Dossier introuvable : {output_dir}")
-        print("Runs disponibles :", ", ".join(sorted(p.name for p in (project_root / 'results').iterdir() if p.is_dir())))
+        print(f"Folder not found: {output_dir}")
+        print("Available runs:", ", ".join(sorted(p.name for p in (project_root / 'results').iterdir() if p.is_dir())))
         return
 
     subdirs = sorted([d for d in output_dir.iterdir() if d.is_dir()], key=natural_sort_key)
-    print(f"{len(subdirs)} page(s) trouvee(s) dans {output_dir}")
+    print(f"{len(subdirs)} page(s) found in {output_dir}")
 
-    page_tables = []  # liste de (nom_page, [Table, ...], markdown_complet)
+    page_tables = []  # list of (page_name, [Table, ...], full_markdown)
     for d in subdirs:
         md_files = list(d.glob("*.md"))
         if not md_files:
-            print(f"  {d.name} : pas de .md, ignore")
+            print(f"  {d.name}: no .md, skipped")
             continue
         md_content = max(md_files, key=lambda p: p.stat().st_mtime).read_text(encoding="utf-8")
         tables = extract_tables(md_content)
         page_tables.append((d.name, tables, md_content))
-        print(f"  {d.name} : {len(tables)} table(s) trouvee(s)")
+        print(f"  {d.name}: {len(tables)} table(s) found")
 
-    # Pour simplifier, on suppose 1 table principale par page (le tableau de
-    # medicaments). Si une page en contient plusieurs, on prend la plus grande.
+    # For simplicity we assume one main table per page (the medication
+    # table). If a page holds several, we keep the largest.
     main_tables, page_names, page_texts = [], [], []
     for name, tables, md_content in page_tables:
         if not tables:
             continue
         main_tables.append(max(tables, key=lambda t: len(t.rows)))
         page_names.append(name)
-        # Le markdown complet est transmis a l'algo : les marqueurs de
-        # continuation sont extraits par l'OCR HORS du tableau.
+        # The full markdown is handed to the algorithm: OCR extracts the
+        # continuation markers OUTSIDE the table.
         page_texts.append(md_content)
 
     merged, decisions = merge_table_sequence(main_tables, page_texts)
 
-    # .replace et non .format : le bloc <style> contient des accolades CSS.
+    # .replace rather than .format: the <style> block contains CSS braces.
     html = [HTML_HEADER.replace("__SOURCE__", args.run)]
 
-    # Rapport detaille pour chaque paire de pages consecutives (decision + signaux)
+    # Detailed report for every consecutive page pair (decision + signals)
     for i, decision in enumerate(decisions):
         page_a, page_b = page_names[i], page_names[i + 1]
         css_class = "decision-yes" if decision["decision"] else "decision-no"
-        verdict = "FUSIONNE" if decision["decision"] else "PAS fusionne (tables independantes)"
+        verdict = "MERGED" if decision["decision"] else "NOT merged (independent tables)"
         html.append(f"""
 <div class="pair">
   <h2>{page_a} -> {page_b}</h2>
-  <div class="{css_class}">{verdict} (confiance : {decision['confidence']})</div>
+  <div class="{css_class}">{verdict} (confidence: {decision['confidence']})</div>
   <div class="signals">{decision}</div>
 </div>""")
 
-    html.append("<h1>Tables finales (apres fusion)</h1>")
+    html.append("<h1>Final tables (after merging)</h1>")
     for i, table in enumerate(merged, start=1):
         html.append(f"""
 <div class="pair">
-  <h2>Table finale {i} ({len(table.data_rows)} lignes de donnees)</h2>
+  <h2>Final table {i} ({len(table.data_rows)} data rows)</h2>
   {table_to_html(table)}
 </div>""")
 
@@ -125,8 +127,8 @@ def main():
 
     report_path = Path(args.report) if args.report else run_dir / "merge_report.html"
     report_path.write_text("".join(html), encoding="utf-8")
-    print(f"\n{len(main_tables)} page(s) -> {len(merged)} table(s) finale(s) apres fusion")
-    print(f"Rapport : {report_path.resolve()}")
+    print(f"\n{len(main_tables)} page(s) -> {len(merged)} final table(s) after merging")
+    print(f"Report: {report_path.resolve()}")
 
 
 if __name__ == "__main__":
