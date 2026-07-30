@@ -1,13 +1,15 @@
 """
-Meme benchmark que run_benchmark.py, mais avec le pipeline PP-StructureV3
-(detection de layout + OCR + reconnaissance de tableau en etapes separees et
-specialisees) au lieu de PaddleOCR-VL (VLM unique).
+Same benchmark as bench_tabrecset_paddleocr_vl.py, but using the
+PP-StructureV3 pipeline (layout detection + OCR + table recognition as
+separate, specialised stages) instead of PaddleOCR-VL (a single VLM).
 
-A lancer APRES run_benchmark.py (pas en meme temps si CPU limite, les deux
-pipelines sont lourds).
+Run it AFTER bench_tabrecset_paddleocr_vl.py (not at the same time on a
+limited CPU -- both pipelines are heavy).
 
-Usage :
-    python run_benchmark_ppstructure.py
+Usage (from any directory):
+    python scripts/bench_tabrecset_ppstructure.py
+
+Output: results/tabrecset_ppstructure/pages/<image_name>/ + report.html
 """
 
 import sys
@@ -23,8 +25,8 @@ from pathlib import Path
 
 from paddleocr import PPStructureV3
 
-# Chemins resolus depuis la racine du projet (et non depuis le repertoire
-# courant) : le script marche quel que soit l'endroit d'ou on le lance.
+# Paths resolved from the project root (not from the current working
+# directory): the script runs from wherever it is launched.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = PROJECT_ROOT / "data" / "tabrecset_sample" / "images"
 RUN_DIR = PROJECT_ROOT / "results" / "tabrecset_ppstructure"
@@ -41,7 +43,7 @@ def image_to_data_uri(path: Path) -> str:
     return f"data:{mime};base64,{data}"
 
 HTML_HEADER = """<!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Benchmark PP-StructureV3 - 10 images</title>
@@ -70,7 +72,7 @@ HTML_ENTRY = """
     <img src="{image_uri}" alt="{name}">
   </div>
   <div class="panel right">
-    <div class="meta">Temps de traitement : {elapsed:.1f}s</div>
+    <div class="meta">Processing time: {elapsed:.1f}s</div>
     {content}
   </div>
 </div>
@@ -80,11 +82,11 @@ HTML_ENTRY = """
 def main():
     images = sorted(IMAGES_DIR.glob("*.jpg")) + sorted(IMAGES_DIR.glob("*.png"))
     if not images:
-        print(f"Aucune image trouvee dans {IMAGES_DIR}/")
+        print(f"No image found in {IMAGES_DIR}/")
         return
 
-    print(f"{len(images)} images a traiter.")
-    print("Chargement de la pipeline PP-StructureV3 (peut prendre du temps la 1ere fois)...")
+    print(f"{len(images)} image(s) to process.")
+    print("Loading the PP-StructureV3 pipeline (may take a while the first time)...")
     # enable_mkldnn=False : contourne un bug connu de PaddlePaddle 3.3.x
     # (NotImplementedError ConvertPirAttribute2RuntimeAttribute) sur inference
     # CPU via oneDNN. Legerement plus lent, mais evite le crash.
@@ -93,7 +95,7 @@ def main():
     html_parts = [HTML_HEADER]
 
     for i, image_path in enumerate(images, start=1):
-        print(f"[{i}/{len(images)}] Traitement de : {image_path.name}")
+        print(f"[{i}/{len(images)}] Processing: {image_path.name}")
         img_output_dir = OUTPUT_DIR / image_path.stem
         img_output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -114,7 +116,7 @@ def main():
             md_content = max(md_files, key=lambda p: p.stat().st_mtime).read_text(encoding="utf-8")
             md_content = md_content.replace("\n\n", "<br><br>")
         else:
-            md_content = "<em>Aucun contenu markdown genere.</em>"
+            md_content = "<em>No markdown content generated.</em>"
 
         annotated_image_path = max(img_files, key=lambda p: p.stat().st_mtime) if img_files else image_path
 
@@ -127,11 +129,11 @@ def main():
             )
         )
 
-        print(f"  -> termine en {elapsed:.1f}s")
+        print(f"  -> done in {elapsed:.1f}s")
 
     html_parts.append("</body></html>")
     REPORT_PATH.write_text("".join(html_parts), encoding="utf-8")
-    print(f"\nRapport genere : {REPORT_PATH.resolve()}")
+    print(f"\nReport written: {REPORT_PATH.resolve()}")
 
     import webbrowser
     webbrowser.open(REPORT_PATH.resolve().as_uri())

@@ -21,7 +21,11 @@ MedicalRecord/
 │   ├── merge_multipage_results.py  applique l'algo à un run de results/
 │   ├── eval_multipage_merge.py     chiffre la fusion (précision / rappel / F1)
 │   ├── teds.py                     métrique TEDS + TEDS-Struct
-│   └── eval_teds.py                score les sorties OCR contre la vérité terrain JSON
+│   ├── eval_teds.py                score les sorties OCR contre la vérité terrain JSON
+│   ├── invoice_parse.py            tableau HTML → champs typés
+│   ├── invoice_validate.py         validation arithmétique (qté × prix = total)
+│   ├── eval_validation.py          mesure ce que la validation détecte
+│   └── report_merge_demo.py        rapport HTML de démonstration de la fusion
 │
 ├── scripts/               ← lanceurs de benchmark (à exécuter à la main)
 │   ├── bench_tabrecset_paddleocr_vl.py
@@ -112,6 +116,20 @@ apporte un gain du même ordre pour les trois modèles, donc elle n'est pas
 calibrée sur l'un d'eux — et **zéro faux positif partout**, ce qui compte
 plus que le rappel : fusionner deux factures à tort est bien plus grave que
 manquer une continuation.
+
+**Validation arithmétique** — détail dans `docs/resultats_validation.md`.
+Une facture se vérifie elle-même (`qté × prix = total`, somme des lignes =
+`Tổng tiền`), donc **sans vérité terrain**. Avec HunyuanOCR : sur 215 lignes,
+12 sont à relire (6 %) et elles contiennent **100 % des erreurs numériques**,
+avec **zéro fausse alerte**. C'est ce qui rend un TEDS de 0,93 exploitable en
+pratique.
+
+Deux réserves. Les erreurs de **libellé** échappent par construction à
+l'arithmétique (« Xetoprofen » pour *Ketoprofen*) : il faudrait un
+dictionnaire de médicaments. Et la **correction automatique** n'est sûre que
+si le modèle est bon — 97 % de corrections exactes avec PaddleOCR-VL, mais
+9 % avec PP-StructureV3, où elle rend les erreurs invisibles en les rendant
+cohérentes.
 
 **Hypothèse métier assumée** par l'algorithme : la colonne STT redémarre à 1
 à chaque nouvelle facture. C'est le signal le plus discriminant (« B commence

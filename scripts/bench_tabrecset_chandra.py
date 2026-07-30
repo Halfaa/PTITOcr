@@ -1,19 +1,20 @@
 """
-Meme benchmark que run_benchmark.py (PaddleOCR-VL) et run_benchmark_ppstructure.py
-(PP-StructureV3), mais avec Chandra OCR 2 (datalab-to/chandra-ocr-2, VLM 5B
-parametres, base Qwen3.5) via HuggingFace Transformers, en CPU.
+Same benchmark as bench_tabrecset_paddleocr_vl.py and
+bench_tabrecset_ppstructure.py, but with Chandra OCR 2
+(datalab-to/chandra-ocr-2, a 5B-parameter VLM on a Qwen3.5 backbone) through
+HuggingFace Transformers, on CPU.
 
-Pourquoi le CPU : le GPU de ce PC (RTX 3050 Ti, 4 Go de VRAM) est insuffisant
-pour charger un modele 5B, meme en quantization 4-bit (poids seuls ~2.5-3 Go,
-trop juste une fois les activations de l'encodeur visuel ajoutees).
+Why CPU: this machine's GPU (RTX 3050 Ti, 4 GB VRAM) cannot host a 5B model,
+not even in 4-bit quantisation (weights alone are ~2.5-3 GB, far too tight
+once the vision encoder activations are added).
 
-Le modele pese ~10 Go en RAM (bf16) : ferme les autres applications lourdes
-avant de lancer, et utilise --test pour valider sur 1 image avant les 10
-(chargement + inference peuvent prendre tres longtemps sur CPU).
+The model takes ~10 GB of RAM (bf16): close other heavy applications before
+launching, and use --test to validate on a single image before running all 10
+(loading + inference can take a very long time on CPU).
 
-Usage :
-    python run_benchmark_chandra.py --test   # 1ere image seulement (validation)
-    python run_benchmark_chandra.py          # les 10 images du benchmark
+Usage:
+    python scripts/bench_tabrecset_chandra.py --test   # first image only
+    python scripts/bench_tabrecset_chandra.py          # all 10 images
 """
 
 import sys
@@ -36,8 +37,8 @@ from chandra.model.hf import generate_hf
 from chandra.model.schema import BatchInputItem
 from chandra.output import parse_markdown
 
-# Chemins resolus depuis la racine du projet (et non depuis le repertoire
-# courant) : le script marche quel que soit l'endroit d'ou on le lance.
+# Paths resolved from the project root (not from the current working
+# directory): the script runs from wherever it is launched.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = PROJECT_ROOT / "data" / "tabrecset_sample" / "images"
 RUN_DIR = PROJECT_ROOT / "results" / "tabrecset_chandra"
@@ -56,7 +57,7 @@ def image_to_data_uri(path: Path) -> str:
 
 
 HTML_HEADER = """<!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Benchmark Chandra OCR 2 - CPU</title>
@@ -85,7 +86,7 @@ HTML_ENTRY = """
     <img src="{image_uri}" alt="{name}">
   </div>
   <div class="panel right">
-    <div class="meta">Temps de traitement : {elapsed:.1f}s</div>
+    <div class="meta">Processing time: {elapsed:.1f}s</div>
     {content}
   </div>
 </div>
@@ -93,8 +94,8 @@ HTML_ENTRY = """
 
 
 def load_model():
-    print(f"Chargement de {MODEL_NAME} sur CPU...")
-    print("(1er lancement : telechargement ~10 Go depuis HuggingFace, puis chargement en RAM. Patience.)")
+    print(f"Loading {MODEL_NAME} on CPU...")
+    print("(First run: ~10 GB download from HuggingFace, then loading into RAM. Be patient.)")
     model = AutoModelForImageTextToText.from_pretrained(
         MODEL_NAME,
         dtype=torch.bfloat16,
@@ -103,7 +104,7 @@ def load_model():
     model.eval()
     model.processor = AutoProcessor.from_pretrained(MODEL_NAME)
     model.processor.tokenizer.padding_side = "left"
-    print("Modele charge.")
+    print("Model loaded.")
     return model
 
 
@@ -125,13 +126,13 @@ def main():
     )
     parser.add_argument(
         "--limit", type=int, default=None,
-        help="Traite seulement les N premieres images (utile vu la lenteur sur CPU, ~15 min/image)",
+        help="Process only the first N images (useful given CPU slowness, ~15 min/image)",
     )
     args = parser.parse_args()
 
     images = sorted(IMAGES_DIR.glob("*.jpg")) + sorted(IMAGES_DIR.glob("*.png"))
     if not images:
-        print(f"Aucune image trouvee dans {IMAGES_DIR}/")
+        print(f"No image found in {IMAGES_DIR}/")
         return
     if args.test:
         images = images[:1]
@@ -147,7 +148,7 @@ def main():
     html_parts = [HTML_HEADER]
 
     for i, image_path in enumerate(images, start=1):
-        print(f"[{i}/{len(images)}] Traitement de : {image_path.name}")
+        print(f"[{i}/{len(images)}] Processing: {image_path.name}")
         try:
             markdown, elapsed = process_image(model, image_path)
         except Exception as e:
@@ -157,7 +158,7 @@ def main():
                     name=image_path.name,
                     image_uri=image_to_data_uri(image_path),
                     elapsed=0.0,
-                    content=f"<em>Erreur lors du traitement : {e}</em>",
+                    content=f"<em>Error during processing: {e}</em>",
                 )
             )
             continue
@@ -175,11 +176,11 @@ def main():
                 content=html_content,
             )
         )
-        print(f"  -> termine en {elapsed:.1f}s")
+        print(f"  -> done in {elapsed:.1f}s")
 
     html_parts.append("</body></html>")
     REPORT_PATH.write_text("".join(html_parts), encoding="utf-8")
-    print(f"\nRapport genere : {REPORT_PATH.resolve()}")
+    print(f"\nReport written: {REPORT_PATH.resolve()}")
 
     import webbrowser
     webbrowser.open(REPORT_PATH.resolve().as_uri())

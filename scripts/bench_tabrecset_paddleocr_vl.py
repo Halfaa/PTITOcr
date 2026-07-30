@@ -1,12 +1,12 @@
 """
-Fait tourner PaddleOCR-VL sur les 10 images du mini-dataset (images/) et genere
-un seul rapport HTML (benchmark_report.html) avec, pour chaque image :
-image annotee a gauche, donnees extraites (tableau/texte rendu) a droite.
+Run PaddleOCR-VL on the 10 images of the mini dataset and produce a single
+HTML report with, for each image: the annotated image on the left, the
+extracted data (rendered table / text) on the right.
 
-Usage (depuis n'importe quel dossier) :
+Usage (from any directory):
     python scripts/bench_tabrecset_paddleocr_vl.py
 
-Resultats : results/tabrecset_paddleocr_vl/pages/<nom_image>/ + report.html
+Output: results/tabrecset_paddleocr_vl/pages/<image_name>/ + report.html
 """
 
 import sys
@@ -22,8 +22,8 @@ from pathlib import Path
 
 from paddleocr import PaddleOCRVL
 
-# Chemins resolus depuis la racine du projet (et non depuis le repertoire
-# courant) : le script marche quel que soit l'endroit d'ou on le lance.
+# Paths resolved from the project root (not from the current working
+# directory): the script runs from wherever it is launched.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = PROJECT_ROOT / "data" / "tabrecset_sample" / "images"
 RUN_DIR = PROJECT_ROOT / "results" / "tabrecset_paddleocr_vl"
@@ -33,15 +33,15 @@ RUN_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def image_to_data_uri(path: Path) -> str:
-    """Encode l'image en base64 et l'embarque directement dans le HTML
-    (data URI), pour que le rapport soit autonome et s'affiche partout
-    (Notion, navigateur, email...) sans dependre d'un chemin local."""
+    """Encode the image as base64 and embed it directly in the HTML (data
+    URI), so the report is self-contained and displays anywhere (Notion,
+    browser, email...) without depending on a local path."""
     mime = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
     data = base64.b64encode(path.read_bytes()).decode("ascii")
     return f"data:{mime};base64,{data}"
 
 HTML_HEADER = """<!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Benchmark PaddleOCR-VL - 10 images</title>
@@ -70,7 +70,7 @@ HTML_ENTRY = """
     <img src="{image_uri}" alt="{name}">
   </div>
   <div class="panel right">
-    <div class="meta">Temps de traitement : {elapsed:.1f}s</div>
+    <div class="meta">Processing time: {elapsed:.1f}s</div>
     {content}
   </div>
 </div>
@@ -80,17 +80,17 @@ HTML_ENTRY = """
 def main():
     images = sorted(IMAGES_DIR.glob("*.jpg")) + sorted(IMAGES_DIR.glob("*.png"))
     if not images:
-        print(f"Aucune image trouvee dans {IMAGES_DIR}/")
+        print(f"No image found in {IMAGES_DIR}/")
         return
 
-    print(f"{len(images)} images a traiter.")
-    print("Chargement de la pipeline PaddleOCR-VL (peut prendre du temps la 1ere fois)...")
+    print(f"{len(images)} image(s) to process.")
+    print("Loading the PaddleOCR-VL pipeline (may take a while the first time)...")
     pipeline = PaddleOCRVL(pipeline_version="v1")
 
     html_parts = [HTML_HEADER]
 
     for i, image_path in enumerate(images, start=1):
-        print(f"[{i}/{len(images)}] Traitement de : {image_path.name}")
+        print(f"[{i}/{len(images)}] Processing: {image_path.name}")
         img_output_dir = OUTPUT_DIR / image_path.stem
         img_output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -106,7 +106,7 @@ def main():
 
         elapsed = time.time() - start
 
-        # Recupere les fichiers generes pour cette image (les plus recents dans son dossier)
+        # Collect the files generated for this image (most recent in its folder)
         md_files = list(img_output_dir.glob("*.md"))
         img_files = list(img_output_dir.glob("*.jpg")) + list(img_output_dir.glob("*.png"))
 
@@ -114,12 +114,12 @@ def main():
             md_content = max(md_files, key=lambda p: p.stat().st_mtime).read_text(encoding="utf-8")
             md_content = md_content.replace("\n\n", "<br><br>")
         else:
-            md_content = "<em>Aucun contenu markdown genere.</em>"
+            md_content = "<em>No markdown content generated.</em>"
 
         if img_files:
             annotated_image_path = max(img_files, key=lambda p: p.stat().st_mtime)
         else:
-            annotated_image_path = image_path  # repli sur l'image d'origine
+            annotated_image_path = image_path  # fall back to the original image
 
         html_parts.append(
             HTML_ENTRY.format(
@@ -130,11 +130,11 @@ def main():
             )
         )
 
-        print(f"  -> termine en {elapsed:.1f}s")
+        print(f"  -> done in {elapsed:.1f}s")
 
     html_parts.append("</body></html>")
     REPORT_PATH.write_text("".join(html_parts), encoding="utf-8")
-    print(f"\nRapport genere : {REPORT_PATH.resolve()}")
+    print(f"\nReport written: {REPORT_PATH.resolve()}")
 
     import webbrowser
     webbrowser.open(REPORT_PATH.resolve().as_uri())
