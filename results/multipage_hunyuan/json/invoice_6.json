@@ -1,0 +1,270 @@
+{
+  "source": {
+    "run": "multipage_hunyuan",
+    "invoice": 6,
+    "pages": [
+      12,
+      13
+    ],
+    "generated_at": "2026-07-28T03:58:08+00:00"
+  },
+  "document": {
+    "hospital_name": "BỆNH VIỆN XỬ NỮ",
+    "customer_name": "Phạm Khanh Cả Sáu",
+    "invoice_date": "07/06/2019",
+    "doctor": "ThS.BS. Bùi Fong Gấu",
+    "address": "225 Phố Không Tên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Paroxetine 20mg",
+      "unit": "hợp",
+      "quantity": 7,
+      "unit_price": 75000,
+      "total": 525000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Dexamethasone Sodium Phosphate 4mg",
+      "unit": "lọ",
+      "quantity": 8,
+      "unit_price": 3200,
+      "total": 25600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Saline Solution",
+      "unit": "chai",
+      "quantity": 2,
+      "unit_price": 500,
+      "total": 1000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Codeine Phosphate 15mg",
+      "unit": "hợp",
+      "quantity": 1,
+      "unit_price": 54000,
+      "total": 54000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Antibiotic Cream",
+      "unit": "tuyếp",
+      "quantity": 10,
+      "unit_price": 3000,
+      "total": 30000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Montelukusib 10mg",
+      "unit": "hợp",
+      "quantity": 7,
+      "unit_price": 90000,
+      "total": 630000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Fluticasone Propionate 100mcg",
+      "unit": "lọ",
+      "quantity": 7,
+      "unit_price": 3000,
+      "total": 21000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Hydrochlorothiazide 25mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1600,
+      "total": 14400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Ciprofloxacin 500mg",
+      "unit": "hợp",
+      "quantity": 6,
+      "unit_price": 180000,
+      "total": 1080000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Atorvastatin 20mg",
+      "unit": "hợp",
+      "quantity": 3,
+      "unit_price": 66000,
+      "total": 198000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Amoxicillin 500mg",
+      "unit": "hợp",
+      "quantity": 8,
+      "unit_price": 40000,
+      "total": 320000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Omeprazole 20mg",
+      "unit": "hợp",
+      "quantity": 3,
+      "unit_price": 75000,
+      "total": 225000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Furosemide 40mg",
+      "unit": "hợp",
+      "quantity": 4,
+      "unit_price": 51000,
+      "total": 204000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Meloxicam 15mg",
+      "unit": "hợp",
+      "quantity": 4,
+      "unit_price": 57000,
+      "total": 228000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Prednisolone 5mg",
+      "unit": "lọ",
+      "quantity": 4,
+      "unit_price": 3100,
+      "total": 12400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Diclofenac Sodium 50mg",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Atorvastatin 20mg",
+      "unit": "viên",
+      "quantity": 4,
+      "unit_price": 2200,
+      "total": 8800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Albuterol Sulfate 90mcg",
+      "unit": "lọ",
+      "quantity": 4,
+      "unit_price": 2700,
+      "total": 10800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Paracetamol 500mg",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 1500,
+      "total": 3000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Indomethacin 50mg",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 1600,
+      "total": 11200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Levothyroxine 100mcg",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 39000,
+      "total": 39000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 3642800,
+    "computed_from_lines": 3642800,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 21,
+    "n_ok": 21,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": []
+  }
+}

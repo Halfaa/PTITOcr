@@ -1,0 +1,432 @@
+{
+  "source": {
+    "run": "multipage_paddleocr_vl",
+    "invoice": 3,
+    "pages": [
+      5,
+      6
+    ],
+    "generated_at": "2026-07-28T03:58:08+00:00"
+  },
+  "document": {
+    "hospital_name": "NHÀ THUOC BÊNH VIÊN THIÊN BỒNH",
+    "customer_name": null,
+    "invoice_date": "29 tháng 5 năm 2010",
+    "doctor": "ThS.BS. Vũ Khanh Hổ",
+    "address": "225 Phó Không Tên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.78
+  },
+  "extraction": {
+    "status": "partial",
+    "reason": "columns not found: total"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Hydrochlorothiazide 25mg",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 48000,
+      "total": 288000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 6 x 48000",
+        "corrected_field": "total",
+        "corrected_value": 288000
+      }
+    },
+    {
+      "index": 2,
+      "name": "Tebarat",
+      "unit": "long",
+      "quantity": 9,
+      "unit_price": 3500,
+      "total": 31500,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 9 x 3500",
+        "corrected_field": "total",
+        "corrected_value": 31500
+      }
+    },
+    {
+      "index": 3,
+      "name": "Diclofenac Sodium 50mg",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 1600,
+      "total": 3200,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 2 x 1600",
+        "corrected_field": "total",
+        "corrected_value": 3200
+      }
+    },
+    {
+      "index": 4,
+      "name": "Celecoxib 200mg",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 63000,
+      "total": 189000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 3 x 63000",
+        "corrected_field": "total",
+        "corrected_value": 189000
+      }
+    },
+    {
+      "index": 5,
+      "name": "Allopurinol 100mg",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1800,
+      "total": 18000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 10 x 1800",
+        "corrected_field": "total",
+        "corrected_value": 18000
+      }
+    },
+    {
+      "index": 6,
+      "name": "Clarithromycin 500mg",
+      "unit": "hộp",
+      "quantity": 7,
+      "unit_price": 240000,
+      "total": 1680000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 7 x 240000",
+        "corrected_field": "total",
+        "corrected_value": 1680000
+      }
+    },
+    {
+      "index": 7,
+      "name": "Devodil 50mg",
+      "unit": "hộp",
+      "quantity": 7,
+      "unit_price": 171600,
+      "total": 1201200,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 7 x 171600",
+        "corrected_field": "total",
+        "corrected_value": 1201200
+      }
+    },
+    {
+      "index": 8,
+      "name": "Indomethacin 50mg",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 1 x 1600",
+        "corrected_field": "total",
+        "corrected_value": 1600
+      }
+    },
+    {
+      "index": 9,
+      "name": "Pentazocine 50mg",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 2000,
+      "total": 6000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 3 x 2000",
+        "corrected_field": "total",
+        "corrected_value": 6000
+      }
+    },
+    {
+      "index": 10,
+      "name": "Insulin",
+      "unit": "chai",
+      "quantity": 8,
+      "unit_price": 100000,
+      "total": 800000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 8 x 100000",
+        "corrected_field": "total",
+        "corrected_value": 800000
+      }
+    },
+    {
+      "index": 11,
+      "name": "Tramadol Hydrochloride 50mg",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 63000,
+      "total": 63000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 1 x 63000",
+        "corrected_field": "total",
+        "corrected_value": 63000
+      }
+    },
+    {
+      "index": 12,
+      "name": "Paracetamol 500mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1500,
+      "total": 9000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 6 x 1500",
+        "corrected_field": "total",
+        "corrected_value": 9000
+      }
+    },
+    {
+      "index": 13,
+      "name": "Ibuprofen 400mg",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1600,
+      "total": 12800,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 8 x 1600",
+        "corrected_field": "total",
+        "corrected_value": 12800
+      }
+    },
+    {
+      "index": 14,
+      "name": "Lisinopril 10mg",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1400,
+      "total": 11200,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 8 x 1400",
+        "corrected_field": "total",
+        "corrected_value": 11200
+      }
+    },
+    {
+      "index": 15,
+      "name": "Simvastatin 20mg",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 45000,
+      "total": 225000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 5 x 45000",
+        "corrected_field": "total",
+        "corrected_value": 225000
+      }
+    },
+    {
+      "index": 16,
+      "name": "Amoxicillin 500mg",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 2000,
+      "total": 14000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 7 x 2000",
+        "corrected_field": "total",
+        "corrected_value": 14000
+      }
+    },
+    {
+      "index": 17,
+      "name": "Naproxen Sodium 500mg",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 45000,
+      "total": 45000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 1 x 45000",
+        "corrected_field": "total",
+        "corrected_value": 45000
+      }
+    },
+    {
+      "index": 18,
+      "name": "Efferalgan 500mg",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 50000,
+      "total": 150000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 3 x 50000",
+        "corrected_field": "total",
+        "corrected_value": 150000
+      }
+    },
+    {
+      "index": 19,
+      "name": "Albuterol Sulfate 90mcg",
+      "unit": "lo",
+      "quantity": 9,
+      "unit_price": 2700,
+      "total": 24300,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 9 x 2700",
+        "corrected_field": "total",
+        "corrected_value": 24300
+      }
+    },
+    {
+      "index": 20,
+      "name": "Levothyroxine 100mcg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1300,
+      "total": 7800,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 6 x 1300",
+        "corrected_field": "total",
+        "corrected_value": 7800
+      }
+    },
+    {
+      "index": 21,
+      "name": "Hydrocortisone 1%",
+      "unit": "tuyp",
+      "quantity": 9,
+      "unit_price": 2900,
+      "total": 26100,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 9 x 2900",
+        "corrected_field": "total",
+        "corrected_value": 26100
+      }
+    },
+    {
+      "index": 22,
+      "name": "Gabapentin 300mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1700,
+      "total": 15300,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 9 x 1700",
+        "corrected_field": "total",
+        "corrected_value": 15300
+      }
+    },
+    {
+      "index": 23,
+      "name": "Ketoprofen 250mg",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 51000,
+      "total": 459000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 9 x 51000",
+        "corrected_field": "total",
+        "corrected_value": 459000
+      }
+    },
+    {
+      "index": 24,
+      "name": "Montelukusib 10mg",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 3000,
+      "total": 9000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 3 x 3000",
+        "corrected_field": "total",
+        "corrected_value": 9000
+      }
+    },
+    {
+      "index": 25,
+      "name": "Meloxicam 15mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1900,
+      "total": 11400,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 6 x 1900",
+        "corrected_field": "total",
+        "corrected_value": 11400
+      }
+    },
+    {
+      "index": 26,
+      "name": "Ketoprofen 250mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1700,
+      "total": 15300,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 9 x 1700",
+        "corrected_field": "total",
+        "corrected_value": 15300
+      }
+    },
+    {
+      "index": 27,
+      "name": "Metformin 500mg",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 1200,
+      "total": 2400,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 2 x 1200",
+        "corrected_field": "total",
+        "corrected_value": 2400
+      }
+    },
+    {
+      "index": 28,
+      "name": "Piroxicam 20mg",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 51000,
+      "total": 459000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 9 x 51000",
+        "corrected_field": "total",
+        "corrected_value": 459000
+      }
+    }
+  ],
+  "totals": {
+    "declared": 5778100,
+    "computed_from_lines": 5778100,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 28,
+    "n_ok": 0,
+    "n_to_check": 0,
+    "n_auto_corrected": 28,
+    "lines_to_check": [],
+    "numbering_gaps": []
+  }
+}

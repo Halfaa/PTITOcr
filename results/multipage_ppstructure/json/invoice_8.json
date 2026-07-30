@@ -1,0 +1,379 @@
+{
+  "source": {
+    "run": "multipage_ppstructure",
+    "invoice": 8,
+    "pages": [
+      16,
+      17
+    ],
+    "generated_at": "2026-07-28T03:58:09+00:00"
+  },
+  "document": {
+    "hospital_name": "BENH VIEN CU GIAI ch2X HOA DON BAN HANG",
+    "customer_name": "nguimuaBuiAnhPhunghong BacskednThNM c",
+    "invoice_date": null,
+    "doctor": null,
+    "address": null,
+    "invoice_number": null,
+    "payment_method": null,
+    "_field_coverage": 0.33
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Loratadine10mg",
+      "unit": "16200",
+      "quantity": 200,
+      "unit_price": 9,
+      "total": 1800,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 1800 / 9",
+        "corrected_field": "quantity",
+        "corrected_value": 200
+      }
+    },
+    {
+      "index": 2,
+      "name": "Hydrochlorothiazide25mg",
+      "unit": "3200",
+      "quantity": 800,
+      "unit_price": 2,
+      "total": 1600,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 1600 / 2",
+        "corrected_field": "quantity",
+        "corrected_value": 800
+      }
+    },
+    {
+      "index": 3,
+      "name": "Pentazocine50mg",
+      "unit": "4000",
+      "quantity": 1000,
+      "unit_price": 2,
+      "total": 2000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 2000 / 2",
+        "corrected_field": "quantity",
+        "corrected_value": 1000
+      }
+    },
+    {
+      "index": 4,
+      "name": "Amoxicillin500mg",
+      "unit": "160000",
+      "quantity": 10000,
+      "unit_price": 4,
+      "total": 40000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 40000 / 4",
+        "corrected_field": "quantity",
+        "corrected_value": 10000
+      }
+    },
+    {
+      "index": 5,
+      "name": "Metformin500mg",
+      "unit": "180000",
+      "quantity": 7200,
+      "unit_price": 5,
+      "total": 36000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 36000 / 5",
+        "corrected_field": "quantity",
+        "corrected_value": 7200
+      }
+    },
+    {
+      "index": 6,
+      "name": "Mefenamic Acid 500mg",
+      "unit": "7200",
+      "quantity": null,
+      "unit_price": null,
+      "total": 1800,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Tebarat",
+      "unit": "210000",
+      "quantity": null,
+      "unit_price": 3,
+      "total": 70000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "70000 is not divisible by 3"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Metoprolol50mg",
+      "unit": "14400",
+      "quantity": null,
+      "unit_price": 0,
+      "total": 1600,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Furosemide 40mg",
+      "unit": "51000",
+      "quantity": 51000,
+      "unit_price": 1,
+      "total": 51000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 51000 / 1",
+        "corrected_field": "quantity",
+        "corrected_value": 51000
+      }
+    },
+    {
+      "index": 10,
+      "name": "Aspirin 300mg",
+      "unit": "240000",
+      "quantity": 2400,
+      "unit_price": 10,
+      "total": 24000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 24000 / 10",
+        "corrected_field": "quantity",
+        "corrected_value": 2400
+      }
+    },
+    {
+      "index": 11,
+      "name": "Simvastatin20mg",
+      "unit": "405000",
+      "quantity": 5000,
+      "unit_price": 9,
+      "total": 45000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 45000 / 9",
+        "corrected_field": "quantity",
+        "corrected_value": 5000
+      }
+    },
+    {
+      "index": 12,
+      "name": "Mefenamic Acid 500mg",
+      "unit": "270000",
+      "quantity": 10800,
+      "unit_price": 5,
+      "total": 54000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 54000 / 5",
+        "corrected_field": "quantity",
+        "corrected_value": 10800
+      }
+    },
+    {
+      "index": 13,
+      "name": "Furosemide e40mg",
+      "unit": "11900",
+      "quantity": null,
+      "unit_price": 7,
+      "total": 1700,
+      "check": {
+        "status": "inconsistent",
+        "detail": "1700 is not divisible by 7"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Clarithromycin500mg",
+      "unit": "21600",
+      "quantity": null,
+      "unit_price": 9,
+      "total": 2400,
+      "check": {
+        "status": "inconsistent",
+        "detail": "2400 is not divisible by 9"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Ibuprofen 400mg",
+      "unit": "9600",
+      "quantity": null,
+      "unit_price": 6,
+      "total": 1600,
+      "check": {
+        "status": "inconsistent",
+        "detail": "1600 is not divisible by 6"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Codeine Phosphate15mg",
+      "unit": "10800",
+      "quantity": 300,
+      "unit_price": 6,
+      "total": 1800,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 1800 / 6",
+        "corrected_field": "quantity",
+        "corrected_value": 300
+      }
+    },
+    {
+      "index": 17,
+      "name": "BestimacQ1030mg",
+      "unit": "445500",
+      "quantity": 49500,
+      "unit_price": 3,
+      "total": 148500,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 148500 / 3",
+        "corrected_field": "quantity",
+        "corrected_value": 49500
+      }
+    },
+    {
+      "index": 18,
+      "name": "Montelukusib10mg",
+      "unit": "21000",
+      "quantity": null,
+      "unit_price": 7,
+      "total": 3000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "3000 is not divisible by 7"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Celecoxib200mg",
+      "unit": "2100",
+      "quantity": 2100,
+      "unit_price": 1,
+      "total": 2100,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 2100 / 1",
+        "corrected_field": "quantity",
+        "corrected_value": 2100
+      }
+    },
+    {
+      "index": null,
+      "name": "10",
+      "unit": "",
+      "quantity": 1900,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "Warfarin3mg",
+      "unit": "20",
+      "quantity": 5,
+      "unit_price": 240000,
+      "total": 1200000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 1200000 / 240000",
+        "corrected_field": "quantity",
+        "corrected_value": 5
+      }
+    },
+    {
+      "index": 500,
+      "name": "6",
+      "unit": "",
+      "quantity": 1500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Simvastatin 20mg",
+      "unit": "22",
+      "quantity": 6,
+      "unit_price": 50000,
+      "total": 300000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 300000 / 50000",
+        "corrected_field": "quantity",
+        "corrected_value": 6
+      }
+    },
+    {
+      "index": 500,
+      "name": "54000",
+      "unit": "3665500",
+      "quantity": 23,
+      "unit_price": null,
+      "total": 1,
+      "check": {
+        "status": "inconsistent",
+        "detail": "1 is not divisible by 23"
+      }
+    }
+  ],
+  "totals": {
+    "declared": null,
+    "computed_from_lines": 1989901,
+    "consistent": null
+  },
+  "review": {
+    "n_lines": 24,
+    "n_ok": 0,
+    "n_to_check": 10,
+    "n_auto_corrected": 14,
+    "lines_to_check": [
+      6,
+      7,
+      8,
+      13,
+      14,
+      15,
+      18,
+      null,
+      500,
+      500
+    ],
+    "numbering_gaps": [
+      [
+        19,
+        500
+      ],
+      [
+        500,
+        21
+      ],
+      [
+        21,
+        500
+      ]
+    ]
+  }
+}

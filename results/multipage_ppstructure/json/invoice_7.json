@@ -1,0 +1,494 @@
+{
+  "source": {
+    "run": "multipage_ppstructure",
+    "invoice": 7,
+    "pages": [
+      14,
+      15
+    ],
+    "generated_at": "2026-07-28T03:58:09+00:00"
+  },
+  "document": {
+    "hospital_name": "NHATHUOC BENHVIENBACHDUONG  i  HOA DON BAN LE",
+    "customer_name": "Dō In Ha Ma BSke don:BS.Bui Binh Cá Su",
+    "invoice_date": "02-08-2010",
+    "doctor": null,
+    "address": null,
+    "invoice_number": "XXXXXXXX DT:09XXXXXXXX",
+    "payment_method": null,
+    "_field_coverage": 0.56
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": null,
+      "name": "Pentazocine 50mg",
+      "unit": "vièn",
+      "quantity": 0,
+      "unit_price": 2000,
+      "total": 16000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "0 x 2000 = 0, but the line says 16000"
+      }
+    },
+    {
+      "index": 10,
+      "name": "viēn",
+      "unit": "6",
+      "quantity": 3000,
+      "unit_price": 18000,
+      "total": 2,
+      "check": {
+        "status": "inconsistent",
+        "detail": "3000 x 18000 = 54000000, but the line says 2"
+      }
+    },
+    {
+      "index": null,
+      "name": "chai",
+      "unit": "9",
+      "quantity": 1500,
+      "unit_price": 13500,
+      "total": 3,
+      "check": {
+        "status": "inconsistent",
+        "detail": "1500 x 13500 = 20250000, but the line says 3"
+      }
+    },
+    {
+      "index": 10,
+      "name": "hop",
+      "unit": "10",
+      "quantity": 90000,
+      "unit_price": 900000,
+      "total": 81000000000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 90000 x 900000",
+        "corrected_field": "total",
+        "corrected_value": 81000000000
+      }
+    },
+    {
+      "index": 4,
+      "name": "1800",
+      "unit": "10mg Loratadine",
+      "quantity": null,
+      "unit_price": null,
+      "total": 1800,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 5,
+      "name": "66000",
+      "unit": "528000",
+      "quantity": 20,
+      "unit_price": 0,
+      "total": 0,
+      "check": {
+        "status": "corrected",
+        "detail": "unit price inferred: 0 / 20",
+        "corrected_field": "unit_price",
+        "corrected_value": 0
+      }
+    },
+    {
+      "index": 6,
+      "name": "1800",
+      "unit": "16200",
+      "quantity": 500,
+      "unit_price": null,
+      "total": 9,
+      "check": {
+        "status": "inconsistent",
+        "detail": "9 is not divisible by 500"
+      }
+    },
+    {
+      "index": 7,
+      "name": "48000",
+      "unit": "288000",
+      "quantity": 50,
+      "unit_price": null,
+      "total": 6,
+      "check": {
+        "status": "inconsistent",
+        "detail": "6 is not divisible by 50"
+      }
+    },
+    {
+      "index": 8,
+      "name": "2100",
+      "unit": "10500",
+      "quantity": 200,
+      "unit_price": null,
+      "total": 5,
+      "check": {
+        "status": "inconsistent",
+        "detail": "5 is not divisible by 200"
+      }
+    },
+    {
+      "index": 9,
+      "name": "1800",
+      "unit": "10800",
+      "quantity": 500,
+      "unit_price": null,
+      "total": 6,
+      "check": {
+        "status": "inconsistent",
+        "detail": "6 is not divisible by 500"
+      }
+    },
+    {
+      "index": 2800,
+      "name": "11200",
+      "unit": "10",
+      "quantity": 4,
+      "unit_price": 100,
+      "total": 400,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 4 x 100",
+        "corrected_field": "total",
+        "corrected_value": 400
+      }
+    },
+    {
+      "index": 11,
+      "name": "7",
+      "unit": "171600",
+      "quantity": 50,
+      "unit_price": 960,
+      "total": 48000,
+      "check": {
+        "status": "corrected",
+        "detail": "unit price inferred: 48000 / 50",
+        "corrected_field": "unit_price",
+        "corrected_value": 960
+      }
+    },
+    {
+      "index": 12,
+      "name": "一",
+      "unit": "48000",
+      "quantity": 150,
+      "unit_price": 640,
+      "total": 96000,
+      "check": {
+        "status": "corrected",
+        "detail": "unit price inferred: 96000 / 150",
+        "corrected_field": "unit_price",
+        "corrected_value": 640
+      }
+    },
+    {
+      "index": 2,
+      "name": "48000",
+      "unit": "13",
+      "quantity": null,
+      "unit_price": 14400,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 9,
+      "name": "1600",
+      "unit": "14",
+      "quantity": 25,
+      "unit_price": 14400,
+      "total": 360000,
+      "check": {
+        "status": "corrected",
+        "detail": "unit price inferred: 360000 / 25",
+        "corrected_field": "unit_price",
+        "corrected_value": 14400
+      }
+    },
+    {
+      "index": 2,
+      "name": "180000",
+      "unit": "15",
+      "quantity": null,
+      "unit_price": 18000,
+      "total": 10,
+      "check": {
+        "status": "inconsistent",
+        "detail": "10 is not divisible by 18000"
+      }
+    },
+    {
+      "index": 100,
+      "name": "vién",
+      "unit": "9600",
+      "quantity": 16,
+      "unit_price": 6,
+      "total": 1600,
+      "check": {
+        "status": "inconsistent",
+        "detail": "16 x 6 = 96, but the line says 1600"
+      }
+    },
+    {
+      "index": null,
+      "name": "108000",
+      "unit": "17",
+      "quantity": 54000,
+      "unit_price": 2,
+      "total": 108000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 54000 x 2",
+        "corrected_field": "total",
+        "corrected_value": 108000
+      }
+    },
+    {
+      "index": 500,
+      "name": "hóp",
+      "unit": "18",
+      "quantity": 19,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Furosemide 40mg",
+      "unit": "vièn",
+      "quantity": 4,
+      "unit_price": 1700,
+      "total": 6800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Levothyroxine 100mcg",
+      "unit": "hop",
+      "quantity": 7,
+      "unit_price": 39000,
+      "total": 273000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Diclofenac cSodium 50mg",
+      "unit": "vièn",
+      "quantity": 3,
+      "unit_price": 1600,
+      "total": 4800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Antibiotic Cream",
+      "unit": "tuyp",
+      "quantity": 1,
+      "unit_price": 3000,
+      "total": 21000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "1 x 3000 = 3000, but the line says 21000"
+      }
+    },
+    {
+      "index": 24,
+      "name": "Levothyroxine 100mcg",
+      "unit": "vièn",
+      "quantity": 3,
+      "unit_price": 1300,
+      "total": 3900,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 25,
+      "name": "Paracetamol 500mg",
+      "unit": "hop",
+      "quantity": 8,
+      "unit_price": 150000,
+      "total": 1200000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 26,
+      "name": "Fluticasone Propionate100mcg",
+      "unit": "10",
+      "quantity": 3,
+      "unit_price": 3000,
+      "total": 9000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 27,
+      "name": "Tebarat",
+      "unit": "hp",
+      "quantity": 1,
+      "unit_price": 70000,
+      "total": 70000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 70000 / 70000",
+        "corrected_field": "quantity",
+        "corrected_value": 1
+      }
+    },
+    {
+      "index": 28,
+      "name": "Tramadol Hydrochloride50mg",
+      "unit": "vièn",
+      "quantity": 3,
+      "unit_price": 2100,
+      "total": 6300,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 29,
+      "name": "Metformin 500mg",
+      "unit": "hop",
+      "quantity": 2,
+      "unit_price": 36000,
+      "total": 72000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 30,
+      "name": "Hydrochlorothiazide25mg",
+      "unit": "hop",
+      "quantity": 6,
+      "unit_price": 48000,
+      "total": 288000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 31,
+      "name": "Omeprazole 20mg",
+      "unit": "hop",
+      "quantity": 1,
+      "unit_price": 75000,
+      "total": 75000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 32,
+      "name": "Metformin500mg",
+      "unit": "viēn",
+      "quantity": 2,
+      "unit_price": 1200,
+      "total": 2400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 33,
+      "name": "Loratadine 10mg",
+      "unit": "hóp",
+      "quantity": 3,
+      "unit_price": 180000,
+      "total": 540000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 6241400,
+    "computed_from_lines": 81003204041,
+    "consistent": false
+  },
+  "review": {
+    "n_lines": 33,
+    "n_ok": 12,
+    "n_to_check": 13,
+    "n_auto_corrected": 8,
+    "lines_to_check": [
+      null,
+      10,
+      null,
+      4,
+      6,
+      7,
+      8,
+      9,
+      2,
+      2,
+      100,
+      500,
+      23
+    ],
+    "numbering_gaps": [
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        4
+      ],
+      [
+        9,
+        2800
+      ],
+      [
+        2800,
+        11
+      ],
+      [
+        12,
+        2
+      ],
+      [
+        2,
+        9
+      ],
+      [
+        9,
+        2
+      ],
+      [
+        2,
+        100
+      ],
+      [
+        100,
+        500
+      ],
+      [
+        500,
+        20
+      ]
+    ]
+  }
+}

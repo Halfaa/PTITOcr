@@ -1,0 +1,39 @@
+{
+  "source": {
+    "run": "multipage_ppstructure",
+    "invoice": 1,
+    "pages": [
+      1,
+      2
+    ],
+    "generated_at": "2026-07-28T03:58:09+00:00"
+  },
+  "document": {
+    "hospital_name": "NHA THUOC BENHVIENBACHDUONG",
+    "customer_name": "BuiHaiSu Tù",
+    "invoice_date": "05/07/2011",
+    "doctor": "ThS.BS.NgoFongHà Ma",
+    "address": "225 Pho Khong Ten",
+    "invoice_number": "XXXXXXXX",
+    "payment_method": "Chuyén khoan",
+    "_field_coverage": 1.0
+  },
+  "extraction": {
+    "status": "header_not_found",
+    "reason": "table found (36 rows) but no header row could be identified -- columns cannot be mapped"
+  },
+  "items": [],
+  "totals": {
+    "declared": null,
+    "computed_from_lines": 0,
+    "consistent": null
+  },
+  "review": {
+    "n_lines": 0,
+    "n_ok": 0,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": []
+  }
+}

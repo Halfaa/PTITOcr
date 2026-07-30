@@ -1,0 +1,417 @@
+{
+  "source": {
+    "run": "multipage_paddleocr_vl",
+    "invoice": 5,
+    "pages": [
+      9,
+      10,
+      11
+    ],
+    "generated_at": "2026-07-28T03:58:08+00:00"
+  },
+  "document": {
+    "hospital_name": "BÊNH VIÊN XỨ NỮ",
+    "customer_name": "Trân Chính Phపు",
+    "invoice_date": "09-05-2015",
+    "doctor": null,
+    "address": null,
+    "invoice_number": "XXXXX XXXXX",
+    "payment_method": "Ví điện tử",
+    "_field_coverage": 0.78
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Lisinopril 10mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 42000,
+      "total": 252000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Terbutaline Sulfate 90mcg (Lop xit 10ml)",
+      "unit": "lop",
+      "quantity": 1,
+      "unit_price": 2500,
+      "total": 2500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Paroxetin 20mg (Viên nên - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 2500,
+      "total": 7500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Eye Drops (Lop 10ml)",
+      "unit": "lop",
+      "quantity": 2,
+      "unit_price": 2000,
+      "total": 4000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Diclofenac Sodium 50mg (Viên nên - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Diclofenac Potassium 50mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 7,
+      "unit_price": 51000,
+      "total": 357000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Lisinopril 10mg (Viên nên - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1400,
+      "total": 11200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Paracetamol 500mg (Viên nên - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 1500,
+      "total": 4500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Montelukusib 10mg (Viên nên - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 3000,
+      "total": 24000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Loratadine 10mg (Hộp 100 viên)",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 180000,
+      "total": 1620000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Codeine Phosphate 15mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 54000,
+      "total": 54000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Diclofenac Potassium 50mg (Viên nên - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1700,
+      "total": 13600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Meloxicam 15mg (Viên nên - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1900,
+      "total": 17100,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Celecoxib 200mg (Viên nên - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 2100,
+      "total": 6300,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Efferalgan 500mg (Hộp 10 viên)",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 50000,
+      "total": 300000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Tramadol Hydrochloride 50mg (Viên nên - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 2100,
+      "total": 12600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Efteralgan 500mg (Vihn s項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 4,
+      "unit_price": 5000,
+      "total": 20000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Piroxicam 20mg (Vihn n項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1700,
+      "total": 17000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Levothyroxine 100mcg (Vihn n項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 1300,
+      "total": 1300,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Montelukusib 10mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 8,
+      "unit_price": 90000,
+      "total": 720000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Omeprazole 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 75000,
+      "total": 675000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Hydrochlorothiazide 25mg (Vihn n項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1600,
+      "total": 16000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Etodolac 600mg (Vihn n項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 5,
+      "unit_price": 1800,
+      "total": 9000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 24,
+      "name": "Ketoprofen 250mg (Vihn n項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1700,
+      "total": 17000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 25,
+      "name": "Losartan 50mg (Vihn n項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 2000,
+      "total": 2000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 26,
+      "name": "Digoxin 0.25mg (Vihn n項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 2000,
+      "total": 12000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 27,
+      "name": "Paroxetin 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 7,
+      "unit_price": 75000,
+      "total": 525000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 28,
+      "name": "Furosemide 40mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 4,
+      "unit_price": 51000,
+      "total": 204000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 29,
+      "name": "Clarithromycin 500mg (Hộp 100 viên)",
+      "unit": "hộp",
+      "quantity": 2,
+      "unit_price": 240000,
+      "total": 480000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 30,
+      "name": "Diclofenac Sodium 50mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 48000,
+      "total": 240000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 31,
+      "name": "Digoxin 0.25mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 60000,
+      "total": 300000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 32,
+      "name": "Mefenamic Acid 500mg (Vihn n項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 1800,
+      "total": 5400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 33,
+      "name": "Atorvastatin 20mg (Vihn n項 - Lê 1 viên)",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 2200,
+      "total": 15400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "5 947 000",
+      "unit": "",
+      "quantity": null,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    }
+  ],
+  "totals": {
+    "declared": null,
+    "computed_from_lines": 5947000,
+    "consistent": null
+  },
+  "review": {
+    "n_lines": 34,
+    "n_ok": 33,
+    "n_to_check": 1,
+    "n_auto_corrected": 0,
+    "lines_to_check": [
+      null
+    ],
+    "numbering_gaps": []
+  }
+}

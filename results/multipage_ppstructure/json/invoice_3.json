@@ -1,0 +1,268 @@
+{
+  "source": {
+    "run": "multipage_ppstructure",
+    "invoice": 3,
+    "pages": [
+      5,
+      6
+    ],
+    "generated_at": "2026-07-28T03:58:09+00:00"
+  },
+  "document": {
+    "hospital_name": "NHA THUOC BENH VIENTHIENBINH",
+    "customer_name": null,
+    "invoice_date": null,
+    "doctor": "ThSBS.VūKhanh Ho",
+    "address": "225PhoKhng Ten",
+    "invoice_number": "XXXXXXXX Lièn he：09 XXXXXXXX",
+    "payment_method": null,
+    "_field_coverage": 0.67
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Hydrochlorothiazide25mg",
+      "unit": "hop",
+      "quantity": 6,
+      "unit_price": 48000,
+      "total": 288000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Tebarat",
+      "unit": "óng",
+      "quantity": 9,
+      "unit_price": 3500,
+      "total": 31500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Diclofenac Sodium 50mg",
+      "unit": "vièn",
+      "quantity": 2,
+      "unit_price": 1600,
+      "total": 3200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Celecoxib 200mg",
+      "unit": "hop",
+      "quantity": 3,
+      "unit_price": 63000,
+      "total": 189000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Allopurinol 100mg",
+      "unit": "vién",
+      "quantity": 10,
+      "unit_price": 1800,
+      "total": 18000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Clarithromycin 500mg",
+      "unit": "hop",
+      "quantity": 7,
+      "unit_price": 240000,
+      "total": 1680000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Devodil 150mg",
+      "unit": "hop",
+      "quantity": 7,
+      "unit_price": 171600,
+      "total": 1201200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Indomethacin 50mg",
+      "unit": "vièn",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Pentazocine 50mg",
+      "unit": "vièn",
+      "quantity": 3,
+      "unit_price": 2000,
+      "total": 6000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Insulin",
+      "unit": "100000",
+      "quantity": 800000,
+      "unit_price": 0,
+      "total": 0,
+      "check": {
+        "status": "corrected",
+        "detail": "unit price inferred: 0 / 800000",
+        "corrected_field": "unit_price",
+        "corrected_value": 0
+      }
+    },
+    {
+      "index": 11,
+      "name": "Tramadol Hydrochloride50mg",
+      "unit": "63000",
+      "quantity": 63000,
+      "unit_price": 1,
+      "total": 63000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 63000 / 1",
+        "corrected_field": "quantity",
+        "corrected_value": 63000
+      }
+    },
+    {
+      "index": 12,
+      "name": "Paracetamol 1500mg",
+      "unit": "9000",
+      "quantity": 250,
+      "unit_price": 6,
+      "total": 1500,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 1500 / 6",
+        "corrected_field": "quantity",
+        "corrected_value": 250
+      }
+    },
+    {
+      "index": 13,
+      "name": "lbuprofen 400mg",
+      "unit": "1600",
+      "quantity": 12800,
+      "unit_price": null,
+      "total": 8,
+      "check": {
+        "status": "inconsistent",
+        "detail": "8 is not divisible by 12800"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Lisinopril 10mg",
+      "unit": "1400",
+      "quantity": 11200,
+      "unit_price": null,
+      "total": 8,
+      "check": {
+        "status": "inconsistent",
+        "detail": "8 is not divisible by 11200"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Simvastatin 20mg",
+      "unit": "5",
+      "quantity": 45000,
+      "unit_price": 225000,
+      "total": 10125000000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 45000 x 225000",
+        "corrected_field": "total",
+        "corrected_value": 10125000000
+      }
+    },
+    {
+      "index": 16,
+      "name": "Amoxicilli 500mg",
+      "unit": "vién",
+      "quantity": 7,
+      "unit_price": 2000,
+      "total": 14000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Naproxen Sodium 500mg",
+      "unit": "hop",
+      "quantity": 1,
+      "unit_price": 45000,
+      "total": 45000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Efferalgan 500mg",
+      "unit": "3",
+      "quantity": 50000,
+      "unit_price": 150000,
+      "total": 7500000000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 50000 x 150000",
+        "corrected_field": "total",
+        "corrected_value": 7500000000
+      }
+    },
+    {
+      "index": 19,
+      "name": "Albuterol Sulfate 90mcg",
+      "unit": "0",
+      "quantity": 9,
+      "unit_price": 2700,
+      "total": 24300,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": null,
+    "computed_from_lines": 17628566316,
+    "consistent": null
+  },
+  "review": {
+    "n_lines": 19,
+    "n_ok": 12,
+    "n_to_check": 2,
+    "n_auto_corrected": 5,
+    "lines_to_check": [
+      13,
+      14
+    ],
+    "numbering_gaps": []
+  }
+}

@@ -1,0 +1,405 @@
+{
+  "source": {
+    "run": "multipage_paddleocr_vl",
+    "invoice": 7,
+    "pages": [
+      14,
+      15
+    ],
+    "generated_at": "2026-07-28T03:58:09+00:00"
+  },
+  "document": {
+    "hospital_name": "NHÀ THUOỐC BÊNH VIÊN BACH DUONG",
+    "customer_name": null,
+    "invoice_date": "02-08-2010",
+    "doctor": null,
+    "address": "225 Phố Không Tên",
+    "invoice_number": "XXXXX XXXXX",
+    "payment_method": null,
+    "_field_coverage": 0.67
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Pentazocine 50mg",
+      "unit": "",
+      "quantity": 8,
+      "unit_price": 2000,
+      "total": 16000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Montelukusib 10mg",
+      "unit": "",
+      "quantity": 6,
+      "unit_price": 3000,
+      "total": 18000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Nasal Spray",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 1500,
+      "total": 13500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Montelukusib 10mg",
+      "unit": "",
+      "quantity": 10,
+      "unit_price": 90000,
+      "total": 900000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Loratadine 10mg",
+      "unit": "",
+      "quantity": 1,
+      "unit_price": 1800,
+      "total": 1800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Atorvastatin 20mg",
+      "unit": "",
+      "quantity": 8,
+      "unit_price": 66000,
+      "total": 528000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Mefenamic Acid 500mg",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 1800,
+      "total": 16200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Indomethacin 50mg",
+      "unit": "",
+      "quantity": 6,
+      "unit_price": 48000,
+      "total": 288000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Celecoxib 200mg",
+      "unit": "",
+      "quantity": 5,
+      "unit_price": 2100,
+      "total": 10500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Ciprofloxacin 500mg",
+      "unit": "",
+      "quantity": 6,
+      "unit_price": 1800,
+      "total": 10800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Bclomethasone Dipropionate 100mcg",
+      "unit": "",
+      "quantity": 4,
+      "unit_price": 2800,
+      "total": 11200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Devodil 50mg",
+      "unit": "",
+      "quantity": 7,
+      "unit_price": 171600,
+      "total": 1201200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Metoprolol 50mg",
+      "unit": "",
+      "quantity": 1,
+      "unit_price": 48000,
+      "total": 48000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Ibuprofen 400mg",
+      "unit": "",
+      "quantity": 2,
+      "unit_price": 48000,
+      "total": 96000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Hydrochlorothiazide 25mg",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 1600,
+      "total": 14400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Ciprofloxacin 500mg",
+      "unit": "",
+      "quantity": 2,
+      "unit_price": 180000,
+      "total": 360000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Allopurinol 100mg",
+      "unit": "",
+      "quantity": 10,
+      "unit_price": 1800,
+      "total": 18000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Indomethacin 50mg",
+      "unit": "",
+      "quantity": 6,
+      "unit_price": 1600,
+      "total": 9600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Mefenamic Acid 500mg",
+      "unit": "",
+      "quantity": 2,
+      "unit_price": 54000,
+      "total": 108000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Furosemide 40mg",
+      "unit": "",
+      "quantity": 4,
+      "unit_price": 1700,
+      "total": 6800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Levothyroxine 100mcg",
+      "unit": "",
+      "quantity": 7,
+      "unit_price": 39000,
+      "total": 273000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Diclofenac Sodium 50mg",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 1600,
+      "total": 4800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Antibiotic Cream",
+      "unit": "",
+      "quantity": 7,
+      "unit_price": 3000,
+      "total": 21000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 24,
+      "name": "Levothyroxine 100mcg",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 1300,
+      "total": 3900,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 25,
+      "name": "Paracetamol 500mg",
+      "unit": "",
+      "quantity": 8,
+      "unit_price": 150000,
+      "total": 1200000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 26,
+      "name": "Fluticasone Propionate 100mcg",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 3000,
+      "total": 9000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 27,
+      "name": "Tebarat",
+      "unit": "",
+      "quantity": 1,
+      "unit_price": 70000,
+      "total": 70000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 28,
+      "name": "Tramadol Hydrochloride 50mg",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 2100,
+      "total": 6300,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 29,
+      "name": "Metformin 500mg",
+      "unit": "",
+      "quantity": 2,
+      "unit_price": 36000,
+      "total": 72000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 30,
+      "name": "Hydrochlorothiazide 25mg",
+      "unit": "",
+      "quantity": 6,
+      "unit_price": 48000,
+      "total": 286000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "6 x 48000 = 288000, but the line says 286000"
+      }
+    },
+    {
+      "index": 31,
+      "name": "Omeprazole 20mg",
+      "unit": "",
+      "quantity": 1,
+      "unit_price": 75000,
+      "total": 75000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 32,
+      "name": "Metformin 500mg",
+      "unit": "",
+      "quantity": 2,
+      "unit_price": 1200,
+      "total": 2400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 33,
+      "name": "Loratadine 10mg",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 180000,
+      "total": 540000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 6241400,
+    "computed_from_lines": 6239400,
+    "consistent": false
+  },
+  "review": {
+    "n_lines": 33,
+    "n_ok": 32,
+    "n_to_check": 1,
+    "n_auto_corrected": 0,
+    "lines_to_check": [
+      30
+    ],
+    "numbering_gaps": []
+  }
+}

@@ -1,0 +1,643 @@
+{
+  "source": {
+    "run": "multipage_ppstructure",
+    "invoice": 5,
+    "pages": [
+      9,
+      10,
+      11
+    ],
+    "generated_at": "2026-07-28T03:58:09+00:00"
+  },
+  "document": {
+    "hospital_name": "a",
+    "customer_name": "Tran ChnhPhungHng    are",
+    "invoice_date": "09-05-2015",
+    "doctor": null,
+    "address": null,
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.67
+  },
+  "extraction": {
+    "status": "partial",
+    "reason": "columns not found: unit_price, total"
+  },
+  "items": [
+    {
+      "index": null,
+      "name": "(Hop 30 vien) Lisinopril 10mg",
+      "unit": "hop",
+      "quantity": 6,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 2500,
+      "name": "1",
+      "unit": "一",
+      "quantity": 2500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 7500,
+      "name": "2",
+      "unit": "3",
+      "quantity": 2500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Eye Drops （LO 10ml)",
+      "unit": "0",
+      "quantity": 2,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Sodium 50mg (Vièn nén-Le 1 Diclofenac viēn)",
+      "unit": "viēn",
+      "quantity": 1,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 5030,
+      "name": "7",
+      "unit": "51000",
+      "quantity": 357000,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 11200,
+      "name": "6",
+      "unit": "8",
+      "quantity": 1400,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 8,
+      "name": "1500mg (vièn nen-Lel vien) Paracetamol",
+      "unit": "viēn",
+      "quantity": 3,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 9,
+      "name": "vién",
+      "unit": "8",
+      "quantity": 110,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 10,
+      "name": "hóp",
+      "unit": "9",
+      "quantity": 10100,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 11,
+      "name": "hop",
+      "unit": "一",
+      "quantity": 3015,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Vièn nen-Le Diclofenac Potassium 50mg 1 vièn)",
+      "unit": "vièn",
+      "quantity": 8,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Meloxicam 15mg (Vien nen-Le1 vièn)",
+      "unit": "vièn",
+      "quantity": 9,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 14,
+      "name": "200mg (Vién nen- -Lel vièn) Celecoxib 7",
+      "unit": "vièn",
+      "quantity": 3,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 12600,
+      "name": "hop",
+      "unit": "6",
+      "quantity": 50010,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 50,
+      "name": "vién",
+      "unit": "6",
+      "quantity": 16,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "17",
+      "unit": "Efferalgan",
+      "quantity": 500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "18",
+      "unit": "Piroxicam",
+      "quantity": 20,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 19,
+      "name": "10",
+      "unit": "1700",
+      "quantity": null,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 1,
+      "name": "19",
+      "unit": "vièn",
+      "quantity": null,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "20",
+      "unit": "én nén.1à wián vien",
+      "quantity": 1300,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 90000,
+      "name": "21",
+      "unit": "Omeprazole20mg",
+      "quantity": 30,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 75000,
+      "name": "Hydrochlorothiazide2",
+      "unit": "vièn) vièn 10 ,",
+      "quantity": 9,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "1600",
+      "unit": "16000",
+      "quantity": 23,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 30,
+      "name": "viēn",
+      "unit": "5",
+      "quantity": 24,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "viēn",
+      "unit": "10",
+      "quantity": null,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 1700,
+      "name": "25",
+      "unit": "ng Hop 30 vier",
+      "quantity": 1,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "26",
+      "unit": "经 Digoxin",
+      "quantity": 100,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "27",
+      "unit": "2000",
+      "quantity": 12000,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 30,
+      "name": "Paroxetin",
+      "unit": "20mg",
+      "quantity": null,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 75000,
+      "name": "28",
+      "unit": "40mg",
+      "quantity": 1,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 29,
+      "name": "hop",
+      "unit": "4",
+      "quantity": 51000,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "(Hop",
+      "unit": "100",
+      "quantity": null,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "2",
+      "unit": "240000",
+      "quantity": 480000,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 50,
+      "name": "30",
+      "unit": "Diclofenac",
+      "quantity": null,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 30,
+      "name": "31",
+      "unit": "Digoxin",
+      "quantity": 25,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 300000,
+      "name": "hop",
+      "unit": "5",
+      "quantity": 60000,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "32",
+      "unit": "vièn)",
+      "quantity": null,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "33",
+      "unit": "Atorvastatin",
+      "quantity": 20,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 15400,
+      "name": "vién",
+      "unit": "7",
+      "quantity": 2200,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    }
+  ],
+  "totals": {
+    "declared": null,
+    "computed_from_lines": 0,
+    "consistent": null
+  },
+  "review": {
+    "n_lines": 40,
+    "n_ok": 0,
+    "n_to_check": 40,
+    "n_auto_corrected": 0,
+    "lines_to_check": [
+      null,
+      2500,
+      7500,
+      4,
+      5,
+      5030,
+      11200,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      12600,
+      50,
+      null,
+      null,
+      19,
+      1,
+      null,
+      90000,
+      75000,
+      null,
+      30,
+      null,
+      1700,
+      null,
+      null,
+      30,
+      75000,
+      29,
+      null,
+      null,
+      50,
+      30,
+      300000,
+      null,
+      null,
+      15400
+    ],
+    "numbering_gaps": [
+      [
+        2500,
+        7500
+      ],
+      [
+        7500,
+        4
+      ],
+      [
+        5,
+        5030
+      ],
+      [
+        5030,
+        11200
+      ],
+      [
+        11200,
+        8
+      ],
+      [
+        14,
+        12600
+      ],
+      [
+        12600,
+        50
+      ],
+      [
+        50,
+        19
+      ],
+      [
+        19,
+        1
+      ],
+      [
+        1,
+        90000
+      ],
+      [
+        90000,
+        75000
+      ],
+      [
+        75000,
+        30
+      ],
+      [
+        30,
+        1700
+      ],
+      [
+        1700,
+        30
+      ],
+      [
+        30,
+        75000
+      ],
+      [
+        75000,
+        29
+      ],
+      [
+        29,
+        50
+      ],
+      [
+        50,
+        30
+      ],
+      [
+        30,
+        300000
+      ],
+      [
+        300000,
+        15400
+      ]
+    ]
+  }
+}

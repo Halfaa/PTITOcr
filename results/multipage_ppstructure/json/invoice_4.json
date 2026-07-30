@@ -1,0 +1,382 @@
+{
+  "source": {
+    "run": "multipage_ppstructure",
+    "invoice": 4,
+    "pages": [
+      7,
+      8
+    ],
+    "generated_at": "2026-07-28T03:58:09+00:00"
+  },
+  "document": {
+    "hospital_name": "BENH VIEN SONG NGU  c  HOA DON TIEN THUOC",
+    "customer_name": "Vū Khanh Su ù",
+    "invoice_date": null,
+    "doctor": "keBIn",
+    "address": null,
+    "invoice_number": "XXXXXXX DT:09 XXXXXXXX",
+    "payment_method": null,
+    "_field_coverage": 0.56
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Aspirin 300mg",
+      "unit": "hop",
+      "quantity": 7,
+      "unit_price": 24000,
+      "total": 168000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 168000 / 24000",
+        "corrected_field": "quantity",
+        "corrected_value": 7
+      }
+    },
+    {
+      "index": 2,
+      "name": "Celecoxib 200mg",
+      "unit": "vièn",
+      "quantity": 1,
+      "unit_price": 2100,
+      "total": 2100,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Paroxetin 20mg",
+      "unit": "vién",
+      "quantity": 5,
+      "unit_price": 2500,
+      "total": 12500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 100,
+      "name": "hop",
+      "unit": "10",
+      "quantity": 39000,
+      "unit_price": 390000,
+      "total": 4,
+      "check": {
+        "status": "inconsistent",
+        "detail": "39000 x 390000 = 15210000000, but the line says 4"
+      }
+    },
+    {
+      "index": null,
+      "name": "hóp",
+      "unit": "8",
+      "quantity": 70000,
+      "unit_price": 560000,
+      "total": 5,
+      "check": {
+        "status": "inconsistent",
+        "detail": "70000 x 560000 = 39200000000, but the line says 5"
+      }
+    },
+    {
+      "index": 90,
+      "name": "10",
+      "unit": "6",
+      "quantity": 2500,
+      "unit_price": 15000,
+      "total": 6,
+      "check": {
+        "status": "inconsistent",
+        "detail": "2500 x 15000 = 37500000, but the line says 6"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Amoxicillin 500mg",
+      "unit": "vièn",
+      "quantity": 7,
+      "unit_price": 2000,
+      "total": 14000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Aspirin 300mg",
+      "unit": "vièn",
+      "quantity": 4,
+      "unit_price": 1200,
+      "total": 4800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Tramadol Hydrochloride50mg",
+      "unit": "vién",
+      "quantity": 9,
+      "unit_price": 2100,
+      "total": 18900,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Pentazocine 50mg",
+      "unit": "vién",
+      "quantity": 3,
+      "unit_price": 2000,
+      "total": 6000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "10",
+      "unit": "2860",
+      "quantity": 28600,
+      "unit_price": 11,
+      "total": 150,
+      "check": {
+        "status": "inconsistent",
+        "detail": "28600 x 11 = 314600, but the line says 150"
+      }
+    },
+    {
+      "index": null,
+      "name": "一",
+      "unit": "3000",
+      "quantity": 3000,
+      "unit_price": 12,
+      "total": 36000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 3000 x 12",
+        "corrected_field": "total",
+        "corrected_value": 36000
+      }
+    },
+    {
+      "index": null,
+      "name": "10",
+      "unit": "75000",
+      "quantity": 750000,
+      "unit_price": 13,
+      "total": 20,
+      "check": {
+        "status": "inconsistent",
+        "detail": "750000 x 13 = 9750000, but the line says 20"
+      }
+    },
+    {
+      "index": null,
+      "name": "10",
+      "unit": "48000",
+      "quantity": 480000,
+      "unit_price": 14,
+      "total": 50,
+      "check": {
+        "status": "inconsistent",
+        "detail": "480000 x 14 = 6720000, but the line says 50"
+      }
+    },
+    {
+      "index": 20,
+      "name": "vièn",
+      "unit": "8",
+      "quantity": 1500,
+      "unit_price": 12000,
+      "total": 15,
+      "check": {
+        "status": "inconsistent",
+        "detail": "1500 x 12000 = 18000000, but the line says 15"
+      }
+    },
+    {
+      "index": 50,
+      "name": "hop",
+      "unit": "6",
+      "quantity": 60000,
+      "unit_price": 360000,
+      "total": 16,
+      "check": {
+        "status": "inconsistent",
+        "detail": "60000 x 360000 = 21600000000, but the line says 16"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Piroxicam 20mg",
+      "unit": "hop",
+      "quantity": 10,
+      "unit_price": 51000,
+      "total": 510000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Gabapentin 300mg",
+      "unit": "hop",
+      "quantity": 2,
+      "unit_price": 51000,
+      "total": 102000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Indomethacin 50mg",
+      "unit": "viēn",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Clarithromycin 500mg",
+      "unit": "viēn",
+      "quantity": 6,
+      "unit_price": 2400,
+      "total": 14400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Betamethasone Valerate0.1%",
+      "unit": "tuyp",
+      "quantity": 8,
+      "unit_price": 3300,
+      "total": 26400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Hydrocortisone 1%",
+      "unit": "tuyp",
+      "quantity": 6,
+      "unit_price": 2900,
+      "total": 17400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Metformin 500mg",
+      "unit": "hop",
+      "quantity": 7,
+      "unit_price": 36000,
+      "total": 252000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 252000 / 36000",
+        "corrected_field": "quantity",
+        "corrected_value": 7
+      }
+    },
+    {
+      "index": 24,
+      "name": "Piroxicam 20mg",
+      "unit": "viēn",
+      "quantity": 6,
+      "unit_price": 1700,
+      "total": 10200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 25,
+      "name": "Etodolac 600mg",
+      "unit": "hop",
+      "quantity": 6,
+      "unit_price": 54000,
+      "total": 324000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 26,
+      "name": "Metronidazole e500mg",
+      "unit": "vién",
+      "quantity": 4,
+      "unit_price": 1500,
+      "total": 600024000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "4 x 1500 = 6000, but the line says 600024000"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 4112900,
+    "computed_from_lines": 601544566,
+    "consistent": false
+  },
+  "review": {
+    "n_lines": 26,
+    "n_ok": 14,
+    "n_to_check": 9,
+    "n_auto_corrected": 3,
+    "lines_to_check": [
+      100,
+      null,
+      90,
+      null,
+      null,
+      null,
+      20,
+      50,
+      26
+    ],
+    "numbering_gaps": [
+      [
+        3,
+        100
+      ],
+      [
+        100,
+        90
+      ],
+      [
+        90,
+        7
+      ],
+      [
+        10,
+        20
+      ],
+      [
+        20,
+        50
+      ],
+      [
+        50,
+        17
+      ],
+      [
+        19,
+        21
+      ]
+    ]
+  }
+}

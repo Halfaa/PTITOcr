@@ -1,0 +1,414 @@
+{
+  "source": {
+    "run": "multipage_hunyuan",
+    "invoice": 1,
+    "pages": [
+      1,
+      2
+    ],
+    "generated_at": "2026-07-28T03:58:07+00:00"
+  },
+  "document": {
+    "hospital_name": "NHÀ THUỐC BỆNH VIỆN BẠCH DƯƠNG",
+    "customer_name": null,
+    "invoice_date": null,
+    "doctor": null,
+    "address": "225 Phú Không lên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": "Chuyên khoản",
+    "_field_coverage": 0.67
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Hydrocortisone 1%",
+      "unit": "viên",
+      "quantity": 5,
+      "unit_price": 2900,
+      "total": 2900,
+      "check": {
+        "status": "inconsistent",
+        "detail": "5 x 2900 = 14500, but the line says 2900"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Diclofenac Sodium 50mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 63000,
+      "total": 63000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "6 x 63000 = 378000, but the line says 63000"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Celecoxib 200mg",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 69000,
+      "total": 69000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "9 x 69000 = 621000, but the line says 69000"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Ethanoxycin 500mg",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 2400,
+      "total": 21600,
+      "check": {
+        "status": "inconsistent",
+        "detail": "8 x 2400 = 19200, but the line says 21600"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Effectivitan 500mg",
+      "unit": "viên",
+      "quantity": 4,
+      "unit_price": 5000,
+      "total": 40000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "4 x 5000 = 20000, but the line says 40000"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Insulin",
+      "unit": "chai",
+      "quantity": 10,
+      "unit_price": 100000,
+      "total": 400000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "10 x 100000 = 1000000, but the line says 400000"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Metformin 500mg",
+      "unit": "Hộp",
+      "quantity": 9,
+      "unit_price": 36000,
+      "total": 360000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "9 x 36000 = 324000, but the line says 360000"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Codeine Phosphate 15mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1800,
+      "total": 16200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Diclofenac Potassium 50mg",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1700,
+      "total": 17000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Codeine Phosphate 15mg",
+      "unit": "Hộp",
+      "quantity": 6,
+      "unit_price": 54000,
+      "total": 324000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Losartan 50mg",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 2100,
+      "total": 2000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "7 x 2100 = 14700, but the line says 2000"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Tramadol Hydrochloride 50mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 4950,
+      "total": 14700,
+      "check": {
+        "status": "inconsistent",
+        "detail": "9 x 4950 = 44550, but the line says 14700"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Bestimac Q10 30mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1700,
+      "total": 44350,
+      "check": {
+        "status": "inconsistent",
+        "detail": "9 x 1700 = 15300, but the line says 44350"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Furosemide 40mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 4950,
+      "total": 44350,
+      "check": {
+        "status": "inconsistent",
+        "detail": "9 x 4950 = 44550, but the line says 44350"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Anoxicillin 500mg",
+      "unit": "Hộp",
+      "quantity": 9,
+      "unit_price": 40000,
+      "total": 360000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Proxicum 20mg",
+      "unit": "Hộp",
+      "quantity": 10,
+      "unit_price": 51000,
+      "total": 510000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Lisinopril 10mg",
+      "unit": "Hộp",
+      "quantity": 8,
+      "unit_price": 42000,
+      "total": 336000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Paracetamol 500mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1500,
+      "total": 13500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Xetoprofen 250mg",
+      "unit": "Hộp",
+      "quantity": 7,
+      "unit_price": 51000,
+      "total": 357000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Gabapentin 300mg",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 51000,
+      "total": 306000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Digoxin 0.25mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 2000,
+      "total": 18000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Omeprazole 20mg",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 75000,
+      "total": 75000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Tebarat",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 70000,
+      "total": 210000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 24,
+      "name": "Indomethacin 50mg",
+      "unit": "hộp",
+      "quantity": 2,
+      "unit_price": 48000,
+      "total": 96000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 25,
+      "name": "Ibuprofen 400mg",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1600,
+      "total": 12800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 26,
+      "name": "Metformin 500mg",
+      "unit": "viên",
+      "quantity": 5,
+      "unit_price": 1200,
+      "total": 6000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 27,
+      "name": "Devodil 50mg",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 2860,
+      "total": 8580,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 28,
+      "name": "Montelukusib 10mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 3000,
+      "total": 18000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 29,
+      "name": "Ketoprofen 250mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1700,
+      "total": 10200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 30,
+      "name": "Metronidazole 500mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1500,
+      "total": 13500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 31,
+      "name": "Paroxetin 20mg",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 2500,
+      "total": 17500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 32,
+      "name": "Hydrochlorothiazide 25mg",
+      "unit": "hộp",
+      "quantity": 2,
+      "unit_price": 48000,
+      "total": 96000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 4104930,
+    "computed_from_lines": 3883180,
+    "consistent": false
+  },
+  "review": {
+    "n_lines": 32,
+    "n_ok": 21,
+    "n_to_check": 11,
+    "n_auto_corrected": 0,
+    "lines_to_check": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      11,
+      12,
+      13,
+      14
+    ],
+    "numbering_gaps": []
+  }
+}

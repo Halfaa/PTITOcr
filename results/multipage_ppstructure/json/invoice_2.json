@@ -1,0 +1,398 @@
+{
+  "source": {
+    "run": "multipage_ppstructure",
+    "invoice": 2,
+    "pages": [
+      3,
+      4
+    ],
+    "generated_at": "2026-07-28T03:58:09+00:00"
+  },
+  "document": {
+    "hospital_name": "BENH VIEN SONG NGU  D  HOA DON BAN HANG",
+    "customer_name": "Vū Khanh Su Tù",
+    "invoice_date": null,
+    "doctor": "kednLeiChn",
+    "address": null,
+    "invoice_number": "XXXXXXX",
+    "payment_method": null,
+    "_field_coverage": 0.67
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Naproxen Sodium 500mg",
+      "unit": "hop",
+      "quantity": 1,
+      "unit_price": 45000,
+      "total": 45000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 150,
+      "name": "hop",
+      "unit": "一",
+      "quantity": 48000,
+      "unit_price": 48000,
+      "total": 2,
+      "check": {
+        "status": "inconsistent",
+        "detail": "48000 x 48000 = 2304000000, but the line says 2"
+      }
+    },
+    {
+      "index": 1030,
+      "name": "hop",
+      "unit": "3",
+      "quantity": 148500,
+      "unit_price": 445500,
+      "total": 3,
+      "check": {
+        "status": "inconsistent",
+        "detail": "148500 x 445500 = 66156750000, but the line says 3"
+      }
+    },
+    {
+      "index": 8,
+      "name": "1600",
+      "unit": "12800",
+      "quantity": 4,
+      "unit_price": 150,
+      "total": 600,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 4 x 150",
+        "corrected_field": "total",
+        "corrected_value": 600
+      }
+    },
+    {
+      "index": 4,
+      "name": "1500",
+      "unit": "6000",
+      "quantity": 5,
+      "unit_price": 20,
+      "total": 100,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 5 x 20",
+        "corrected_field": "total",
+        "corrected_value": 100
+      }
+    },
+    {
+      "index": 1900,
+      "name": "1900",
+      "unit": "Warfarin3 3mg",
+      "quantity": null,
+      "unit_price": 1,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 6,
+      "name": "14500",
+      "unit": "5",
+      "quantity": 2900,
+      "unit_price": 7,
+      "total": 1,
+      "check": {
+        "status": "inconsistent",
+        "detail": "2900 x 7 = 20300, but the line says 1"
+      }
+    },
+    {
+      "index": 15000,
+      "name": "6",
+      "unit": "2500",
+      "quantity": null,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Terbutaline Sulfate 90mcg",
+      "unit": "10",
+      "quantity": 250000,
+      "unit_price": 5,
+      "total": 50000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "250000 x 5 = 1250000, but the line says 50000"
+      }
+    },
+    {
+      "index": 9,
+      "name": "1600",
+      "unit": "50mg Indomethacin",
+      "quantity": null,
+      "unit_price": null,
+      "total": 462000,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 10,
+      "name": "66000",
+      "unit": "20mg Atorvastatin",
+      "quantity": null,
+      "unit_price": 7,
+      "total": 3000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "3000 is not divisible by 7"
+      }
+    },
+    {
+      "index": 11,
+      "name": "3000",
+      "unit": "100mcg Propionate Fluticasone",
+      "quantity": 10,
+      "unit_price": 1,
+      "total": 102000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "10 x 1 = 10, but the line says 102000"
+      }
+    },
+    {
+      "index": 51000,
+      "name": "12",
+      "unit": "2",
+      "quantity": 630000,
+      "unit_price": 5050,
+      "total": 3181500000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 630000 x 5050",
+        "corrected_field": "total",
+        "corrected_value": 3181500000
+      }
+    },
+    {
+      "index": 63000,
+      "name": "13",
+      "unit": "hop",
+      "quantity": 10,
+      "unit_price": 6200,
+      "total": 62000,
+      "check": {
+        "status": "corrected",
+        "detail": "total inferred: 10 x 6200",
+        "corrected_field": "total",
+        "corrected_value": 62000
+      }
+    },
+    {
+      "index": 50,
+      "name": "3100",
+      "unit": "2",
+      "quantity": 13500,
+      "unit_price": 14,
+      "total": 0,
+      "check": {
+        "status": "inconsistent",
+        "detail": "13500 x 14 = 189000, but the line says 0"
+      }
+    },
+    {
+      "index": null,
+      "name": "e5mg 500mg",
+      "unit": "9",
+      "quantity": 15,
+      "unit_price": null,
+      "total": 2000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "2000 is not divisible by 15"
+      }
+    },
+    {
+      "index": 96000,
+      "name": "6",
+      "unit": "16",
+      "quantity": 4800,
+      "unit_price": 10,
+      "total": 48000,
+      "check": {
+        "status": "corrected",
+        "detail": "quantity inferred: 48000 / 10",
+        "corrected_field": "quantity",
+        "corrected_value": 4800
+      }
+    },
+    {
+      "index": 2,
+      "name": "17",
+      "unit": "400mg lbuprofen",
+      "quantity": null,
+      "unit_price": 60000,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": 2,
+      "name": "18",
+      "unit": "hop",
+      "quantity": null,
+      "unit_price": 50,
+      "total": 19,
+      "check": {
+        "status": "inconsistent",
+        "detail": "19 is not divisible by 50"
+      }
+    },
+    {
+      "index": 40,
+      "name": "hop",
+      "unit": "7",
+      "quantity": 51000,
+      "unit_price": 357000,
+      "total": 20,
+      "check": {
+        "status": "inconsistent",
+        "detail": "51000 x 357000 = 18207000000, but the line says 20"
+      }
+    },
+    {
+      "index": 10,
+      "name": "hop",
+      "unit": "一",
+      "quantity": 42000,
+      "unit_price": 42000,
+      "total": 21,
+      "check": {
+        "status": "inconsistent",
+        "detail": "42000 x 42000 = 1764000000, but the line says 21"
+      }
+    },
+    {
+      "index": 25,
+      "name": "vién",
+      "unit": "9",
+      "quantity": 1600,
+      "unit_price": 14400,
+      "total": 22,
+      "check": {
+        "status": "inconsistent",
+        "detail": "1600 x 14400 = 23040000, but the line says 22"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 2708000,
+    "computed_from_lines": 3182274788,
+    "consistent": false
+  },
+  "review": {
+    "n_lines": 22,
+    "n_ok": 1,
+    "n_to_check": 16,
+    "n_auto_corrected": 5,
+    "lines_to_check": [
+      150,
+      1030,
+      1900,
+      6,
+      15000,
+      8,
+      9,
+      10,
+      11,
+      50,
+      null,
+      2,
+      2,
+      40,
+      10,
+      25
+    ],
+    "numbering_gaps": [
+      [
+        1,
+        150
+      ],
+      [
+        150,
+        1030
+      ],
+      [
+        1030,
+        8
+      ],
+      [
+        8,
+        4
+      ],
+      [
+        4,
+        1900
+      ],
+      [
+        1900,
+        6
+      ],
+      [
+        6,
+        15000
+      ],
+      [
+        15000,
+        8
+      ],
+      [
+        11,
+        51000
+      ],
+      [
+        51000,
+        63000
+      ],
+      [
+        63000,
+        50
+      ],
+      [
+        50,
+        96000
+      ],
+      [
+        96000,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        40
+      ],
+      [
+        40,
+        10
+      ],
+      [
+        10,
+        25
+      ]
+    ]
+  }
+}
