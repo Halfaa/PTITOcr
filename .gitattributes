@@ -1,0 +1,29 @@
+# Normalisation des fins de ligne.
+#
+# Sans ce fichier, un outil qui reecrit un JSON en CRLF fait apparaitre le
+# fichier entier comme modifie : 8140 insertions et 8140 suppressions sur 20
+# fichiers de data/, pour zero changement de contenu. Ca noie les vraies
+# modifications dans le bruit et rend `git diff` inutilisable pour relire son
+# propre travail.
+#
+# text=auto : git stocke en LF dans le depot et convertit a la sortie selon
+# la plateforme. Les fichiers listes ensuite sont figes en LF des deux cotes,
+# parce qu'ils sont lus par des scripts et jamais edites a la main.
+
+* text=auto
+
+*.py    text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+*.ipynb text eol=lf
+
+*.ps1   text eol=crlf
+
+# Binaires : aucune conversion, sous peine de corruption.
+*.png   binary
+*.jpg   binary
+*.pdf   binary
+*.exr   binary
+*.xlsx  binary
+*.docx  binary
