@@ -237,23 +237,35 @@ def main():
     model_title = {"paddleocr-vl": "PaddleOCR-VL", "ppstructure": "PP-StructureV3",
                    "hunyuan": "HunyuanOCR-1.5", "chandra": "Chandra OCR 2"}[args.model]
 
+    def build_pipeline():
+        """Load the model. Called ONCE, outside the per-image try/except.
+
+        Loading used to happen lazily inside that try, so a failure to build
+        the pipeline was retried on every image -- and paddlex answers a
+        second import attempt with "PDX has already been initialized",
+        which is not the fault at all but the echo of the first one. Sixteen
+        misleading tracebacks then buried the single real error.
+
+        Building here means the run dies immediately, on the true exception.
+        """
+        if args.model == "paddleocr-vl":
+            from paddleocr import PaddleOCRVL
+            print("Loading PaddleOCR-VL...")
+            return PaddleOCRVL(pipeline_version="v1")
+        if args.model == "ppstructure":
+            from paddleocr import PPStructureV3
+            print("Loading PP-StructureV3...")
+            # enable_mkldnn=False: works around the PaddlePaddle 3.3.x oneDNN/PIR bug on CPU
+            return PPStructureV3(enable_mkldnn=False)
+        if args.model == "hunyuan":
+            print("Loading HunyuanOCR-1.5...")
+            return _load_hunyuan()
+        return _load_chandra()
+
     def get_pipeline():
         nonlocal pipeline
         if pipeline is None:
-            if args.model == "paddleocr-vl":
-                from paddleocr import PaddleOCRVL
-                print("Loading PaddleOCR-VL...")
-                pipeline = PaddleOCRVL(pipeline_version="v1")
-            elif args.model == "ppstructure":
-                from paddleocr import PPStructureV3
-                print("Loading PP-StructureV3...")
-                # enable_mkldnn=False: works around the PaddlePaddle 3.3.x oneDNN/PIR bug on CPU
-                pipeline = PPStructureV3(enable_mkldnn=False)
-            elif args.model == "hunyuan":
-                print("Loading HunyuanOCR-1.5...")
-                pipeline = _load_hunyuan()
-            else:
-                pipeline = _load_chandra()
+            pipeline = build_pipeline()
         return pipeline
 
     def process(image_path: Path, img_output_dir: Path):
@@ -280,6 +292,12 @@ def main():
         html.extend(entries)
         html.append("</body></html>")
         report_path.write_text("".join(html), encoding="utf-8")
+
+    # Load before the loop, so a broken environment fails in one clear
+    # traceback instead of one per image. Skipped when every page is already
+    # done, which keeps a pure "rebuild the report" run cheap.
+    if n_already_done < len(images):
+        pipeline = build_pipeline()
 
     entries = []
     for i, image_path in enumerate(images, start=1):
