@@ -349,3 +349,61 @@ syllabe d'un nom propre**, la prose non. Exiger le deux-points de l'étiquette
 marchait aussi, mais coûtait un vrai champ à PP-StructureV3, qui omet la
 ponctuation.
 
+---
+
+## 9. Confirmation inter-modeles, et la marge de recadrage (30 juillet)
+
+PaddleOCR-VL passe sur le meme jeu pretraite, sur GPU Kaggle (35 s/page
+contre 230 s sur le CPU local).
+
+| TEDS | images brutes | pretraitees v2 | gain |
+|---|---|---|---|
+| HunyuanOCR-1.5 | 0,950 | **0,973** | +0,023 |
+| PaddleOCR-VL | 0,909 | **0,949** | +0,040 |
+
+**Le pretraitement aide les deux modeles.** L'affirmation change de nature :
+ce n'est plus « il arrange HunyuanOCR », c'est « il ameliore l'extraction de
+tableau ». Fusion inchangee : 100 % de precision et de rappel, zero fusion a
+tort.
+
+### Mais il coute des champs d'en-tete
+
+| champs | brut | pretraite v2 |
+|---|---|---|
+| HunyuanOCR | 78 % | 75 % |
+| PaddleOCR-VL | 69 % | **41 %** |
+
+Chute brutale chez PaddleOCR : l'hopital tombe de 6/8 a 2/8. Verification
+faite, le nom est **totalement absent** de la sortie sur les pages
+concernees, pas meme dans un tableau. Or HunyuanOCR, sur la meme image,
+lisait `HA THUOC BENH VIEN BACH DUONG` -- avec le N initial en moins.
+
+Meme cause, deux symptomes : le recadrage coupe le bord de la feuille,
+HunyuanOCR lit la ligne abimee, PaddleOCR l'ecarte entierement. Un modele a
+l'analyse de mise en page plus stricte est plus fragile a un texte tronque
+qu'a un texte deforme.
+
+### Choisir la marge : l'IoU est le mauvais critere
+
+Elargir la marge fait entrer du fond, donc **baisse** l'IoU -- alors que
+c'est exactement ce qu'on veut faire. Le critere utile est le **rappel de la
+feuille**, la part des pixels de papier restant dans le recadrage.
+
+| marge | pages ou le rappel >= 0,98 | IoU moyen |
+|---|---|---|
+| 8 % | 11/17 | 0,86 |
+| 12 % | 14/17 | 0,82 |
+| **16 %** | **16/17** | 0,77 |
+| 20 % | 16/17 | 0,73 |
+
+A 8 %, le recadrage amputait plus de 2 % de la feuille sur **6 pages sur
+17**. La marge par defaut passe a 16 %.
+
+Le compromis se lit dans l'asymetrie des couts, pas dans les chiffres bruts :
+inclure du fond n'a aucun cout mesure, tandis qu'une feuille coupee fait
+perdre un champ entier. Une metrique symetrique comme l'IoU ne peut pas
+exprimer ca -- c'est pourquoi elle ne devait pas arbitrer seule.
+
+A revalider par un benchmark : ces 16 % sont motives par une mesure
+geometrique, pas encore par un score OCR.
+

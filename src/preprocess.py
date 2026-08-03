@@ -689,7 +689,7 @@ def binarize(image, block_size=31, c=10):
 def preprocess(image, do_illumination=True, do_denoise=True,
                min_long_side=None,
                do_binarize=False, min_score=0.55, do_crop=True,
-               pad=0.08):
+               pad=0.16):
     """Full chain. Returns (result, info).
 
     `info` reports whether the document was located: a caller must be able to
@@ -871,7 +871,7 @@ def main():
     parser.add_argument("--no-denoise", action="store_true")
     parser.add_argument("--binarize", action="store_true",
                         help="Add adaptive binarisation (usually hurts VLM OCR)")
-    parser.add_argument("--pad", type=float, default=0.08,
+    parser.add_argument("--pad", type=float, default=0.16,
                         help="Safety margin around the detected sheet "
                              "(fraction of its size; 0.08 = 8%%)")
     parser.add_argument("--no-crop", action="store_true",
