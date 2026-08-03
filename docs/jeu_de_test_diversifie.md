@@ -198,8 +198,26 @@ distinguer les deux.
 
 ### TEDS
 
-Sur les 8 premières factures : 0,962 à 0,994, structure de 0,975 à 1,000. Les
-axes de mise en page ne se distinguent plus une fois la référence corrigée.
+| | TEDS | TEDS-Struct | écart |
+|---|---|---|---|
+| 12 factures, 6 gabarits | **0,976** | **0,986** | **0,009** |
+
+Les douze sont entre 0,962 et 0,997, et **aucun axe de mise en page ne se
+détache** une fois la référence corrigée : ni le nombre de colonnes, ni les
+filets, ni la numérotation continue. L'écart structure/contenu de 0,009 est
+le plus faible jamais mesuré sur ce projet.
+
+Une réserve à formuler explicitement : ces pages sont **à plat**, celles du
+jeu d'origine sont déformées. Les 0,976 ne se comparent donc pas aux 0,909 de
+PaddleOCR sur le jeu d'origine — la différence mêle mise en page et
+déformation. Les comparaisons valables sont celles **internes** au jeu
+diversifié, d'un gabarit à l'autre.
+
+Le gain apporté par la fusion y est en revanche plus élevé qu'ailleurs :
+**+0,340** contre +0,281 sur le jeu d'origine. C'est mécanique : cinq
+factures n'ont pas de marqueur de continuation, donc la colonne « sans
+fusion » — qui ne voit que la première page — y tombe à 0,43. Ça chiffre ce
+que la fusion récupère quand le document ne signale rien.
 
 Non-régression vérifiée sur le jeu d'origine : HunyuanOCR reste à 0,950.
 
