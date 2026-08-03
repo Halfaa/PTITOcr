@@ -461,3 +461,73 @@ masque**. Un rapport qui n'aurait suivi que le TEDS aurait conclu que le
 pretraitement est un gain net, et perdu au passage le nom de l'etablissement
 sur trois factures sur huit.
 
+---
+
+## 11. La sortie du compromis : extraction adaptative (30 juillet)
+
+Le compromis de la section 10 supposait qu'il fallait choisir. C'est faux :
+on peut lire la photo **deux fois** et garder, composant par composant, la
+lecture qui tient debout.
+
+Le point delicat est de decider **sans verite terrain**, puisqu'en production
+il n'y en a pas. Or une facture est arithmetiquement redondante, et la
+validation construite en semaine 1 exploitait deja cette redondance pour
+signaler les lignes a relire. Il suffit de s'en servir pour *classer* deux
+lectures concurrentes.
+
+La note de confiance combine trois signaux, tous internes :
+
+    0,60  part des lignes ou quantite x prix = total
+    0,25  somme des lignes = Tong tien
+    0,15  numerotation sans trou
+
+Le troisieme n'est pas redondant avec les deux autres : une ligne entierement
+perdue par l'OCR laisse les survivantes parfaitement equilibrees. Seule la
+continuite du STT la trahit.
+
+### Resultats
+
+| | TEDS | champs |
+|---|---|---|
+| **PaddleOCR-VL** brut | 0,909 | 22/32 |
+| pretraite | 0,951 | 14/32 |
+| **adaptatif** | **0,951** | **24/32** |
+| *plafond (choix parfait, a posteriori)* | *0,955* | |
+| **HunyuanOCR-1.5** brut | 0,950 | 25/32 |
+| pretraite | 0,973 | 25/32 |
+| **adaptatif** | **0,974** | **28/32** |
+| *plafond* | *0,976* | |
+
+**La politique adaptative bat les deux variantes prises seules, sur les deux
+modeles et sur les deux metriques**, et se place a 0,004 et 0,002 du meilleur
+choix atteignable. L'ecart au plafond est le chiffre a regarder : il dit que
+la regle de decision n'est plus le maillon faible, ce sont les lectures
+elles-memes.
+
+### Deux decisions independantes
+
+Le tableau et l'en-tete echouent independamment, donc ils se choisissent
+independamment.
+
+**Tableau** : la confiance la plus haute gagne. En cas d'egalite -- ce qui
+arrive sur la moitie des factures, les deux lectures bouclant parfaitement --
+l'arithmetique ne peut plus departager, et on retient la variante meilleure
+en moyenne. Ce departage vaut +0,010 de TEDS, mesure.
+
+**Champs d'en-tete** : aucune arithmetique ne verifie un nom de patient, donc
+la redondance ne peut pas les classer. On prend la premiere valeur non vide,
+l'image brute d'abord puisqu'elle est mesuree meilleure (8/8 noms d'hopital
+contre 5/8). Tout le gain vient de la : un champ absent de la premiere source
+est pris dans la seconde, d'ou 24/32 contre 22 et 14.
+
+### Cout
+
+Une inference de plus par page, environ 20 s sur T4. Rien d'autre ne change :
+la fusion et l'export prennent le tableau retenu comme n'importe quel autre.
+
+Et une remarque qui vaut au-dela de ce cas : c'est la **validation
+arithmetique**, construite pour trier des lignes a relire, qui rend la
+politique possible. Une mesure de qualite sans verite terrain n'est pas
+seulement un outil de rapport -- c'est ce qui permet a un systeme de choisir
+en production.
+
