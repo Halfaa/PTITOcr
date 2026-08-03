@@ -68,6 +68,34 @@ def _as_date(s):
     return day, month, year
 
 
+# Honorifics that open a doctor's name in these invoices.
+_TITLES = ["ths.bs ck1", "ths.bs.", "ths.bs", "bs.ck1", "bs ck1", "bs.", "bs",
+           "bac si", "bac sy", "bacsi", "bacsy"]
+
+
+def _drop_title(value):
+    """Remove a leading honorific from a doctor's name.
+
+    The ground truth stores the doctor as {title, name} and the evaluation
+    compares against "title name". But in the document, "Bac si" is BOTH the
+    honorific AND the field label ("Bac si ke don:"), so an extractor that
+    correctly strips the label also strips the title -- and a perfectly read
+    name was being scored wrong.
+
+    The title is not identifying information: two doctors are told apart by
+    their names, not by their degrees. So recovering the name alone counts as
+    recovering the field. The 'exact' column still demands the full string
+    character for character, which is where reading the title correctly is
+    rewarded -- the two tiers keep saying different things.
+    """
+    s = re.sub(r"\s+", " ", str(value)).strip()
+    flat = _deaccent_keep_length(s)
+    for title in _TITLES:
+        if flat.startswith(title):
+            return s[len(title):].strip(" .:-")
+    return s
+
+
 def compare(found, expected):
     """-> 'exact' | 'lenient' | 'wrong' | 'missing'"""
     if not found:
@@ -80,6 +108,8 @@ def compare(found, expected):
         return "lenient"
     found_date, expected_date = _as_date(found), _as_date(expected)
     if found_date and found_date == expected_date:
+        return "lenient"
+    if _squash(_drop_title(found)) == _squash(_drop_title(expected)):
         return "lenient"
     return "wrong"
 

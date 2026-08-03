@@ -407,3 +407,57 @@ exprimer ca -- c'est pourquoi elle ne devait pas arbitrer seule.
 A revalider par un benchmark : ces 16 % sont motives par une mesure
 geometrique, pas encore par un score OCR.
 
+---
+
+## 10. Le compromis tableau / en-tete, et ce qu'il implique (30 juillet)
+
+Tous les runs PaddleOCR-VL tournent desormais sur GPU Kaggle : 20 a 35 s par
+page contre 230 s sur le CPU local.
+
+| PaddleOCR-VL | TEDS | nom d'hopital lu |
+|---|---|---|
+| images brutes | 0,909 | 8/8 |
+| pretraitees, marge 8 % | 0,949 | 5/8 |
+| pretraitees, marge 16 % | 0,951 | 5/8 |
+| pretraitees, sans correction d'eclairage | 0,951 | 5/8 |
+
+Le pretraitement **ameliore le tableau et degrade l'en-tete**, et les deux
+effets sont nets. HunyuanOCR, lui, garde 7/8 sur les champs : c'est propre a
+l'analyse de mise en page de PaddleOCR, qui ecarte un bloc de texte qu'elle
+juge mal forme la ou un VLM generaliste lit quand meme.
+
+### Trois causes testees, trois causes ecartees
+
+| hypothese | test | verdict |
+|---|---|---|
+| la correction d'eclairage efface le titre | run sans correction | 5/8, et **les memes 3 factures** |
+| le recadrage coupe le haut de page | marge 8 % contre 16 % | 5/8 dans les deux cas |
+| une inclinaison residuelle gene la detection | angle de Hough sur les traits du tableau | 1,68 deg sur les echecs contre 1,41 deg ailleurs -- ne separe pas |
+
+La verification a d'ailleurs innocente l'extracteur : sur les 24 cas mesures,
+**present dans la sortie OCR implique extrait**. Quand le champ manque, c'est
+que le modele ne l'a pas lu, pas qu'on n'a pas su le trouver.
+
+Reste l'explication la plus probable, et la plus difficile a tester : le
+patch de Coons est une transformation **non rigide**. Il redresse la grille
+du tableau -- les traits mesurent bien 0 degre -- tout en laissant une
+distorsion locale dans la zone d'en-tete, qui ne contient aucune structure
+pour la contraindre. Un redressement global n'y changerait rien.
+
+### La conclusion utilisable
+
+Les deux sous-taches n'ont pas le meme pretraitement optimal :
+
+    extraction du tableau     -> image pretraitee   (+0,04 de TEDS)
+    champs d'en-tete          -> image brute        (8/8 contre 5/8)
+
+Rien n'oblige a choisir. Les deux passes lisent la meme photo, le cout est
+une inference supplementaire, et le pipeline sait deja fusionner des sorties
+de provenances differentes. C'est la reponse d'ingenierie a un compromis
+qu'aucun reglage ne fera disparaitre.
+
+Elle vaut aussi comme resultat de methode : **une metrique unique l'aurait
+masque**. Un rapport qui n'aurait suivi que le TEDS aurait conclu que le
+pretraitement est un gain net, et perdu au passage le nom de l'etablissement
+sur trois factures sur huit.
+

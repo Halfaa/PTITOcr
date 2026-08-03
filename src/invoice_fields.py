@@ -203,11 +203,28 @@ def extract_fields(text: str) -> dict:
              or re.search(r"\d{1,2}\s+\w+\s+\d{1,2}\s+\w+\s+\d{4}", _deaccent_keep_length(raw)))
         found["invoice_date"] = raw[m.start():m.end()].strip() if m else None
 
-    # The hospital name is not labelled: it is the title line, usually the
-    # first markdown heading or the first non-empty line.
-    heading = re.search(r"^#+\s*(.+)$", text, re.M)
-    raw_title = heading.group(1) if heading else next(
-        (ln for ln in text.split("\n") if ln.strip()), "")
+    # The hospital name carries no label, so it has to be recognised rather
+    # than located. Position alone is not enough: taking "the first heading
+    # or first non-empty line" assumes the model reads the page top-down,
+    # and that assumption broke on the pre-processed images, where
+    # PaddleOCR-VL emits the TABLE first and the header afterwards. The name
+    # was still there; it simply was not first, and the extractor returned
+    # "Ghi chu" or "Xem them thong tin" -- fragments of the footer.
+    #
+    # These establishments all name themselves: "BENH VIEN X" (hospital),
+    # "NHA THUOC ..." (pharmacy), "PHONG KHAM ..." (clinic). Matching on that
+    # is robust to reading order. Position stays as the fallback, for a
+    # document whose title we do not recognise.
+    raw_title = ""
+    for line in text.split("\n"):
+        if re.search(r"benh\s*vien|nha\s*thuoc|phong\s*kham|trung\s*tam\s*y\s*te",
+                     _deaccent_keep_length(line)):
+            raw_title = line.strip().lstrip("#").strip()
+            break
+    if not raw_title:
+        heading = re.search(r"^#+\s*(.+)$", text, re.M)
+        raw_title = heading.group(1) if heading else next(
+            (ln for ln in text.split("\n") if ln.strip()), "")
     # Some models emit the whole page header on a single line: cut at the
     # first labelled field so we keep the name alone.
     title_flat = _deaccent_keep_length(raw_title)
