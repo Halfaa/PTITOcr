@@ -130,11 +130,17 @@ def main():
     parser.add_argument("--runs", nargs="+", default=DEFAULT_RUNS)
     parser.add_argument("--detail", action="store_true",
                         help="List every mismatch")
+    parser.add_argument("--pdf", default=None,
+                        help="PDF source, pour le decoupage en factures. "
+                             "Defaut : le jeu multi-pages.")
+    parser.add_argument("--gt-dir", default=None,
+                        help="Dossier des JSON de verite terrain.")
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parent.parent
-    gt_dir = (root / DEFAULT_GT).resolve()
-    groups = page_groups_from_pdf((root / DEFAULT_PDF).resolve())
+    gt_dir = Path(args.gt_dir).resolve() if args.gt_dir else (root / DEFAULT_GT).resolve()
+    pdf = Path(args.pdf).resolve() if args.pdf else (root / DEFAULT_PDF).resolve()
+    groups = page_groups_from_pdf(pdf)
 
     fields = list(GROUND_TRUTH)
     header = f"{'run':<26}" + "".join(f"{f.split('_')[0]:>16}" for f in fields) + f"{'overall':>10}"

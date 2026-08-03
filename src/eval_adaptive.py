@@ -63,12 +63,20 @@ def main():
     parser.add_argument("--raw", required=True)
     parser.add_argument("--preprocessed", required=True)
     parser.add_argument("--detail", action="store_true")
+    parser.add_argument("--pdf", default=None,
+                        help="PDF source, pour le decoupage en factures. "
+                             "Defaut : le jeu multi-pages.")
+    parser.add_argument("--gt-dir", default=None,
+                        help="Dossier des JSON de verite terrain.")
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parent.parent
-    groups = E.page_groups_from_pdf((root / E.DEFAULT_PDF).resolve())
+    pdf = Path(args.pdf).resolve() if args.pdf else (root / E.DEFAULT_PDF).resolve()
+    gt_dir = Path(args.gt_dir).resolve() if args.gt_dir else (root / E.DEFAULT_GT).resolve()
+    groups = E.page_groups_from_pdf(pdf)
     truths = [json.loads(Path(f).read_text(encoding="utf-8"))
-              for f in sorted(glob.glob(str((root / E.DEFAULT_GT).resolve() / "*.json")))]
+              for f in sorted(glob.glob(str(gt_dir / "*.json")),
+                              key=lambda f: int("".join(c for c in Path(f).stem if c.isdigit()) or 0))]
 
     pages = {"raw": run_pages(args.raw),
              "preprocessed": run_pages(args.preprocessed)}

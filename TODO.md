@@ -1,118 +1,132 @@
 # TODO
 
-État au 27 juillet 2026. Les deux tâches initiales (scoring numérique,
-tableaux sur 2 pages) sont **terminées** — voir `docs/resultats_teds.md`.
+État au 3 août 2026, semaine 2–3 du stage.
+
+Rapporté à la timeline officielle, le travail est en avance : les semaines
+1 à 6 sont bouclées, les semaines 7–8 et 9–10 le sont à moitié.
 
 ---
 
-## Fait
+## Fait, et mesuré
 
-- [x] **Scoring numérique automatique** — TEDS + TEDS-Struct (`src/teds.py`,
-      `src/eval_teds.py`), métrique standard PubTabNet, comparable à la
-      littérature.
-- [x] **Tableaux sur 2 pages** — détection + fusion (`src/table_merge.py`),
-      100 % de précision et de rappel sur 14 paires de pages, zéro fusion à
-      tort avec les trois modèles.
-- [x] **Comparaison de 3 modèles** sur 17 pages : HunyuanOCR-1.5 (0.928),
-      PaddleOCR-VL (0.909), PP-StructureV3 (0.557).
-- [x] **État de l'art** des modèles vietnamien/anglais —
-      `docs/etat_de_lart_modeles.md`.
+- [x] **Scoring numérique** — TEDS et TEDS-Struct (`src/teds.py`), métrique
+      standard PubTabNet, comparable à la littérature.
+- [x] **Fusion de tableaux multi-pages** (`src/table_merge.py`) — 100 % de
+      précision et de rappel, zéro fusion à tort sur les cinq runs.
+- [x] **État de l'art** vietnamien/anglais — `docs/etat_de_lart_modeles.md`.
+- [x] **Validation arithmétique** (`src/invoice_validate.py`) — 100 % des
+      erreurs numériques attrapées, zéro fausse alerte.
+- [x] **Module de prétraitement** (`src/preprocess.py`) — IoU 0,90 contre les
+      masques UV exacts, 17/17 recadrages exploitables.
+- [x] **Extraction adaptative** (`src/adaptive.py`) — bat les deux variantes
+      prises seules, à 0,004 du choix parfait.
+- [x] **Jeu de test diversifié** (`gen_variants_json.py`) — 12 factures,
+      25 pages, 5 en numérotation continue.
+- [x] **Export JSON** avec statut d'extraction explicite.
+
+### Les chiffres
+
+| | TEDS | champs | fusion |
+|---|---|---|---|
+| HunyuanOCR adaptatif | 0,974 | 28/32 | 100 % / 100 % |
+| PaddleOCR-VL adaptatif | 0,951 | 24/32 | 100 % / 100 % |
+| PP-StructureV3 | 0,557 | 9/32 | 100 % / 100 % |
 
 ---
 
 ## À faire — par ordre de valeur
 
-### 1. Validation arithmétique  ⭐ le meilleur rapport effort/gain
+### 1. Mesurer le jeu diversifié  ⭐ le plus rentable
 
-Une facture est redondante : `quantité × prix_unitaire = total_ligne`, et la
-somme des lignes = `Tổng tiền`. Chaque ligne porte donc sa propre
-vérification, **sans vérité terrain**.
+Tout est prêt : les 25 pages sont rendues, la suite d'évaluation accepte
+`--pdf` et `--gt-dir`. Il ne manque que le run OCR.
 
-Deux usages : détecter les erreurs OCR en production (on ne présente à un
-humain que les lignes qui ne bouclent pas), et parfois les corriger — deux
-valeurs sur trois étant justes, la troisième se déduit.
+Le chiffre à surveiller est la **précision** de la fusion, pas le rappel :
+c'est elle que le mode `global` attaque. Voir
+`docs/jeu_de_test_diversifie.md`.
 
-À mesurer sur les données déjà disponibles : *quel pourcentage des cellules
-fausses la validation attrape-t-elle ?* C'est le chiffre qui dira si un TEDS
-de 0.928 est exploitable en pratique.
+### 2. Les photos réelles
 
-Effort : une demi-journée. Tout est déjà là (sorties OCR + vérité terrain).
+La timeline les place semaines 9–10, mais elles ont une contrainte physique :
+il faut **imprimer les fausses factures et les photographier**. Ça ne se
+rattrape pas en codant un week-end, et c'est la critique que tout relecteur
+fera en premier — les données sont à 100 % synthétiques.
 
-### 2. Parsing en champs typés
+L'astuce est qu'on garde la vérité terrain exacte, ce qu'aucune photo de
+document réel ne permet. Et ça valide le pipeline doc3D en comparant
+déformation simulée et réelle sur le même contenu.
 
-Passer du `<table>` HTML à des objets `{nom, quantité, prix_unitaire,
-total}`. Prérequis de la validation arithmétique et de tout usage applicatif.
+### 3. Le prototype PWA
 
-Difficultés réelles, souvent sous-estimées : l'ordre des colonnes varie,
-l'OCR fusionne parfois deux cellules, et il faut normaliser les nombres
-(`2.900` / `2 900` / `2900`) comme les unités (`viên` / `Viên` / `vièn`).
+Photo au téléphone, rendu immédiat. Le calcul reste côté serveur, donc l'API
+sert aussi de livrable indépendant. À afficher : le quadrilatère détecté, les
+cadres de l'OCR, la décision de fusion, et les lignes surlignées selon leur
+statut de validation.
 
-### 3. Diversifier le jeu de test
+### 4. Les variantes déformées du jeu diversifié
 
-8 factures, un seul gabarit. Générer des variantes : nombre de colonnes
-différent, styles de bordure, factures sur 3 pages, et surtout **un format où
-la colonne STT ne redémarre pas à 1** — c'est l'hypothèse métier sur laquelle
-repose le signal le plus discriminant de la fusion.
+Même contenu, passé par Blender. Mesurer les pages plates d'abord permet
+d'attribuer chaque écart à sa cause : la mise en page, ou la déformation.
 
-Sans ça, un relecteur exigeant dira que l'algorithme est calibré sur son
-propre générateur.
+### 5. NER sur texte libre
 
-### 4. Tester le dewarping
+Partiellement couvert par l'extraction de champs étiquetés. Les entités en
+texte libre (« Glucose : 110 mg/dL ») ne le sont pas — et le corpus actuel
+n'en contient presque pas, il faudra enrichir le générateur pour que la tâche
+ait un sens.
 
-TEDS-Struct montre que le goulot n'est pas la structure mais la lecture des
-caractères. Redresser l'image avant l'OCR devrait donc faire remonter le
-score — c'est la question de recherche ouverte par les mesures, et elle
-rejoint les papiers mis en réserve.
+### 6. Anonymisation des données patient
 
-Référence utile : *Towards Real-World Document Parsing via Realistic Scene
-Synthesis and Document-Aware Training* (CVPR 2026, arXiv 2603.23885), qui
-fait exactement ce que fait le pipeline doc3D — de quoi justifier la démarche
-dans le rapport.
-
-### 5. Comprendre les échecs de détection
-
-Sur 17 pages, l'OCR n'extrait aucun tableau pour certaines (pages 6 et 11
-selon le modèle). Ces continuations sont perdues avant la fusion. Déformation
-trop forte ? contraste ? C'est un problème amont, potentiellement le plus
-limitant à terme.
-
-### 6. Tests unitaires
-
-Les vérifications actuelles sont des scripts jetables. Une suite pytest sur
-`table_merge` et `teds` protégerait contre les régressions si un seuil est
-modifié plus tard, et rendrait les chiffres reproductibles par un tiers.
+Phase 4 du sujet, non commencée. À discuter avec l'encadrante : la politique
+d'usage de HunyuanOCR interdit par ailleurs les décisions automatisées en
+santé.
 
 ---
 
-## Vers une application (hors périmètre du stage, mais utile à savoir)
+## Ce qui manque pour en faire une application
 
-Ce qui est construit — OCR + fusion — est le cœur scientifique, mais environ
-un quart d'une application. Manquent, dans l'ordre du flux :
+Le cœur scientifique — OCR, fusion, validation — représente environ un quart
+d'une application réelle. Manquent, dans l'ordre du flux :
 
 - **regrouper les photos en documents** : rien ne dit lesquelles forment une
-  facture (ici c'est le nom de fichier `page_N` qui le donne) ;
+  même facture (ici c'est le nom de fichier `page_N` qui le donne) ;
 - **ordonner les pages** ;
 - **contrôle qualité à la capture** : détecter flou et reflet pour redemander
   la photo pendant que l'utilisateur tient encore le document ;
 - **score de confiance par ligne** plutôt que par document, pour que la revue
   humaine porte sur 3 lignes et non sur 30.
 
-Un TEDS de 0.928 signifie qu'environ 7 % des cellules sont fausses : sur des
-factures médicales, ça ne se livre pas sans validation ni relecture.
+Un TEDS de 0,97 laisse environ 3 % de cellules fausses : sur des factures
+médicales, ça ne se livre pas sans relecture.
 
 ---
 
 ## Points de vigilance
 
-**Hypothèse métier de la fusion** : la colonne STT redémarre à 1 à chaque
-facture. C'est le signal le plus discriminant, et celui qui rattrape les cas
-où l'OCR a massacré la fin du tableau précédent. À revalider sur tout nouveau
-format (cf. point 3).
+**Licence HunyuanOCR.** Licence communautaire Tencent, excluant l'Union
+européenne, le Royaume-Uni et la Corée du Sud. Développement et déploiement
+au Vietnam : conforme. Attention aux plateformes de calcul dont on ne choisit
+pas la région — Kaggle et Colab en font partie. PaddleOCR-VL, en Apache 2.0,
+n'a aucune de ces contraintes pour 2 points de TEDS de moins.
 
-**Deux venv incompatibles** : `venv` (PaddleOCR, évaluation) et
-`venv_hunyuan` (HunyuanOCR, transformers ≥ 5.13). Les scripts vérifient
-l'environnement au démarrage et échouent en une seconde si besoin.
+**Hypothèse métier de la fusion.** La colonne STT redémarre à 1 à chaque
+facture. Un format numérotant en continu faisait fusionner deux factures
+distinctes ; corrigé par le veto de clôture, et `tests/test_merge_assumptions.py`
+garde le cas. À revalider sur tout nouveau format.
 
-**`backend="pil"` obligatoire pour HunyuanOCR** : avec le backend torchvision,
-le modèle produit du charabia sans lever la moindre erreur. Panne silencieuse
-déjà rencontrée, codée en dur dans `scripts/bench_deformed.py`.
+**Échantillon.** 8 factures d'un gabarit, plus 12 variantes non encore
+mesurées. Les chiffres établissent que la chaîne encaisse du bruit OCR réel,
+pas qu'elle généralise.
+
+**Deux venv incompatibles.** `venv` (PaddleOCR, évaluation) et `venv_hunyuan`
+(HunyuanOCR, transformers ≥ 5.13). Les scripts vérifient l'environnement au
+démarrage et échouent en une seconde plutôt qu'après le chargement du modèle.
+
+**`backend="pil"` obligatoire pour HunyuanOCR.** Avec le backend torchvision,
+le modèle produit du charabia sans lever la moindre erreur. Codé en dur dans
+`scripts/bench_deformed.py`.
+
+**Sept défaillances silencieuses** rencontrées à ce jour, aucune n'ayant levé
+d'erreur. Documentées dans `docs/etat_du_projet.md` — c'est l'argument le plus
+concret en faveur de tout le dispositif d'évaluation, et ça mérite une section
+du rapport.

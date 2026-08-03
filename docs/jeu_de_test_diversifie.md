@@ -102,3 +102,45 @@ Les 25 pages sont rendues à plat dans `doc3D-renderer/img/variants_flat`
 
 Le chiffre à surveiller est la **précision** de la fusion, pas le rappel :
 c'est elle que le mode `global` attaque.
+
+---
+
+## 5. Mode d'emploi
+
+Toute la suite d'évaluation accepte désormais `--pdf` et `--gt-dir`, donc le
+nouveau jeu se mesure sans rien modifier.
+
+```powershell
+$PDF = "..\synthetic_invoice_generator\hospital_pharmacy\invoices_variants.pdf"
+$GT  = "..\synthetic_invoice_generator\hospital_pharmacy\ground_truth_labels_variants"
+
+# 1. OCR (sur Kaggle : kaggle\images_variants_flat.zip, 25 pages, 4,5 Mo)
+python scripts\bench_deformed.py --model paddleocr-vl `
+    --images-dir "..\doc3D-renderer\img\variants_flat" --output variants_paddleocr
+
+# 2. Le chiffre qui compte : la PRECISION de la fusion
+python src\eval_multipage_merge.py --run variants_paddleocr --pdf $PDF
+
+# 3. Le reste
+python src\eval_teds.py       --run variants_paddleocr --pdf $PDF --gt-dir $GT
+python src\eval_fields.py     --runs variants_paddleocr --pdf $PDF --gt-dir $GT
+python src\eval_validation.py --run variants_paddleocr --pdf $PDF --gt-dir $GT
+```
+
+Les pages sont rendues à plat : c'est volontaire pour ce premier passage. On
+mesure ainsi l'effet des **mises en page** seules, sans le mélanger à celui de
+la déformation. Le passage par Blender vient ensuite, sur le même contenu, ce
+qui permet d'attribuer chaque écart à sa cause.
+
+## 6. Ce que le test unitaire garantit déjà
+
+`tests/test_merge_assumptions.py` couvre sept cas construits à la main. Il
+tourne en une seconde, sans OCR ni modèle, et se lance depuis le dépôt :
+
+```powershell
+python tests\test_merge_assumptions.py
+```
+
+Un échec y désigne un défaut de logique. Le benchmark OCR, lui, mêle logique
+et qualité de lecture : les deux niveaux sont complémentaires et il faut
+garder les deux.

@@ -96,12 +96,18 @@ def main():
     parser.add_argument("--run", default="multipage_hunyuan")
     parser.add_argument("--verbose", action="store_true",
                         help="Detail every misclassified line")
+    parser.add_argument("--pdf", default=None,
+                        help="PDF source, pour le decoupage en factures. "
+                             "Defaut : le jeu multi-pages.")
+    parser.add_argument("--gt-dir", default=None,
+                        help="Dossier des JSON de verite terrain.")
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parent.parent
     pages_dir = root / "results" / args.run / "pages"
-    gt_dir = (root / DEFAULT_GT).resolve()
-    groups = page_groups_from_pdf((root / DEFAULT_PDF).resolve())
+    gt_dir = Path(args.gt_dir).resolve() if args.gt_dir else (root / DEFAULT_GT).resolve()
+    pdf = Path(args.pdf).resolve() if args.pdf else (root / DEFAULT_PDF).resolve()
+    groups = page_groups_from_pdf(pdf)
 
     print(f"Run: {args.run}\n")
     head = (f"{'invoice':<10}{'lines':>7}{'right':>8}{'wrong':>9}"
