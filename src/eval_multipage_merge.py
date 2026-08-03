@@ -39,14 +39,31 @@ def page_number(name: str):
 
 
 def ground_truth_continuations(pdf_path: Path) -> set:
-    """Return the set of N such that page N+1 continues page N."""
-    import fitz  # PyMuPDF
+    """Return the set of N such that page N+1 continues page N.
 
-    doc = fitz.open(str(pdf_path))
+    Derived from the invoice grouping, itself keyed on the header block that
+    LaTeX prints once per invoice. Two consecutive pages of the same group
+    are a continuation.
+
+    The first version read the continuation marker directly, which was wrong
+    twice over. Practically, it only works while every template prints one:
+    on the diversified test set, five invoices do not, and their genuine
+    continuations were scored as "expected=no" -- the algorithm was punished
+    for being right, and precision read 58 % instead of 100 %.
+
+    And on principle, the reference must not share a failure mode with what
+    it measures. The marker is one of the signals the merge algorithm uses;
+    grading that algorithm with it means a template dropping the marker
+    breaks the measurement and the measured thing at once, with no way to
+    tell which.
+    """
+    from eval_teds import page_groups_from_pdf
+
     continuations = set()
-    for i, page in enumerate(doc, start=1):
-        if "Tiếp trang trước" in page.get_text():
-            continuations.add(i - 1)
+    for group in page_groups_from_pdf(pdf_path):
+        for a, b in zip(group, group[1:]):
+            if b == a + 1:
+                continuations.add(a)
     return continuations
 
 

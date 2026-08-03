@@ -78,13 +78,42 @@ def ground_truth_rows(invoice: dict) -> list:
     merging step must remove. Including them would grade the algorithm on its
     ability to reproduce a page break, when the goal is to make it disappear.
     """
-    rows = [list(HEADER)]
-    for i, med in enumerate(invoice["medications"], start=1):
-        rows.append([
-            str(i), med["name"], med["dosage_form"],
-            str(med["quantity"]), str(med["unit_price"]), str(med["total_price"]),
-        ])
-    rows.append(["Tổng tiền:", "", "", "", "", str(invoice["total_amount"])])
+    # The layout block, when present, says how this particular invoice is
+    # printed. Without honouring it the reference describes a document that
+    # was never rendered: a 5-column invoice was compared against a 6-column
+    # truth, and an invoice numbered 41..69 against one numbered 1..29, so
+    # every STT cell counted as an error. Absent the block, we fall back to
+    # the historical layout -- six columns, numbering from 1 -- which is what
+    # the original test set uses.
+    layout = invoice.get("layout", {})
+    n_cols = layout.get("columns", 6)
+    start = invoice.get("stt_start", 1)
+
+    if n_cols == 5:            # no unit column
+        header = [HEADER[0], HEADER[1], HEADER[3], HEADER[4], HEADER[5]]
+    elif n_cols == 7:          # extra discount column before the total
+        header = list(HEADER[:5]) + ["Giảm giá", HEADER[5]]
+    else:
+        header = list(HEADER)
+
+    rows = [header]
+    for offset, med in enumerate(invoice["medications"]):
+        index = str(start + offset)
+        if n_cols == 5:
+            rows.append([index, med["name"], str(med["quantity"]),
+                         str(med["unit_price"]), str(med["total_price"])])
+        elif n_cols == 7:
+            rows.append([index, med["name"], med["dosage_form"],
+                         str(med["quantity"]), str(med["unit_price"]), "0",
+                         str(med["total_price"])])
+        else:
+            rows.append([index, med["name"], med["dosage_form"],
+                         str(med["quantity"]), str(med["unit_price"]),
+                         str(med["total_price"])])
+
+    if layout.get("total_row", True):
+        rows.append(["Tổng tiền:"] + [""] * (n_cols - 2)
+                    + [str(invoice["total_amount"])])
     return rows
 
 

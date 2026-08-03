@@ -144,3 +144,75 @@ python tests\test_merge_assumptions.py
 Un échec y désigne un défaut de logique. Le benchmark OCR, lui, mêle logique
 et qualité de lecture : les deux niveaux sont complémentaires et il faut
 garder les deux.
+
+---
+
+## 7. Résultats (3 août)
+
+PaddleOCR-VL sur les 25 pages à plat, 28 s par page sur T4.
+
+### La fusion tient
+
+| | précision | rappel |
+|---|---|---|
+| jeu d'origine (8 factures, 1 gabarit) | 100 % | 100 % |
+| **jeu diversifié (12 factures, 6 gabarits)** | **100 %** | **100 %** |
+
+La ligne qui compte, dans le détail des décisions :
+
+```
+page 18 -> 19  predicted=no  expected=no  OK  [lastA=106 firstB=107 total_A=True]
+```
+
+STT 106 puis 107, parfaitement continu d'une facture à l'autre. Sans le veto
+de clôture, c'était une fusion à tort — l'erreur que rien en aval ne détecte.
+
+### Le jeu a d'abord cassé la mesure
+
+Avant de mesurer quoi que ce soit, le nouveau jeu a mis au jour **trois
+défauts dans le dispositif d'évaluation lui-même**, tous invisibles tant que
+le gabarit restait unique.
+
+| où | ce qui était supposé | conséquence |
+|---|---|---|
+| `page_groups_from_pdf` | toute page de suite porte un marqueur | 5 factures collées à la précédente |
+| `ground_truth_continuations` | idem | précision annoncée à **58 %** au lieu de 100 % |
+| `ground_truth_rows` | 6 colonnes, numérotation depuis 1 | 5 et 7 colonnes comparées à une référence à 6 ; numérotation continue comptée fausse cellule par cellule |
+
+Le troisième était le plus coûteux, et le plus trompeur :
+
+| facture | avant correction | après |
+|---|---|---|
+| 5 colonnes | 0,836 | **0,974** |
+| 7 colonnes | 0,857 | **0,976** |
+| numérotation continue | 0,896 | **0,994** |
+
+On aurait conclu à une faiblesse du modèle sur les mises en page inhabituelles.
+C'était la **référence** qui décrivait un document jamais imprimé.
+
+Les deux premiers défauts partageaient une même faute de principe : la vérité
+terrain s'appuyait sur le marqueur de continuation, c'est-à-dire sur **l'un
+des signaux que l'algorithme mesuré utilise**. Un gabarit sans marqueur
+cassait alors la mesure et l'objet mesuré en même temps, sans moyen de
+distinguer les deux.
+
+### TEDS
+
+Sur les 8 premières factures : 0,962 à 0,994, structure de 0,975 à 1,000. Les
+axes de mise en page ne se distinguent plus une fois la référence corrigée.
+
+Non-régression vérifiée sur le jeu d'origine : HunyuanOCR reste à 0,950.
+
+---
+
+## 8. Ce que ce jeu a coûté et rapporté
+
+Une demi-journée. En retour, un défaut d'algorithme qui fabriquait
+silencieusement des tableaux mêlant deux factures, et trois défauts de mesure
+dont un faussait les scores de 12 points.
+
+Le motif mérite d'être retenu pour le rapport : **un jeu de test issu d'un
+seul gabarit ne valide pas seulement un algorithme trop peu, il valide aussi
+son propre instrument de mesure trop peu.** Les deux se calibrent l'un sur
+l'autre, et l'accord qui en résulte ne prouve rien.
+
