@@ -234,3 +234,180 @@ seul gabarit ne valide pas seulement un algorithme trop peu, il valide aussi
 son propre instrument de mesure trop peu.** Les deux se calibrent l'un sur
 l'autre, et l'accord qui en résulte ne prouve rien.
 
+---
+
+## 9. Version déformée
+
+Les 25 pages plates sont projetées sur des maillages courbés, avec fond et
+éclairage réalistes — même traitement que le jeu d'origine, sur un contenu
+différent.
+
+```powershell
+cd ..\doc3D-renderer
+.\render_variants.ps1
+```
+
+Le script liste les textures, appelle Blender, et vérifie que le compte des
+images rendues correspond au compte des pages.
+
+Deux modifications ont été nécessaires, toutes deux rétrocompatibles :
+
+- `generate_multipage_tex_csv.py` accepte `--source` et `--out`, au lieu de
+  cibler `tex/multipage` en dur.
+- `render_mesh_multipage.py` accepte un quatrième argument optionnel, le CSV
+  des textures. Les arguments sont désormais lus après le `--` de Blender
+  plutôt que par index négatif depuis la fin, ce qui rendait tout ajout
+  impossible. Sans ce quatrième argument, le comportement est inchangé.
+
+Le nom du fichier produit est `<page>-<maillage>.png`, donc **le numéro de
+page survit au rendu** — et tout le regroupement en factures en dépend.
+
+### Ce que la comparaison permet
+
+Le même contenu existe maintenant en deux versions, plate et déformée. Un
+écart entre les deux s'impute alors à la déformation seule, puisque la mise
+en page est identique. Mesurer directement la version déformée aurait
+mélangé les deux effets sans moyen de les séparer — c'est la raison d'être
+de ce détour.
+
+Les cartes UV produites par le rendu donnent en prime des **masques de
+feuille exacts** sur ces 25 pages, donc de quoi évaluer le module de
+prétraitement sur un second jeu.
+
+---
+
+## 10. Le coût de la déformation, isolé (3 août)
+
+Même contenu, même mise en page, seule la déformation change. C'est le seul
+endroit du projet où son coût s'observe sans être mêlé à autre chose.
+
+| facture | à plat | déformé | Δ |
+|---|---|---|---|
+| 1 | 0,966 | 0,828 | −0,138 |
+| 2 | 0,974 | 0,946 | −0,028 |
+| 3 | 0,994 | 0,986 | −0,008 |
+| 4 | 0,962 | 0,940 | −0,022 |
+| 5 | 0,974 | 0,966 | −0,008 |
+| 6 | 0,976 | 0,972 | −0,004 |
+| 7 | 0,978 | 0,865 | −0,113 |
+| 8 | 0,985 | 0,857 | −0,128 |
+| 9 | 0,971 | 0,905 | −0,066 |
+| 10 | 0,997 | 0,809 | −0,188 |
+| 11 | 0,977 | 0,838 | −0,139 |
+| 12 | 0,964 | 0,960 | −0,004 |
+| **moyenne** | **0,976** | **0,906** | **−0,070** |
+
+Sur les douze, la déformation coûte **−0,070 de TEDS** (0,976 → 0,906) et
+seulement **−0,020 en structure** (0,986 → 0,966). L'écart entre les deux
+est le chiffre parlant : la déformation abîme surtout la **lecture des
+caractères**, pas la reconstruction de la grille.
+
+Mais la moyenne cache l'essentiel : sept factures perdent moins de 0,03,
+trois en perdent plus de 0,11. **L'effet n'est pas graduel, il est binaire** — soit la
+page passe, soit elle décroche. C'est cohérent avec ce qu'on observait déjà
+sur le prétraitement : les modèles encaissent une déformation modérée sans
+broncher et lâchent d'un coup au-delà.
+
+Et c'est un argument mesuré en faveur du prétraitement : il ne sert pas à
+grappiller quelques millièmes sur les pages faciles, il sert à ramener les
+pages décrochées dans le régime où le modèle fonctionne.
+
+## 11. Un troisième défaut d'algorithme, trouvé par la version déformée
+
+La version à plat donnait 100 % de précision. La version déformée est tombée
+à 92 %, sur une fusion à tort :
+
+```
+page 15 -> 17  predicted=yes expected=no  [lastA=21 firstB=70 total_A=False]
+```
+
+L'OCR avait **entièrement perdu la page 16** — aucun tableau détecté — si
+bien que l'algorithme comparait la page 15 à la page 17, deux factures
+différentes. Le signal `table_b_starts_mid_numbering` s'est déclenché parce
+que 70 > 1, sans aucune condition de proximité.
+
+### Le mauvais correctif, puis le bon
+
+Premier réflexe : exiger un écart faible entre le dernier indice de A et le
+premier de B. **Ça casse trois continuations légitimes**, dont deux sur
+PP-StructureV3 dont le rappel tombait de 100 % à 71 % — précisément les cas
+où l'OCR a massacré la fin de A, c'est-à-dire ceux que ce signal existe pour
+rattraper.
+
+Le bon repère n'est pas le dernier indice **lu** dans A, mais celui que sa
+**taille** prédit : `premier_indice_A + nombre_de_lignes_A`. Le nombre de
+lignes survit là où les numéros ne survivent pas.
+
+| cas | écart brut | écart attendu | vérité |
+|---|---|---|---|
+| A lue jusqu'à 7, B démarre à 17 | +10 | **−1** | continuation |
+| A lue jusqu'à 12, B démarre à 20 | +8 | **−1** | continuation |
+| A lue jusqu'à 19, B démarre à 18 | −1 | **−3** | continuation |
+| A lue jusqu'à 21, B démarre à 70 | +49 | **+48** | factures distinctes |
+
+L'écart brut mélange les quatre ; l'écart attendu les sépare nettement. Seuil
+à 5.
+
+### Résultat
+
+| run | précision | rappel |
+|---|---|---|
+| HunyuanOCR (origine) | 100 % | 100 % |
+| HunyuanOCR prétraité | 100 % | 100 % |
+| PaddleOCR-VL prétraité | 100 % | 100 % |
+| PP-StructureV3 | 100 % | 100 % |
+| variantes à plat | 100 % | 100 % |
+| **variantes déformées** | **100 %** | **100 %** |
+
+PaddleOCR-VL sur images brutes reste à 88 % de rappel, inchangé et sans
+rapport avec ce correctif.
+
+---
+
+## 12. Bilan du jeu diversifié
+
+Une journée. En retour :
+
+- **deux défauts d'algorithme** qui fabriquaient silencieusement des tableaux
+  mêlant deux factures, dont un que seule la version déformée pouvait révéler ;
+- **trois défauts de mesure**, dont un faussait les scores de 12 points ;
+- un jeu à quatre branches : 8 factures d'un gabarit contre 12 de six
+  gabarits, à plat et déformées, toutes à vérité terrain exacte.
+
+Le motif à retenir pour le rapport : **chaque élargissement du jeu de test a
+d'abord cassé l'instrument de mesure avant de mesurer quoi que ce soit.** Un
+banc d'essai construit sur un seul gabarit ne valide pas seulement
+l'algorithme trop peu — il valide aussi trop peu sa propre référence, et
+l'accord entre les deux ne prouve rien.
+
+---
+
+## 13. Prétraiter dans le notebook plutôt que téléverser (3 août)
+
+Le run déformé ci-dessus est **sans prétraitement**, il n'est donc pas
+comparable aux 0,951 de PaddleOCR prétraité sur le jeu d'origine.
+
+Plutôt que de prétraiter en local et de téléverser un second dataset, le
+notebook le fait maintenant lui-même : il clone déjà le dépôt, donc
+`src/preprocess.py` y est disponible. Deux raisons, et la première est la
+plus importante.
+
+**Le code de prétraitement est toujours celui du dépôt.** Des images
+prétraitées téléversées se périment à la première modification du module,
+sans que rien ne le signale — on mesurerait alors une version du
+prétraitement qui n'existe plus. Ce piège a déjà failli se refermer entre les
+versions v2 et v3 des images.
+
+**Les deux lectures sortent de la même session.** C'est ce dont
+`src/adaptive.py` a besoin : la politique choisit entre lecture brute et
+lecture prétraitée, donc il lui faut les deux, sur les mêmes images.
+
+```python
+PASSES = ["raw", "preprocessed"]   # ou ["raw"] pour n'en faire qu'une
+PREFIXE = "variants_warped"
+```
+
+Le notebook produit alors deux runs et deux archives, nommés
+`<prefixe>_<passe>_<modèle>`. Un seul dataset d'images brutes suffit
+désormais, quel que soit le nombre de variantes de prétraitement à comparer.
+

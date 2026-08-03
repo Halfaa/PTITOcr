@@ -234,6 +234,12 @@ _HEADER_KEYWORDS = [
     "stt", "ten mat hang", "dich vu", "dvt",
     "so luong", "don gia", "thanh tien",
 ]
+# How far B's first index may sit from the one A's row count predicts. A few
+# units absorb a row duplicated or dropped at the page break; tens of units
+# mean a different document. Measured continuations land within [-3, 0],
+# the measured false merge at +48.
+_MAX_INDEX_OFFSET = 5
+
 _CONTINUATION_KEYWORDS = ["tiep trang truoc", "suite", "continued", "tiep theo"]
 _END_KEYWORDS = ["tong tien", "total", "grand total", "tong cong"]
 _NEXT_PAGE_KEYWORDS = ["xem tiep trang sau", "continued on next page", "suite page suivante"]
@@ -402,6 +408,7 @@ def is_continuation(table_a: Table, table_b: Table,
     signals["header_similarity"] = _header_similarity(table_a.header, table_b.header)
 
     last_idx_a = _last_data_index(table_a)
+    first_idx_a = _first_data_index(table_a)
     first_idx_b = _first_data_index(table_b)
     signals["last_index_a"] = last_idx_a
     signals["first_index_b"] = first_idx_b
@@ -421,13 +428,38 @@ def is_continuation(table_a: Table, table_b: Table,
     # alone can never tell "continuation" from "another identical-looking
     # invoice" apart.
     signals["table_b_restarts_at_1"] = first_idx_b == 1
-    # Mirror image of the above, and the most robust signal in practice: if B
-    # starts at an index > 1, the numbering necessarily comes from elsewhere.
-    # Domain assumption, deliberately made: STT restarts at 1 on every
-    # invoice. This is the signal that rescues the cases where OCR mangled
-    # the end of table A -- +1 continuity is then unverifiable, but "B starts
-    # at 20" still speaks for itself.
-    signals["table_b_starts_mid_numbering"] = first_idx_b is not None and first_idx_b > 1
+    # Mirror image of the above: if B starts at an index > 1, its numbering
+    # comes from somewhere. This is the signal that rescues the cases where
+    # OCR mangled the end of table A -- +1 continuity is then unverifiable,
+    # but "B starts at 20" still speaks for itself.
+    #
+    # It must stay a RESCUE, though. Unqualified, "B starts above 1" also
+    # describes two distinct invoices in a document numbered continuously.
+    # Measured on the warped test set: OCR lost page 16 entirely, so the
+    # algorithm compared page 15 (ending at 21) with page 17 (starting at
+    # 70) -- a jump of 49 -- and merged two different invoices.
+    #
+    # The check compares B's first index with the one A's SIZE predicts, not
+    # with the last index actually read in A. That distinction is the whole
+    # point: when the OCR mangles the end of A its last index is wrong, but
+    # the number of rows survives. Measured on the three real cases:
+    #
+    #     A ends read at 7,  B starts at 17   raw +10   predicted -1   continuation
+    #     A ends read at 12, B starts at 20   raw  +8   predicted -1   continuation
+    #     A ends read at 21, B starts at 70   raw +49   predicted +48  two invoices
+    #
+    # The raw gap mixes the three together; the predicted one separates them
+    # cleanly. Falls back to firing when A's numbering is unreadable, since
+    # that is the situation this signal exists to rescue.
+    _predicted_next = (first_idx_a + len(table_a.data_rows)
+                       if first_idx_a is not None else None)
+    _offset = (first_idx_b - _predicted_next
+               if (first_idx_b is not None and _predicted_next is not None) else None)
+    signals["index_offset"] = _offset
+    signals["table_b_starts_mid_numbering"] = (
+        first_idx_b is not None and first_idx_b > 1
+        and (_offset is None or abs(_offset) <= _MAX_INDEX_OFFSET)
+    )
     # "Same table" guard: requiring a strictly identical column count is too
     # harsh, OCR regularly adds or loses a column from one page to the next.
     # A sufficiently similar header does the job just as well.
