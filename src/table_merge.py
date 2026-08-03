@@ -449,7 +449,29 @@ def is_continuation(table_a: Table, table_b: Table,
         and not signals["table_b_restarts_at_1"]
     )
 
-    disqualified = signals["table_b_restarts_at_1"] and not signals["table_b_has_continuation_marker"]
+    # Two vetoes, and both say the same thing: the document itself states
+    # that the previous table is finished.
+    #
+    #   restarting at 1     a new numbering is a new document
+    #   ending on a total   "Tong tien" closes an invoice; the template only
+    #                       prints it on the last page, so anything after it
+    #                       belongs to something else
+    #
+    # The total was already one term among several in strong_signal, but
+    # index_continuity fired on its own and overrode it. That is only safe
+    # while the STT restarts at 1 in every invoice -- the assumption of our
+    # single template. On a format numbering continuously across invoices,
+    # invoice N ending at 32 and invoice N+1 starting at 33 looked exactly
+    # like a continuation, and two distinct invoices were merged into one.
+    # A wrong merge is the worst failure available here: it fabricates a
+    # table mixing two documents, and nothing downstream can detect it.
+    #
+    # A continuation marker on B overrides both vetoes, because it is the
+    # document asserting the continuation explicitly rather than us
+    # inferring it.
+    closed_by_document = (signals["table_b_restarts_at_1"]
+                          or signals["table_a_ends_with_total"])
+    disqualified = closed_by_document and not signals["table_b_has_continuation_marker"]
     signals["decision"] = bool(strong_signal or weak_signal) and not disqualified
     signals["confidence"] = "strong" if strong_signal else ("weak" if weak_signal else "none")
     return signals

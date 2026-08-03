@@ -88,19 +88,50 @@ def ground_truth_rows(invoice: dict) -> list:
     return rows
 
 
+# A line printed once per invoice, in the header block only -- never on a
+# continuation page. It is the most reliable "a new invoice starts here"
+# marker available in the PDF.
+_INVOICE_HEADER = "Điện thoại: 02"
+
+
 def page_groups_from_pdf(pdf_path: Path) -> list:
     """Group the PDF pages by invoice.
 
-    A page opens a new invoice if it has no continuation marker AND contains
-    a table. Pages without a table (footer overflow) are attached to the
-    previous invoice.
+    A page opens a new invoice when it carries the header block, which
+    LaTeX prints once per invoice and never repeats on a continuation page.
+
+    Why not the continuation marker. The first version keyed on the absence
+    of "Tiếp trang trước" -- which works only as long as EVERY template
+    prints it. The diversified test set deliberately includes invoices that
+    do not, and on those the marker-based grouping silently merged distinct
+    invoices into one group. Worse, it would have graded the merge algorithm
+    using one of the very signals that algorithm relies on: the ground truth
+    must not share a failure mode with what it measures.
+
+    The header rule falls back to the old behaviour when no header is
+    recognised, so existing runs keep their grouping.
     """
     import fitz
 
     doc = fitz.open(str(pdf_path))
+    pages = [page.get_text() for page in doc]
+
+    if not any(_INVOICE_HEADER in text for text in pages):
+        return _groups_from_continuation_marker(pages)
+
     groups = []
-    for i, page in enumerate(doc, start=1):
-        text = page.get_text()
+    for i, text in enumerate(pages, start=1):
+        if _INVOICE_HEADER in text:
+            groups.append([i])
+        elif groups:
+            groups[-1].append(i)
+    return groups
+
+
+def _groups_from_continuation_marker(pages) -> list:
+    """Fallback: a page without a continuation marker opens an invoice."""
+    groups = []
+    for i, text in enumerate(pages, start=1):
         has_table = "STT" in text
         is_continuation = "Tiếp trang trước" in text
         if has_table and not is_continuation:
