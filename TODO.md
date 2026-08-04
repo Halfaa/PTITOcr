@@ -21,7 +21,7 @@ Rapporté à la timeline officielle, le travail est en avance : les semaines
 - [x] **Extraction adaptative** (`src/adaptive.py`) — bat les deux variantes
       prises seules, à 0,004 du choix parfait.
 - [x] **Jeu de test diversifié** (`gen_variants_json.py`) — 12 factures,
-      25 pages, 5 en numérotation continue.
+      25 pages, 5 en numérotation continue, à plat et déformées, mesuré.
 - [x] **Export JSON** avec statut d'extraction explicite.
 
 ### Les chiffres
@@ -32,20 +32,22 @@ Rapporté à la timeline officielle, le travail est en avance : les semaines
 | PaddleOCR-VL adaptatif | 0,951 | 24/32 | 100 % / 100 % |
 | PP-StructureV3 | 0,557 | 9/32 | 100 % / 100 % |
 
+Et sur le jeu diversifié — 12 factures, 6 gabarits, **jamais vu par les
+algorithmes** :
+
+| | TEDS | champs | fusion |
+|---|---|---|---|
+| à plat | 0,976 | — | 100 % / 100 % |
+| déformé, adaptatif | **0,942** | 44/48 | 100 % |
+
+Le plafond du choix parfait était à 0,945 : la règle de décision n'est plus
+le maillon faible.
+
 ---
 
 ## À faire — par ordre de valeur
 
-### 1. Mesurer le jeu diversifié  ⭐ le plus rentable
-
-Tout est prêt : les 25 pages sont rendues, la suite d'évaluation accepte
-`--pdf` et `--gt-dir`. Il ne manque que le run OCR.
-
-Le chiffre à surveiller est la **précision** de la fusion, pas le rappel :
-c'est elle que le mode `global` attaque. Voir
-`docs/jeu_de_test_diversifie.md`.
-
-### 2. Les photos réelles
+### 1. Les photos réelles  ⭐ le plus urgent
 
 La timeline les place semaines 9–10, mais elles ont une contrainte physique :
 il faut **imprimer les fausses factures et les photographier**. Ça ne se
@@ -56,26 +58,21 @@ L'astuce est qu'on garde la vérité terrain exacte, ce qu'aucune photo de
 document réel ne permet. Et ça valide le pipeline doc3D en comparant
 déformation simulée et réelle sur le même contenu.
 
-### 3. Le prototype PWA
+### 2. Le prototype PWA
 
 Photo au téléphone, rendu immédiat. Le calcul reste côté serveur, donc l'API
 sert aussi de livrable indépendant. À afficher : le quadrilatère détecté, les
 cadres de l'OCR, la décision de fusion, et les lignes surlignées selon leur
 statut de validation.
 
-### 4. Les variantes déformées du jeu diversifié
-
-Même contenu, passé par Blender. Mesurer les pages plates d'abord permet
-d'attribuer chaque écart à sa cause : la mise en page, ou la déformation.
-
-### 5. NER sur texte libre
+### 3. NER sur texte libre
 
 Partiellement couvert par l'extraction de champs étiquetés. Les entités en
 texte libre (« Glucose : 110 mg/dL ») ne le sont pas — et le corpus actuel
 n'en contient presque pas, il faudra enrichir le générateur pour que la tâche
 ait un sens.
 
-### 6. Anonymisation des données patient
+### 4. Anonymisation des données patient
 
 Phase 4 du sujet, non commencée. À discuter avec l'encadrante : la politique
 d'usage de HunyuanOCR interdit par ailleurs les décisions automatisées en
@@ -114,9 +111,11 @@ facture. Un format numérotant en continu faisait fusionner deux factures
 distinctes ; corrigé par le veto de clôture, et `tests/test_merge_assumptions.py`
 garde le cas. À revalider sur tout nouveau format.
 
-**Échantillon.** 8 factures d'un gabarit, plus 12 variantes non encore
-mesurées. Les chiffres établissent que la chaîne encaisse du bruit OCR réel,
-pas qu'elle généralise.
+**Échantillon.** 20 factures, 7 gabarits, 42 pages. La politique adaptative
+tient sur un jeu qu'elle n'a jamais vu, ce qui est un vrai indice de
+généralisation — mais toutes les données restent **synthétiques**, issues d'un
+seul générateur et d'un seul moteur de déformation. Aucune photo réelle à ce
+jour.
 
 **Deux venv incompatibles.** `venv` (PaddleOCR, évaluation) et `venv_hunyuan`
 (HunyuanOCR, transformers ≥ 5.13). Les scripts vérifient l'environnement au

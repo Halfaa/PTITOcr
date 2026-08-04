@@ -411,3 +411,61 @@ Le notebook produit alors deux runs et deux archives, nommés
 `<prefixe>_<passe>_<modèle>`. Un seul dataset d'images brutes suffit
 désormais, quel que soit le nombre de variantes de prétraitement à comparer.
 
+---
+
+## 14. La politique adaptative sur un jeu jamais vu (3 août)
+
+`src/adaptive.py` a été conçue et réglée sur les 8 factures d'origine. On
+l'applique ici à 12 factures, 6 gabarits, déformées — des données qu'elle n'a
+jamais vues.
+
+| | TEDS | champs |
+|---|---|---|
+| brut | 0,906 | 42/48 |
+| prétraité | 0,879 | 24/48 |
+| **adaptatif** | **0,942** | **44/48** |
+| *plafond (choix parfait, a posteriori)* | *0,945* | |
+
+Elle bat les deux variantes **sur les deux métriques**, et se place à 0,003
+du meilleur choix atteignable. C'est le résultat de généralisation le plus
+solide du projet : la règle de décision n'a pas été ajustée à ce jeu.
+
+### Pourquoi elle gagne
+
+Le prétraitement s'effondre sur deux factures, et la note de confiance —
+calculée **sans vérité terrain** — le voit :
+
+| facture | confiance brut / prétraité | choix | TEDS brut | TEDS prétraité |
+|---|---|---|---|---|
+| 9 | 1,00 / 0,75 | brut | **0,905** | 0,509 |
+| 12 | 1,00 / 0,75 | brut | **0,960** | 0,580 |
+
+C'est la validation la plus nette du principe : la redondance arithmétique
+d'une facture suffit à repérer un désastre d'extraction là où aucune vérité
+terrain n'existe. En production, c'est exactement la situation.
+
+Symétriquement, sur la facture 1 le prétraitement récupère une page qui avait
+décroché (0,828 → 0,957) et la confiance le voit aussi (0,60 contre 1,00).
+
+### Ce que ça dit du prétraitement
+
+Pris seul, il **dégrade** ici : 0,906 → 0,879, et les champs d'en-tête
+s'effondrent de 42/48 à 24/48 — le même défaut de recadrage que sur le jeu
+d'origine.
+
+Mais ce n'est pas la bonne façon de le juger. Il ne remplace pas la lecture
+brute, il en est le **filet de sécurité** : il rattrape les pages qui
+décrochent, au prix de nouvelles pertes ailleurs. C'est précisément ce qu'une
+politique adaptative sait exploiter et qu'une moyenne ne peut pas montrer.
+
+### Bilan des quatre branches
+
+| | TEDS | fusion |
+|---|---|---|
+| variantes à plat | 0,976 | 100 % / 100 % |
+| variantes déformées, brut | 0,906 | 100 % / 100 % |
+| variantes déformées, prétraité | 0,879 | 100 % / 90 % |
+| **variantes déformées, adaptatif** | **0,942** | — |
+
+La déformation coûte 0,070, l'extraction adaptative en récupère la moitié.
+
