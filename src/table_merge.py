@@ -456,9 +456,21 @@ def is_continuation(table_a: Table, table_b: Table,
     _offset = (first_idx_b - _predicted_next
                if (first_idx_b is not None and _predicted_next is not None) else None)
     signals["index_offset"] = _offset
+    # Une table sans ligne de donnees ne prouve rien. Mesure sur le jeu
+    # deforme et pretraite : l'OCR rendait pour la page 16 une coquille --
+    # l'en-tete seul, marqueur de continuation colle dedans, zero ligne. Sa
+    # numerotation etant vide, la branche de secours ci-dessous se declenchait
+    # et fusionnait cette page avec la facture SUIVANTE.
+    #
+    # La branche de secours existe pour un vrai tableau dont l'OCR a massacre
+    # les numeros, pas pour une table vide. On exige donc que A ait du
+    # contenu avant d'accepter que sa numerotation soit illisible.
+    signals["table_a_has_data"] = len(table_a.data_rows) > 0
+
     signals["table_b_starts_mid_numbering"] = (
         first_idx_b is not None and first_idx_b > 1
-        and (_offset is None or abs(_offset) <= _MAX_INDEX_OFFSET)
+        and (abs(_offset) <= _MAX_INDEX_OFFSET if _offset is not None
+             else signals["table_a_has_data"])
     )
     # "Same table" guard: requiring a strictly identical column count is too
     # harsh, OCR regularly adds or loses a column from one page to the next.
