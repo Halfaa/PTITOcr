@@ -143,19 +143,49 @@ CHANDRA_MODEL_ID = "datalab-to/chandra-ocr-2"
 
 
 def _load_chandra():
-    """Load Chandra OCR 2 on CPU.
+    """Load Chandra OCR 2, on GPU when there is one and on CPU otherwise.
 
-    CPU is not a choice: 5B parameters do not fit in 4 GB of VRAM, not even
-    quantised to 4 bits once the vision encoder activations are counted. It
-    takes ~10 GB of RAM in bf16 and runs at roughly 15 min per image, so a
-    17-page run is an overnight job.
+    On the laptop's 4 GB card, CPU is not a choice: 5B parameters do not fit
+    in 4 GB of VRAM, not even quantised to 4 bits once the vision encoder
+    activations are counted. It takes ~10 GB of RAM in bf16 and runs at
+    roughly 15 min per image, so a 17-page run is an overnight job.
+
+    On a rented GPU (Kaggle T4, 16 GB) the weights fit and the same page
+    takes a minute or two. Two details make the difference between that and
+    a run slower than the CPU one:
+
+    **dtype.** Chandra is published in bf16, but bf16 has no hardware support
+    before compute capability 8.0. A T4 (7.5) or a P100 (6.0) will accept
+    bf16 tensors and emulate them, several times slower than fp16 -- with no
+    error to tell you why. We therefore pick fp16 below 8.0. Chandra derives
+    from Qwen3.5, whose activations stay well inside the fp16 range at
+    inference; the risk that motivates bf16 is a training-time one.
+
+    **attention.** flash-attention 2 requires 8.0 as well. Asking for it on a
+    T4 fails at load time, so we ask for `sdpa`, which PyTorch maps to the
+    best kernel the card actually has.
     """
     import torch
     from transformers import AutoModelForImageTextToText, AutoProcessor
 
-    print(f"Loading {CHANDRA_MODEL_ID} on CPU (~10 GB in RAM, be patient)...")
-    model = AutoModelForImageTextToText.from_pretrained(
-        CHANDRA_MODEL_ID, dtype=torch.bfloat16, device_map="cpu")
+    if torch.cuda.is_available():
+        major = torch.cuda.get_device_capability()[0]
+        dtype = torch.bfloat16 if major >= 8 else torch.float16
+        vram = torch.cuda.get_device_properties(0).total_memory / 1e9
+        print(f"Loading {CHANDRA_MODEL_ID} on {torch.cuda.get_device_name(0)} "
+              f"({vram:.0f} GB, capability {torch.cuda.get_device_capability()}) "
+              f"in {str(dtype).split('.')[-1]}...")
+        # device_map={"": 0} pins the whole model to ONE GPU. "auto" would
+        # spread 5B across the two T4s Kaggle hands out, adding a PCIe
+        # round-trip per forward pass for no benefit: 10 GB fits on one card.
+        kwargs = {"dtype": dtype, "device_map": {"": 0},
+                  "attn_implementation": "sdpa"}
+    else:
+        print(f"No GPU visible -> loading {CHANDRA_MODEL_ID} on CPU "
+              "(~10 GB in RAM, ~15 min per image, be patient)...")
+        kwargs = {"dtype": torch.bfloat16, "device_map": "cpu"}
+
+    model = AutoModelForImageTextToText.from_pretrained(CHANDRA_MODEL_ID, **kwargs)
     model.eval()
     model.processor = AutoProcessor.from_pretrained(CHANDRA_MODEL_ID)
     model.processor.tokenizer.padding_side = "left"

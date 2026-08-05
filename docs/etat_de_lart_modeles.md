@@ -164,10 +164,15 @@ PaddleOCR-VL et PP-StructureV3.
 Ordre suggéré :
 
 1. **HunyuanOCR-1.5** — vérifier d'abord qu'il tient en VRAM sur une seule
-   image avant de lancer un benchmark complet.
-2. **Vintern-1B-v3.5** — si la sortie tableau est exploitable. Angle
+   image avant de lancer un benchmark complet. *(fait : 0,928 puis 0,974 en
+   adaptatif)*
+2. **Chandra OCR 2** — écarté en semaine 2 pour cause de VRAM, remis au
+   programme via un GPU loué. Voir [chandra_ocr2.md](chandra_ocr2.md) : c'est
+   le seul modèle de la classe 5 B du comparatif, et sa licence n'a aucune
+   restriction géographique, contrairement à celle de HunyuanOCR.
+3. **Vintern-1B-v3.5** — si la sortie tableau est exploitable. Angle
    « modèle spécifiquement vietnamien » intéressant pour le rapport.
-3. **dots.ocr en 4 bits** — si les deux premiers déçoivent.
+4. **dots.ocr en 4 bits** — si les précédents déçoivent.
 
 ---
 
