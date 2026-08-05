@@ -134,6 +134,64 @@ retomber sur le meilleur noyau que la carte possède vraiment.
 
 ---
 
+## 6. Résultats (5 août) — les prédictions face aux mesures
+
+Les cinq branches ont tourné sur un T4 Kaggle, ~81 s/page en fp16. Protocole
+unifié (`scripts/eval_all.py`), détail dans
+`results/_evaluations/chandra_et_protocole_unifie.txt`.
+
+### Multi-pages (8 factures, 17 pages déformées)
+
+| | Chandra | Hunyuan | PaddleVL | PP-Struct |
+|---|---|---|---|---|
+| TEDS brut | 0,916 | **0,950** | 0,909 | 0,557 |
+| TEDS prétraité | **0,966** | 0,879* | 0,951 | — |
+| TEDS adaptatif | **0,966** | 0,953 | 0,951 | — |
+| plafond | 0,967 | 0,955 | 0,955 | — |
+| champs (adaptatif) | **29/32** | 28/32 | 24/32 | 9/32 |
+| fusion P/R | 100/100 | 100/100 | 100/88 | 100/100 |
+| arithmétique R/P | 80/100 | 100/100 | 50/100 | 75/100 |
+
+\* le run prétraité de Hunyuan date d'une version antérieure du module de
+prétraitement (IoU 0,79 au lieu de 0,90) : son adaptatif est un plancher.
+
+### Jeu diversifié (12 factures, 6 gabarits)
+
+| | Chandra | PaddleVL |
+|---|---|---|
+| à plat | **0,981** | 0,976 |
+| déformé, brut | **0,944** | 0,906 |
+| déformé, adaptatif | **0,977** (plafond 0,977) | 0,942 (plafond 0,945) |
+| champs à plat | **47/48** | — |
+| champs déformé (adaptatif) | **46/48** | 44/48 |
+
+### Ce que les prédictions avaient anticipé — et pas
+
+**Anticipé.** Sur pages déformées brutes, cinq fois plus de paramètres
+n'achètent pas la première place : 0,916 contre 0,950 pour Hunyuan. C'est
+cohérent avec son benchmark vietnamien (80,4 %, en régression sur Chandra 1).
+
+**Pas anticipé.** Chandra est le modèle qui profite **le plus** du
+prétraitement : +0,050 sur le jeu multi-pages, là où Hunyuan perdait sur son
+ancien run prétraité. Aplanies et éclairées uniformément, ses lectures
+prennent la tête partout : meilleur adaptatif multi-pages (0,966), meilleur
+sur le diversifié à plat (0,981) comme déformé (0,977, **au plafond** — la
+règle de décision ne perd rien).
+
+### Deux défauts propres à Chandra
+
+**En-têtes HTML malformés.** Des `colspan`/`rowspan` mal placés qui absorbent
+une colonne — visibles dès la première page multi-pages. TEDS-Struct les
+paie ; la fusion n'en souffre pas.
+
+**Un raté arithmétiquement invisible.** Son rappel de validation est de 80 %,
+et l'exemple manqué est instructif : une ligne décalée d'une colonne qui
+*multiplie encore juste* (1700 × 6800 = 11 560 000). C'est le seul type
+d'erreur numérique auquel la validation est structurellement aveugle — à
+citer dans la section « échecs silencieux ».
+
+---
+
 ## Sources
 
 - [datalab-to/chandra-ocr-2 (Hugging Face)](https://huggingface.co/datalab-to/chandra-ocr-2) — benchmarks olmOCR et multilingue, licence, débit

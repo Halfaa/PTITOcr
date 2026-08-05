@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recollage des tableaux multi-pages</title>
+<style>
+:root {
+  --encre:#1f2933; --doux:#6b7785; --bord:#dde2e7; --accent:#2f6fb5;
+  --vert:#3f9142; --orange:#d98324; --fond:#f7f9fa;
+  --p1:#e8f1fb; --p2:#eaf6ea; --p3:#fdf1e3; --p4:#f3ecfa; --p5:#fdeaea;
+}
+* { box-sizing:border-box; }
+body { margin:0; padding:32px 28px 80px; background:#fff; color:var(--encre);
+  font:15px/1.6 -apple-system,"Segoe UI",Roboto,Helvetica,sans-serif; }
+.page { max-width:1120px; margin:0 auto; }
+h1 { font-size:1.5rem; margin:0 0 6px; }
+.sous { color:var(--doux); margin:0 0 24px; }
+h2 { font-size:1.05rem; margin:36px 0 12px; }
+
+.barre { display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  padding:12px 14px; background:var(--fond); border:1px solid var(--bord);
+  border-radius:8px; margin-bottom:16px; font-size:0.9rem; }
+select, button { font:inherit; padding:6px 10px; border-radius:6px;
+  border:1px solid var(--bord); background:#fff; color:var(--encre); }
+button.primaire { background:var(--accent); color:#fff; border-color:var(--accent);
+  font-weight:600; padding:8px 18px; cursor:pointer; }
+button.primaire:disabled { opacity:.45; cursor:default; }
+label { color:var(--doux); }
+
+#zone { border:2px dashed var(--bord); border-radius:12px; padding:40px 20px;
+  text-align:center; color:var(--doux); cursor:pointer; transition:.15s; }
+#zone.actif { border-color:var(--accent); background:var(--p1); color:var(--accent); }
+#zone strong { display:block; font-size:1.05rem; color:var(--encre); margin-bottom:4px; }
+
+#vignettes { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+.vignette { width:104px; text-align:center; font-size:.72rem; color:var(--doux);
+  word-break:break-all; }
+.vignette img { width:104px; height:136px; object-fit:cover; border-radius:6px;
+  border:1px solid var(--bord); display:block; margin-bottom:4px; }
+
+.bandeau { display:flex; gap:28px; flex-wrap:wrap; padding:16px 20px;
+  border:1px solid var(--bord); border-left:4px solid var(--vert);
+  border-radius:8px; background:var(--fond); margin:8px 0 24px; }
+.bandeau div { min-width:120px; }
+.bandeau .val { font-size:1.7rem; font-weight:700; line-height:1.15; }
+.bandeau .lib { color:var(--doux); font-size:.82rem; }
+
+table { border-collapse:collapse; width:100%; font-size:.82rem; margin:6px 0 0; }
+th,td { border:1px solid var(--bord); padding:4px 7px; text-align:left;
+  vertical-align:top; }
+thead th { background:#eef2f5; font-weight:600; position:sticky; top:0; }
+.avant { display:flex; gap:14px; align-items:flex-start; overflow-x:auto;
+  padding-bottom:6px; }
+.carte { flex:0 0 auto; min-width:250px; max-width:420px; border:1px solid var(--bord);
+  border-radius:8px; overflow:hidden; }
+.carte h3 { margin:0; padding:7px 10px; font-size:.82rem; background:#eef2f5;
+  border-bottom:1px solid var(--bord); }
+.carte .corps { max-height:280px; overflow:auto; }
+
+.fleche { flex:0 0 auto; align-self:center; text-align:center; min-width:186px;
+  padding:10px 8px; border-radius:8px; font-size:.76rem; }
+.fleche.oui { background:#eaf6ea; border:1px solid #bfe0bf; }
+.fleche.non { background:#fdeaea; border:1px solid #f0c9c9; }
+.fleche .verdict { font-weight:700; font-size:.86rem; margin-bottom:6px; }
+.fleche.oui .verdict { color:var(--vert); }
+.fleche.non .verdict { color:#b3403f; }
+.fleche ul { margin:0; padding:0; list-style:none; text-align:left; }
+.fleche li { padding:1px 0; color:var(--doux); }
+.fleche li.actif { color:var(--encre); font-weight:600; }
+.fleche li::before { content:"·  "; }
+.fleche li.actif::before { content:"✓  "; }
+
+.legende { display:flex; gap:14px; flex-wrap:wrap; font-size:.8rem;
+  color:var(--doux); margin:10px 0; align-items:center; }
+.pastille { display:inline-block; width:12px; height:12px; border-radius:3px;
+  border:1px solid var(--bord); vertical-align:-2px; margin-right:5px; }
+
+.note { color:var(--doux); font-size:.85rem; }
+.alerte { padding:10px 14px; border-radius:8px; background:#fdeaea;
+  border:1px solid #f0c9c9; color:#8f3230; margin:12px 0; font-size:.88rem; }
+#attente { display:none; color:var(--accent); font-size:.9rem; margin-top:10px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>Recollage des tableaux multi-pages</h1>
+<p class="sous">Une facture dont le tableau déborde sur plusieurs pages est
+lue en morceaux : chaque modèle OCR travaille page par page. On voit ici les
+morceaux, la décision prise à chaque transition, puis le tableau
+reconstitué.</p>
+
+<div class="barre">
+  <label for="mode">Lecture</label>
+  <select id="mode">
+    <option value="rejeu">Rejeu — instantané</option>
+    <option value="direct">Direct — le modèle lit vraiment (~80 s/page)</option>
+  </select>
+  <span id="bloc-run">
+    <label for="run">Run</label>
+    <select id="run"><option value="">détection automatique</option></select>
+  </span>
+  <span id="bloc-modele" style="display:none">
+    <label for="modele">Modèle</label>
+    <select id="modele">
+      <option value="hunyuan">HunyuanOCR-1.5 (GPU)</option>
+      <option value="paddleocr-vl">PaddleOCR-VL</option>
+      <option value="ppstructure">PP-StructureV3</option>
+    </select>
+  </span>
+  <button class="primaire" id="lancer" disabled>Recoller</button>
+  <span id="attente">lecture en cours…</span>
+</div>
+
+<div id="zone">
+  <strong>Glisse les pages d'une facture ici</strong>
+  plusieurs images à la fois — l'ordre est rétabli tout seul
+  <input type="file" id="fichier" accept="image/*" multiple hidden>
+</div>
+<div id="vignettes"></div>
+
+<div id="sortie"></div>
+
+</div>
+<script>
+const $ = s => document.querySelector(s);
+let fichiers = [];
+
+// --- dépôt ---------------------------------------------------------------
+const zone = $("#zone");
+zone.addEventListener("click", () => $("#fichier").click());
+$("#fichier").addEventListener("change", e => accepter([...e.target.files]));
+["dragenter","dragover"].forEach(t => zone.addEventListener(t, e => {
+  e.preventDefault(); zone.classList.add("actif"); }));
+["dragleave","drop"].forEach(t => zone.addEventListener(t, e => {
+  e.preventDefault(); zone.classList.remove("actif"); }));
+zone.addEventListener("drop", e =>
+  accepter([...e.dataTransfer.files].filter(f => f.type.startsWith("image/"))));
+
+// Tri « naturel » : page_2 avant page_10. L'ordre alphabétique placerait la
+// page 10 juste après la page 1, et le recollage verrait une numérotation
+// incohérente là où il n'y en a pas.
+const cleNaturelle = n => n.split(/(\d+)/).map(t => /^\d+$/.test(t) ? +t : t);
+function comparer(a, b) {
+  const x = cleNaturelle(a), y = cleNaturelle(b);
+  for (let i = 0; i < Math.max(x.length, y.length); i++) {
+    if (x[i] === y[i]) continue;
+    if (x[i] === undefined) return -1;
+    if (y[i] === undefined) return 1;
+    return x[i] < y[i] ? -1 : 1;
+  }
+  return 0;
+}
+
+function accepter(liste) {
+  fichiers = liste.sort((a, b) => comparer(a.name, b.name));
+  $("#vignettes").innerHTML = "";
+  fichiers.forEach(f => {
+    const d = document.createElement("div");
+    d.className = "vignette";
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(f);
+    d.append(img, document.createTextNode(f.name));
+    $("#vignettes").append(d);
+  });
+  $("#lancer").disabled = fichiers.length === 0;
+  $("#sortie").innerHTML = "";
+}
+
+$("#mode").addEventListener("change", e => {
+  const direct = e.target.value === "direct";
+  $("#bloc-modele").style.display = direct ? "" : "none";
+  $("#bloc-run").style.display = direct ? "none" : "";
+});
+
+fetch("/api/runs").then(r => r.json()).then(d => {
+  d.runs.forEach(r => {
+    const o = document.createElement("option");
+    o.value = r.nom; o.textContent = `${r.nom} (${r.pages} pages)`;
+    $("#run").append(o);
+  });
+});
+
+// --- appel ---------------------------------------------------------------
+$("#lancer").addEventListener("click", async () => {
+  const form = new FormData();
+  fichiers.forEach(f => form.append("fichiers", f, f.name));
+  form.append("mode", $("#mode").value);
+  form.append("run", $("#run").value);
+  form.append("modele", $("#modele").value);
+
+  $("#lancer").disabled = true;
+  $("#attente").style.display = "inline";
+  $("#sortie").innerHTML = "";
+  try {
+    const r = await fetch("/api/fusion", { method: "POST", body: form });
+    const d = await r.json();
+    if (!r.ok) { alerte(d.erreur || "Erreur", d); return; }
+    afficher(d);
+  } catch (e) {
+    alerte("Le serveur n'a pas répondu : " + e.message);
+  } finally {
+    $("#lancer").disabled = false;
+    $("#attente").style.display = "none";
+  }
+});
+
+function alerte(message, d) {
+  let extra = "";
+  if (d && d.absentes && d.absentes.length)
+    extra = `<br>Pas de lecture enregistrée pour : ${d.absentes.join(", ")}.
+      Ces images n'appartiennent pas au run choisi — passe en mode direct,
+      ou dépose des pages d'un jeu de test.`;
+  $("#sortie").innerHTML = `<div class="alerte">${message}${extra}</div>`;
+}
+
+// --- rendu ---------------------------------------------------------------
+const COULEURS = ["var(--p1)","var(--p2)","var(--p3)","var(--p4)","var(--p5)"];
+let couleurDe = {};
+
+// Le serveur envoie déjà l'en-tête séparé du corps, et la page d'origine de
+// chaque ligne : rien à recalculer ici, donc rien à désynchroniser.
+function tableHTML(t, colorer) {
+  if (!t.corps.length) return "<p class='note' style='padding:10px'>aucune ligne</p>";
+  const th = t.entete.map(c => `<th>${echapper(c)}</th>`).join("");
+  const tr = t.corps.map(ligne => {
+    const fond = colorer && ligne.page != null && couleurDe[ligne.page]
+      ? ` style="background:${couleurDe[ligne.page]}"` : "";
+    return `<tr${fond}>${ligne.cellules.map(c => `<td>${echapper(c)}</td>`).join("")}</tr>`;
+  }).join("");
+  return `<table><thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table>`;
+}
+
+const echapper = s => String(s).replace(/[&<>]/g,
+  c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]));
+
+function afficher(d) {
+  couleurDe = {};
+  d.pages.forEach((p, i) => couleurDe[p.numero] = COULEURS[i % COULEURS.length]);
+
+  const lignesAvant = d.pages.reduce((s, p) => s + p.table.n_lignes_donnees, 0);
+  const premiere = d.pages[0].table.n_lignes_donnees;
+  const groupes = d.groupes;
+  const plusGrand = Math.max(...groupes.map(g => g.table.n_lignes_donnees));
+
+  let html = "";
+
+  if (d.absentes && d.absentes.length)
+    html += `<div class="alerte">Sans lecture enregistrée, donc ignorées :
+      ${d.absentes.join(", ")}</div>`;
+  if (d.sans_table && d.sans_table.length)
+    html += `<div class="alerte">Aucun tableau extrait de :
+      ${d.sans_table.join(", ")} — échec de lecture en amont, hors de portée
+      du recollage.</div>`;
+
+  html += `<div class="bandeau">
+    <div><div class="val">${d.pages.length}</div>
+         <div class="lib">tableaux lus, un par page</div></div>
+    <div><div class="val">${groupes.length}</div>
+         <div class="lib">facture${groupes.length > 1 ? "s" : ""} reconstituée${groupes.length > 1 ? "s" : ""}</div></div>
+    <div><div class="val">${premiere} → ${plusGrand}</div>
+         <div class="lib">lignes : 1re page seule, puis recollé</div></div>
+    <div><div class="val">${lignesAvant}</div>
+         <div class="lib">lignes de données au total</div></div>
+  </div>`;
+
+  html += `<h2>Avant — ce que le modèle rend, page par page</h2>
+    <p class="note">Chaque page porte son propre en-tête ; les morceaux ne
+    savent rien les uns des autres.</p><div class="avant">`;
+
+  d.pages.forEach((p, i) => {
+    html += `<div class="carte">
+      <h3>page ${p.numero} — ${p.table.n_lignes_donnees} lignes</h3>
+      <div class="corps">${tableHTML(p.table)}</div></div>`;
+    const dec = d.decisions[i];
+    if (dec) {
+      const puces = dec.signaux.map(s =>
+        `<li class="${s.actif ? "actif" : ""}">${s.nom}</li>`).join("");
+      html += `<div class="fleche ${dec.fusion ? "oui" : "non"}">
+        <div class="verdict">${dec.fusion ? "→ RECOLLÉ" : "✕ SÉPARÉ"}</div>
+        <ul>${puces}</ul>
+        <div style="margin-top:6px">en-tête ${dec.similarite_entete} ·
+          ${dec.dernier_index_a} → ${dec.premier_index_b}</div>
+      </div>`;
+    }
+  });
+  html += `</div>`;
+
+  html += `<h2>Après — le tableau reconstitué</h2>`;
+  html += `<div class="legende"><span>Provenance des lignes :</span>` +
+    d.pages.map(p =>
+      `<span><span class="pastille" style="background:${couleurDe[p.numero]}"></span>page ${p.numero}</span>`
+    ).join("") + `</div>`;
+
+  groupes.forEach((g, i) => {
+    html += `<div class="carte" style="max-width:none;margin-bottom:18px">
+      <h3>facture ${i + 1} — pages ${g.pages.join(", ")} —
+        ${g.table.n_lignes_donnees} lignes, un seul en-tête</h3>
+      <div class="corps" style="max-height:none">
+        ${tableHTML(g.table, true)}</div></div>`;
+  });
+
+  html += `<p class="note">L'en-tête répété, la bannière de continuation et
+    le marqueur « voir page suivante » ont disparu : ce sont des artefacts de
+    la mise en page, pas des données. C'est précisément ce que le recollage
+    doit faire disparaître.</p>`;
+
+  $("#sortie").innerHTML = html;
+}
+</script>
+</body>
+</html>

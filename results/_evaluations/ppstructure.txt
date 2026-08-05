@@ -1,0 +1,122 @@
+##############################################################################
+# eval_teds --run multipage_ppstructure
+##############################################################################
+Run: multipage_ppstructure
+8 invoice(s), 17 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_1  [1, 2]           0.158      0.449  +0.291         0.525        0.879
+invoice_2  [3, 4]           0.312      0.397  +0.085         0.847        0.965
+invoice_3  [5, 6]           0.544      0.544  +0.000         0.689        0.689
+invoice_4  [7, 8]           0.509      0.699  +0.190         0.712        0.971
+invoice_5  [9, 10, 11]      0.198      0.182  -0.016         0.510        0.447
+invoice_6  [12, 13]         0.733      0.832  +0.099         0.883        0.963
+invoice_7  [14, 15]         0.234      0.591  +0.358         0.583        0.980
+invoice_8  [16, 17]         0.705      0.757  +0.052         0.793        0.962
+------------------------------------------------------------------------------
+MEAN                       0.424      0.557  +0.132         0.693        0.857
+
+TEDS         0.557  (structure + content)
+TEDS-Struct  0.857  (structure only)
+Gap          0.300  -> errors come mostly from READING the text
+
+
+##############################################################################
+# eval_multipage_merge --run multipage_ppstructure
+##############################################################################
+Ground truth: 9 real continuation(s) -> [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10), (10, 11), (12, 13), (14, 15), (16, 17)]
+
+Pages where OCR extracted NO table: [6, 11]
+  -> continuations involving them are out of the algorithm's reach (upstream failure, not a merging failure)
+
+page  1 -> 2   predicted=yes expected=yes OK  (correct merge)              [hdr=0.00 lastA=10 firstB=20 total_A=False]
+page  2 -> 3   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=32 firstB=1 total_A=True]
+page  3 -> 4   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=11 firstB=20 total_A=False]
+page  4 -> 5   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=22 firstB=1 total_A=True]
+page  5 -> 7   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=19 firstB=1 total_A=False]
+page  7 -> 8   predicted=yes expected=yes OK  (correct merge)              [hdr=0.83 lastA=19 firstB=20 total_A=False]
+page  8 -> 9   predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.50 lastA=26 firstB=1 total_A=True]
+page  9 -> 10  predicted=yes expected=yes OK  (correct merge)              [hdr=0.50 lastA=7 firstB=17 total_A=False]
+page 10 -> 12  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=33 firstB=1 total_A=False]
+page 12 -> 13  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page 13 -> 14  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=21 firstB=2 total_A=True]
+page 14 -> 15  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=12 firstB=20 total_A=False]
+page 15 -> 16  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=33 firstB=1 total_A=True]
+page 16 -> 17  predicted=yes expected=yes OK  (correct merge)              [hdr=0.67 lastA=19 firstB=20 total_A=False]
+
+True positives  : 7
+False positives : 0   (wrong merges -- the worst kind: they corrupt the data)
+Missed          : 0
+True negatives  : 7
+
+Precision 100%   Recall 100%   F1 100%
+
+
+##############################################################################
+# eval_fields --runs multipage_ppstructure
+##############################################################################
+run                               hospital        customer         invoice          doctor   overall
+----------------------------------------------------------------------------------------------------
+multipage_ppstructure             2/8 (0x)        2/8 (0x)        3/8 (1x)        2/8 (0x)      28%
+
+Reading: 'ok/total (N exact)'. ok = field recovered, tolerating 
+diacritic damage; N exact = recovered character for character.
+
+
+##############################################################################
+# eval_validation --run multipage_ppstructure
+##############################################################################
+Run: multipage_ppstructure
+
+invoice     lines   right    wrong    flagged   detected  total OK
+------------------------------------------------------------------
+invoice_1        0       0        0          0          0         ?
+invoice_2       22       1       21         16         16        NO
+invoice_3       19      12        7          2          2         ?
+invoice_4       26      16       10          9          9        NO
+invoice_5       40       0       40         40         40         ?
+invoice_6       21      16        5          5          5        NO
+invoice_7       33      13       20         13         13        NO
+invoice_8       24       0       24         10         10         ?
+------------------------------------------------------------------
+
+Genuinely wrong lines          : 127
+  flagged by validation        : 95  (75%)
+  slipped through the net      : 32
+Correct lines flagged wrongly  : 0
+
+Automatic corrections          : 35
+  of which exact                : 3  (9%)
+
+Recall 75%   Precision 100%
+
+Examples of UNDETECTED errors (the line adds up but is still wrong):
+  invoice 2, line 8 -- 1600                             qty 4!=6, up 150!=2500, tot 600!=15000
+  invoice 2, line 4 -- 1500                             qty 5!=8, up 20!=1600, tot 100!=12800
+  invoice 2, line 51000 -- 12                               no matching ground-truth line
+  invoice 2, line 63000 -- 13                               no matching ground-truth line
+  invoice 2, line 96000 -- 6                                no matching ground-truth line
+  invoice 3, line 10 -- Insulin                          qty 800000!=8, up 0!=100000, tot 0!=800000
+  invoice 3, line 11 -- Tramadol Hydrochloride50mg       qty 63000!=1, up 1!=63000
+  invoice 3, line 12 -- Paracetamol 1500mg               qty 250!=6, up 6!=1500, tot 1500!=9000
+
+--- What arithmetic CANNOT see ---
+Lines with a misread NAME      : 76 / 185 (41%)
+  invoice 2: '1600'  instead of  'Terbutaline Sulfate 90mcg'
+  invoice 2: '1500'  instead of  'Metoprolol 50mg'
+  invoice 2: '14500'  instead of  'Warfarin 3mg'
+  invoice 2: '1600'  instead of  'Efferalgan 500mg'
+  invoice 2: '66000'  instead of  'Indomethacin 50mg'
+  invoice 2: '3000'  instead of  'Atorvastatin 20mg'
+
+How to read this. Recall covers NUMERIC errors: quantity, unit 
+price, total. Validation catches them because the three values 
+contradict each other.
+
+NAME errors are invisible to arithmetic by construction, not 
+through any shortcoming of the implementation: nothing in the 
+invoice reveals that 'Xetoprofen' should have read 'Ketoprofen'. 
+Catching those would need a medication dictionary -- a separate 
+and complementary avenue.

@@ -20,13 +20,25 @@ python src\eval_multipage_merge.py --run multipage_hunyuan
 
 ---
 
-## 1. Comparaison des trois modèles
+## 1. Comparaison des quatre modèles
+
+Chiffres re-mesurés le 5 août sous le protocole unifié
+(`scripts/eval_all.py`), après les améliorations de l'évaluation (parsing
+des tableaux Markdown, corrections de vérité terrain). Les valeurs
+antérieures de ce document (0.928 pour Hunyuan) venaient d'un état
+intermédiaire du code d'évaluation.
 
 | Modèle | Taille | TEDS | TEDS-Struct | Écart | Temps / page |
 |---|---|---|---|---|---|
-| **HunyuanOCR-1.5** | 1 B | **0.928** | **0.949** | 0.020 | ~87 s (GPU) |
+| **HunyuanOCR-1.5** | 1 B | **0.950** | **0.973** | 0.023 | ~87 s (GPU portable) |
+| Chandra OCR 2 | 5 B | 0.916 | 0.943 | 0.027 | ~81 s (T4 Kaggle) |
 | PaddleOCR-VL | 0.9 B | 0.909 | 0.933 | 0.024 | ~230 s (CPU) |
 | PP-StructureV3 | — | 0.557 | 0.857 | **0.300** | ~60 s (CPU) |
+
+En lecture brute. Avec prétraitement puis politique adaptative, le
+classement s'inverse : Chandra 0.966 (plafond 0.967), Hunyuan 0.953,
+PaddleOCR-VL 0.951 — voir [chandra_ocr2.md](chandra_ocr2.md) pour le
+détail et les réserves de comparabilité sur le run prétraité de Hunyuan.
 
 **HunyuanOCR et PaddleOCR-VL sont au coude à coude** (0.928 contre 0.909).
 L'écart est réel mais modeste, et sur 8 factures il faut se garder de le

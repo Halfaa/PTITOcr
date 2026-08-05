@@ -1,0 +1,639 @@
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+raw          : multipage_hunyuan
+preprocessed : multipage_preproc_hunyuan
+
+invoice    conf raw  conf pre          kept  TEDS raw  TEDS pre  TEDS kept   note
+  1            0.54      0.58  preprocessed     0.902     0.936      0.936   
+  2            1.00      0.72           raw     0.945     0.956      0.945   missed +0.011
+  3            1.00      1.00  preprocessed     0.971     0.963      0.963   missed +0.008
+  4            1.00      0.75           raw     0.964     0.961      0.964   
+  5            1.00      0.75           raw     0.968     0.478      0.968   
+  6            1.00      0.72           raw     0.947     0.898      0.947   
+  7            1.00      0.98           raw     0.972     0.958      0.972   
+  8            0.70      0.57           raw     0.930     0.884      0.930   
+
+------------------------------------------------------------------------------------------------
+  raw           TEDS 0.950    fields 25/32
+  preprocessed  TEDS 0.879    fields 22/32
+  adaptive      TEDS 0.953    fields 28/32
+
+  ceiling (perfect choice, hindsight only): 0.955
+
+A small gap to the ceiling means the decision rule is close to the best
+achievable with these two candidates; a large one would mean the rule is
+the weak link rather than the readings.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+raw          : multipage_chandra
+preprocessed : multipage_preproc_chandra
+
+invoice    conf raw  conf pre          kept  TEDS raw  TEDS pre  TEDS kept   note
+  1            0.15      0.53  preprocessed     0.725     0.956      0.956   
+  2            0.18      1.00  preprocessed     0.934     0.961      0.961   
+  3            1.00      1.00  preprocessed     0.970     0.971      0.971   
+  4            0.19      1.00  preprocessed     0.957     0.973      0.973   
+  5            0.98      1.00  preprocessed     0.976     0.975      0.975   missed +0.001
+  6            1.00      1.00  preprocessed     0.957     0.946      0.946   missed +0.010
+  7            0.75      1.00  preprocessed     0.901     0.977      0.977   
+  8            0.57      1.00  preprocessed     0.908     0.966      0.966   
+
+------------------------------------------------------------------------------------------------
+  raw           TEDS 0.916    fields 28/32
+  preprocessed  TEDS 0.966    fields 26/32
+  adaptive      TEDS 0.966    fields 29/32
+
+  ceiling (perfect choice, hindsight only): 0.967
+
+A small gap to the ceiling means the decision rule is close to the best
+achievable with these two candidates; a large one would mean the rule is
+the weak link rather than the readings.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+raw          : multipage_paddleocr_vl
+preprocessed : multipage_preproc3_paddleocr
+
+invoice    conf raw  conf pre          kept  TEDS raw  TEDS pre  TEDS kept   note
+  1            1.00      1.00  preprocessed     0.950     0.932      0.932   missed +0.017
+  2            0.60      1.00  preprocessed     0.870     0.959      0.959   
+  3            1.00      1.00  preprocessed     0.869     0.959      0.959   
+  4            1.00      1.00  preprocessed     0.955     0.964      0.964   
+  5            0.73      1.00  preprocessed     0.969     0.960      0.960   missed +0.009
+  6            1.00      1.00  preprocessed     0.945     0.940      0.940   missed +0.005
+  7            0.73      1.00  preprocessed     0.972     0.968      0.968   missed +0.004
+  8            0.75      1.00  preprocessed     0.742     0.925      0.925   
+
+------------------------------------------------------------------------------------------------
+  raw           TEDS 0.909    fields 22/32
+  preprocessed  TEDS 0.951    fields 14/32
+  adaptive      TEDS 0.951    fields 24/32
+
+  ceiling (perfect choice, hindsight only): 0.955
+
+A small gap to the ceiling means the decision rule is close to the best
+achievable with these two candidates; a large one would mean the rule is
+the weak link rather than the readings.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+raw          : variants_warped_chandra
+preprocessed : variants_warped_preprocessed_chandra
+
+invoice    conf raw  conf pre          kept  TEDS raw  TEDS pre  TEDS kept   note
+  1            0.63      1.00  preprocessed     0.829     0.965      0.965   
+  2            1.00      1.00  preprocessed     0.984     0.978      0.978   missed +0.005
+  3            0.75      0.75  preprocessed     0.998     0.996      0.996   missed +0.002
+
+------------------------------------------------------------------------------------------------
+  raw           TEDS 0.937    fields 11/12
+  preprocessed  TEDS 0.980    fields 9/12
+  adaptive      TEDS 0.980    fields 11/12
+
+  ceiling (perfect choice, hindsight only): 0.982
+
+A small gap to the ceiling means the decision rule is close to the best
+achievable with these two candidates; a large one would mean the rule is
+the weak link rather than the readings.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+raw          : variants_warped_chandra
+preprocessed : variants_warped_preprocessed_chandra
+
+invoice    conf raw  conf pre          kept  TEDS raw  TEDS pre  TEDS kept   note
+  4            1.00      1.00  preprocessed     0.966     0.971      0.971   
+  5            1.00      1.00  preprocessed     0.979     0.979      0.979   missed +0.000
+  6            1.00      1.00  preprocessed     0.981     0.981      0.981   
+
+------------------------------------------------------------------------------------------------
+  raw           TEDS 0.975    fields 12/12
+  preprocessed  TEDS 0.977    fields 7/12
+  adaptive      TEDS 0.977    fields 12/12
+
+  ceiling (perfect choice, hindsight only): 0.977
+
+A small gap to the ceiling means the decision rule is close to the best
+achievable with these two candidates; a large one would mean the rule is
+the weak link rather than the readings.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+raw          : variants_warped_chandra
+preprocessed : variants_warped_preprocessed_chandra
+
+invoice    conf raw  conf pre          kept  TEDS raw  TEDS pre  TEDS kept   note
+  7            1.00      0.75           raw     0.985     0.971      0.985   
+  8            0.68      1.00  preprocessed     0.737     0.936      0.936   
+  9            1.00      0.75           raw     0.985     0.514      0.985   
+
+------------------------------------------------------------------------------------------------
+  raw           TEDS 0.902    fields 11/12
+  preprocessed  TEDS 0.807    fields 11/12
+  adaptive      TEDS 0.969    fields 11/12
+
+  ceiling (perfect choice, hindsight only): 0.969
+
+A small gap to the ceiling means the decision rule is close to the best
+achievable with these two candidates; a large one would mean the rule is
+the weak link rather than the readings.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+raw          : variants_warped_chandra
+preprocessed : variants_warped_preprocessed_chandra
+
+invoice    conf raw  conf pre          kept  TEDS raw  TEDS pre  TEDS kept   note
+  10           0.69      0.75  preprocessed     0.940     1.000      1.000   
+  11           0.73      1.00  preprocessed     0.970     0.974      0.974   
+  12           1.00      0.75           raw     0.970     0.603      0.970   
+
+------------------------------------------------------------------------------------------------
+  raw           TEDS 0.960    fields 12/12
+  preprocessed  TEDS 0.859    fields 8/12
+  adaptive      TEDS 0.981    fields 12/12
+
+  ceiling (perfect choice, hindsight only): 0.981
+
+A small gap to the ceiling means the decision rule is close to the best
+achievable with these two candidates; a large one would mean the rule is
+the weak link rather than the readings.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+run                               hospital        customer         invoice          doctor   overall
+----------------------------------------------------------------------------------------------------
+multipage_chandra                 8/8 (4x)        6/8 (5x)        8/8 (3x)        6/8 (4x)      88%
+
+Reading: 'ok/total (N exact)'. ok = field recovered, tolerating 
+diacritic damage; N exact = recovered character for character.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+run                               hospital        customer         invoice          doctor   overall
+----------------------------------------------------------------------------------------------------
+variants_chandra               12/12 (12x)      12/12 (7x)     12/12 (12x)      11/12 (9x)      98%
+
+Reading: 'ok/total (N exact)'. ok = field recovered, tolerating 
+diacritic damage; N exact = recovered character for character.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+run                               hospital        customer         invoice          doctor   overall
+----------------------------------------------------------------------------------------------------
+variants_warped_chandra         11/12 (7x)      12/12 (5x)     12/12 (12x)      11/12 (8x)      96%
+variants_warped_preprocessed_chandra       8/12 (5x)       8/12 (4x)     11/12 (11x)       8/12 (6x)      73%
+
+Reading: 'ok/total (N exact)'. ok = field recovered, tolerating 
+diacritic damage; N exact = recovered character for character.
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Ground truth: 9 real continuation(s) -> [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10), (10, 11), (12, 13), (14, 15), (16, 17)]
+
+Pages where OCR extracted NO table: [11]
+  -> continuations involving them are out of the algorithm's reach (upstream failure, not a merging failure)
+
+page  1 -> 2   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page  2 -> 3   predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.67 lastA=32 firstB=1 total_A=True]
+page  3 -> 4   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page  4 -> 5   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=22 firstB=1 total_A=True]
+page  5 -> 6   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page  6 -> 7   predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.67 lastA=28 firstB=1 total_A=True]
+page  7 -> 8   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page  8 -> 9   predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.67 lastA=27 firstB=1 total_A=True]
+page  9 -> 10  predicted=yes expected=yes OK  (correct merge)              [hdr=0.83 lastA=16 firstB=17 total_A=False]
+page 10 -> 12  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=33 firstB=1 total_A=True]
+page 12 -> 13  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page 13 -> 14  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=21 firstB=1 total_A=True]
+page 14 -> 15  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page 15 -> 16  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=33 firstB=1 total_A=True]
+page 16 -> 17  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+
+True positives  : 8
+False positives : 0   (wrong merges -- the worst kind: they corrupt the data)
+Missed          : 0
+True negatives  : 7
+
+Precision 100%   Recall 100%   F1 100%
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Ground truth: 9 real continuation(s) -> [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10), (10, 11), (12, 13), (14, 15), (16, 17)]
+
+Pages where OCR extracted NO table: [11]
+  -> continuations involving them are out of the algorithm's reach (upstream failure, not a merging failure)
+
+page  1 -> 2   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page  2 -> 3   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=32 firstB=1 total_A=True]
+page  3 -> 4   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page  4 -> 5   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=22 firstB=1 total_A=True]
+page  5 -> 6   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page  6 -> 7   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=28 firstB=1 total_A=True]
+page  7 -> 8   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page  8 -> 9   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=27 firstB=1 total_A=True]
+page  9 -> 10  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=16 firstB=17 total_A=False]
+page 10 -> 12  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=33 firstB=1 total_A=True]
+page 12 -> 13  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page 13 -> 14  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=21 firstB=1 total_A=True]
+page 14 -> 15  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+page 15 -> 16  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=33 firstB=1 total_A=True]
+page 16 -> 17  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=19 firstB=20 total_A=False]
+
+True positives  : 8
+False positives : 0   (wrong merges -- the worst kind: they corrupt the data)
+Missed          : 0
+True negatives  : 7
+
+Precision 100%   Recall 100%   F1 100%
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Ground truth: 13 real continuation(s) -> [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10), (11, 12), (13, 14), (15, 16), (17, 18), (19, 20), (21, 22), (22, 23), (24, 25)]
+
+Pages where OCR extracted NO table: [23]
+  -> continuations involving them are out of the algorithm's reach (upstream failure, not a merging failure)
+
+page  1 -> 2   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=17 firstB=18 total_A=False]
+page  2 -> 3   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=21 firstB=1 total_A=True]
+page  3 -> 4   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=17 firstB=18 total_A=False]
+page  4 -> 5   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=40 firstB=41 total_A=True]
+page  5 -> 6   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=59 firstB=60 total_A=False]
+page  6 -> 7   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=69 firstB=1 total_A=False]
+page  7 -> 8   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=17 firstB=18 total_A=False]
+page  8 -> 9   predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=21 firstB=1 total_A=True]
+page  9 -> 10  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=20 firstB=21 total_A=False]
+page 10 -> 11  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=23 firstB=1 total_A=True]
+page 11 -> 12  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=14 firstB=15 total_A=False]
+page 12 -> 13  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.86 lastA=31 firstB=1 total_A=True]
+page 13 -> 14  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=17 firstB=18 total_A=False]
+page 14 -> 15  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=35 firstB=1 total_A=True]
+page 15 -> 16  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=21 firstB=22 total_A=False]
+page 16 -> 17  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=23 firstB=70 total_A=True]
+page 17 -> 18  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=88 firstB=89 total_A=False]
+page 18 -> 19  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=106 firstB=107 total_A=True]
+page 19 -> 20  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=127 firstB=128 total_A=False]
+page 20 -> 21  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=134 firstB=1 total_A=False]
+page 21 -> 22  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=15 firstB=16 total_A=False]
+page 22 -> 24  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=35 firstB=135 total_A=True]
+page 24 -> 25  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=148 firstB=149 total_A=False]
+
+True positives  : 12
+False positives : 0   (wrong merges -- the worst kind: they corrupt the data)
+Missed          : 0
+True negatives  : 11
+
+Precision 100%   Recall 100%   F1 100%
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Ground truth: 13 real continuation(s) -> [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10), (11, 12), (13, 14), (15, 16), (17, 18), (19, 20), (21, 22), (22, 23), (24, 25)]
+
+Pages where OCR extracted NO table: [23]
+  -> continuations involving them are out of the algorithm's reach (upstream failure, not a merging failure)
+
+page  1 -> 2   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=17 firstB=18 total_A=False]
+page  2 -> 3   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=21 firstB=1 total_A=True]
+page  3 -> 4   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=17 firstB=18 total_A=False]
+page  4 -> 5   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=40 firstB=41 total_A=True]
+page  5 -> 6   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=59 firstB=60 total_A=False]
+page  6 -> 7   predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=69 firstB=1 total_A=False]
+page  7 -> 8   predicted=yes expected=yes OK  (correct merge)              [hdr=0.83 lastA=17 firstB=18 total_A=False]
+page  8 -> 9   predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=21 firstB=1 total_A=True]
+page  9 -> 10  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=20 firstB=21 total_A=False]
+page 10 -> 11  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=23 firstB=1 total_A=True]
+page 11 -> 12  predicted=yes expected=yes OK  (correct merge)              [hdr=0.71 lastA=14 firstB=15 total_A=False]
+page 12 -> 13  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.80 lastA=31 firstB=1 total_A=True]
+page 13 -> 14  predicted=yes expected=yes OK  (correct merge)              [hdr=0.67 lastA=17 firstB=18 total_A=False]
+page 14 -> 15  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.67 lastA=35 firstB=1 total_A=True]
+page 15 -> 16  predicted=yes expected=yes OK  (correct merge)              [hdr=0.67 lastA=21 firstB=22 total_A=False]
+page 16 -> 17  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.80 lastA=23 firstB=70 total_A=True]
+page 17 -> 18  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=88 firstB=89 total_A=False]
+page 18 -> 19  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=106 firstB=107 total_A=True]
+page 19 -> 20  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=127 firstB=128 total_A=False]
+page 20 -> 21  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=134 firstB=1 total_A=False]
+page 21 -> 22  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=15 firstB=16 total_A=False]
+page 22 -> 24  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=35 firstB=135 total_A=True]
+page 24 -> 25  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=148 firstB=149 total_A=False]
+
+True positives  : 12
+False positives : 0   (wrong merges -- the worst kind: they corrupt the data)
+Missed          : 0
+True negatives  : 11
+
+Precision 100%   Recall 100%   F1 100%
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Ground truth: 13 real continuation(s) -> [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10), (11, 12), (13, 14), (15, 16), (17, 18), (19, 20), (21, 22), (22, 23), (24, 25)]
+
+Pages where OCR extracted NO table: [18, 23, 25]
+  -> continuations involving them are out of the algorithm's reach (upstream failure, not a merging failure)
+
+page  1 -> 2   predicted=yes expected=yes OK  (correct merge)              [hdr=0.83 lastA=17 firstB=18 total_A=False]
+page  2 -> 3   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=21 firstB=1 total_A=True]
+page  3 -> 4   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=17 firstB=18 total_A=False]
+page  4 -> 5   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=40 firstB=41 total_A=True]
+page  5 -> 6   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=59 firstB=60 total_A=False]
+page  6 -> 7   predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=69 firstB=1 total_A=False]
+page  7 -> 8   predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=17 firstB=18 total_A=False]
+page  8 -> 9   predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=21 firstB=1 total_A=True]
+page  9 -> 10  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=20 firstB=21 total_A=False]
+page 10 -> 11  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=23 firstB=1 total_A=True]
+page 11 -> 12  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=14 firstB=15 total_A=False]
+page 12 -> 13  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.86 lastA=31 firstB=1 total_A=True]
+page 13 -> 14  predicted=yes expected=yes OK  (correct merge)              [hdr=0.83 lastA=17 firstB=18 total_A=False]
+page 14 -> 15  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=35 firstB=1 total_A=True]
+page 15 -> 16  predicted=yes expected=yes OK  (correct merge)              [hdr=0.50 lastA=21 firstB=22 total_A=False]
+page 16 -> 17  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.75 lastA=23 firstB=70 total_A=True]
+page 17 -> 19  predicted=no  expected=no  OK  (correctly not merged)       [hdr=0.83 lastA=88 firstB=107 total_A=False]
+page 19 -> 20  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=127 firstB=128 total_A=False]
+page 20 -> 21  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=134 firstB=1 total_A=False]
+page 21 -> 22  predicted=yes expected=yes OK  (correct merge)              [hdr=1.00 lastA=15 firstB=16 total_A=False]
+page 22 -> 24  predicted=no  expected=no  OK  (correctly not merged)       [hdr=1.00 lastA=35 firstB=135 total_A=True]
+
+True positives  : 10
+False positives : 0   (wrong merges -- the worst kind: they corrupt the data)
+Missed          : 0
+True negatives  : 11
+
+Precision 100%   Recall 100%   F1 100%
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: multipage_chandra
+8 invoice(s), 17 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_1  [1, 2]           0.456      0.725  +0.269         0.567        0.846
+invoice_2  [3, 4]           0.793      0.934  +0.141         0.847        0.953
+invoice_3  [5, 6]           0.660      0.970  +0.310         0.679        0.972
+invoice_4  [7, 8]           0.671      0.957  +0.285         0.702        0.961
+invoice_5  [9, 10, 11]      0.485      0.976  +0.492         0.490        0.984
+invoice_6  [12, 13]         0.853      0.957  +0.104         0.883        0.963
+invoice_7  [14, 15]         0.489      0.901  +0.412         0.494        0.909
+invoice_8  [16, 17]         0.724      0.908  +0.184         0.783        0.957
+------------------------------------------------------------------------------
+MEAN                       0.641      0.916  +0.275         0.681        0.943
+
+TEDS         0.916  (structure + content)
+TEDS-Struct  0.943  (structure only)
+Gap          0.027  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: multipage_preproc_chandra
+8 invoice(s), 17 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_1  [1, 2]           0.566      0.956  +0.391         0.604        0.971
+invoice_2  [3, 4]           0.820      0.961  +0.141         0.835        0.976
+invoice_3  [5, 6]           0.666      0.971  +0.304         0.689        0.972
+invoice_4  [7, 8]           0.688      0.973  +0.285         0.693        0.985
+invoice_5  [9, 10, 11]      0.481      0.975  +0.494         0.498        0.976
+invoice_6  [12, 13]         0.842      0.946  +0.104         0.883        0.963
+invoice_7  [14, 15]         0.572      0.977  +0.406         0.575        0.984
+invoice_8  [16, 17]         0.760      0.966  +0.206         0.783        0.967
+------------------------------------------------------------------------------
+MEAN                       0.674      0.966  +0.291         0.695        0.974
+
+TEDS         0.966  (structure + content)
+TEDS-Struct  0.974  (structure only)
+Gap          0.009  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: multipage_paddleocr_vl
+8 invoice(s), 17 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_1  [1, 2]           0.563      0.950  +0.386         0.608        0.975
+invoice_2  [3, 4]           0.809      0.870  +0.060         0.859        0.929
+invoice_3  [5, 6]           0.566      0.869  +0.304         0.594        0.877
+invoice_4  [7, 8]           0.682      0.955  +0.273         0.712        0.971
+invoice_5  [9, 10, 11]      0.485      0.969  +0.484         0.498        0.984
+invoice_6  [12, 13]         0.842      0.945  +0.104         0.883        0.963
+invoice_7  [14, 15]         0.574      0.972  +0.398         0.583        0.984
+invoice_8  [16, 17]         0.742      0.742  +0.000         0.783        0.783
+------------------------------------------------------------------------------
+MEAN                       0.658      0.909  +0.251         0.690        0.933
+
+TEDS         0.909  (structure + content)
+TEDS-Struct  0.933  (structure only)
+Gap          0.024  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: variants_chandra
+12 invoice(s), 25 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_1  [1, 2]           0.793      0.970  +0.177         0.804        0.975
+invoice_2  [3, 4]           0.437      0.984  +0.547         0.443        0.986
+invoice_3  [5, 6]           0.671      0.996  +0.325         0.684        1.000
+invoice_4  [7, 8]           0.798      0.970  +0.173         0.804        0.975
+invoice_5  [9, 10]          0.856      0.980  +0.124         0.862        0.980
+invoice_6  [11, 12]         0.467      0.981  +0.514         0.470        0.981
+------------------------------------------------------------------------------
+MEAN                       0.670      0.980  +0.310         0.678        0.983
+
+TEDS         0.980  (structure + content)
+TEDS-Struct  0.983  (structure only)
+Gap          0.003  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: variants_chandra
+12 invoice(s), 25 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_7  [13, 14]         0.498      0.984  +0.486         0.502        0.985
+invoice_8  [15, 16]         0.877      0.973  +0.096         0.881        0.977
+invoice_9  [17, 18]         0.521      0.979  +0.459         0.527        0.985
+------------------------------------------------------------------------------
+MEAN                       0.632      0.979  +0.347         0.637        0.983
+
+TEDS         0.979  (structure + content)
+TEDS-Struct  0.983  (structure only)
+Gap          0.004  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: variants_chandra
+12 invoice(s), 25 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_10 [19, 20]         0.761      0.999  +0.238         0.761        1.000
+invoice_11 [21, 22, 23]     0.436      0.981  +0.545         0.436        0.983
+invoice_12 [24, 25]         0.615      0.975  +0.361         0.619        0.975
+------------------------------------------------------------------------------
+MEAN                       0.604      0.985  +0.381         0.605        0.986
+
+TEDS         0.985  (structure + content)
+TEDS-Struct  0.986  (structure only)
+Gap          0.001  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: variants_warped_chandra
+12 invoice(s), 25 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_1  [1, 2]           0.639      0.829  +0.190         0.785        0.975
+invoice_2  [3, 4]           0.430      0.984  +0.554         0.432        0.990
+invoice_3  [5, 6]           0.668      0.998  +0.330         0.670        1.000
+------------------------------------------------------------------------------
+MEAN                       0.579      0.937  +0.358         0.629        0.988
+
+TEDS         0.937  (structure + content)
+TEDS-Struct  0.988  (structure only)
+Gap          0.052  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: variants_warped_chandra
+12 invoice(s), 25 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_4  [7, 8]           0.781      0.966  +0.185         0.785        0.975
+invoice_5  [9, 10]          0.841      0.979  +0.138         0.842        0.980
+invoice_6  [11, 12]         0.459      0.981  +0.522         0.459        0.981
+------------------------------------------------------------------------------
+MEAN                       0.693      0.975  +0.282         0.695        0.979
+
+TEDS         0.975  (structure + content)
+TEDS-Struct  0.979  (structure only)
+Gap          0.004  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: variants_warped_chandra
+12 invoice(s), 25 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_7  [13, 14]         0.487      0.985  +0.498         0.490        0.989
+invoice_8  [15, 16]         0.658      0.737  +0.079         0.881        0.960
+invoice_9  [17, 18]         0.515      0.985  +0.470         0.516        0.989
+------------------------------------------------------------------------------
+MEAN                       0.553      0.902  +0.349         0.629        0.979
+
+TEDS         0.902  (structure + content)
+TEDS-Struct  0.979  (structure only)
+Gap          0.077  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: variants_warped_chandra
+12 invoice(s), 25 OCR page(s) available
+Thousand separators neutralised: yes
+
+invoice   pages         TEDS w/o  TEDS with    gain    Struct w/o  Struct with
+------------------------------------------------------------------------------
+invoice_10 [19, 20]         0.712      0.940  +0.229         0.795        1.000
+invoice_11 [21, 22, 23]     0.433      0.970  +0.537         0.436        0.977
+invoice_12 [24, 25]         0.599      0.970  +0.371         0.604        0.975
+------------------------------------------------------------------------------
+MEAN                       0.581      0.960  +0.379         0.612        0.984
+
+TEDS         0.960  (structure + content)
+TEDS-Struct  0.984  (structure only)
+Gap          0.024  -> structure and content degrade together
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+[env] Warning: expected venv 'venv', active venv 'none (system Python)'
+[env] Python in use: /usr/bin/python3
+Run: multipage_chandra
+
+invoice     lines   right    wrong    flagged   detected  total OK
+------------------------------------------------------------------
+invoice_1       31       0       31         31         31         ?
+invoice_2       22       0       22         21         21        NO
+invoice_3       28      28        0          0          0       yes
+invoice_4       27       0       27         25         25        NO
+invoice_5       33      32        1          1          1       yes
+invoice_6       21      21        0          0          0       yes
+invoice_7       33      19       14          0          0        NO
+invoice_8       23      19        4          1          1        NO
+------------------------------------------------------------------
+
+Genuinely wrong lines          : 99
+  flagged by validation        : 79  (80%)
+  slipped through the net      : 20
+Correct lines flagged wrongly  : 0
+
+Automatic corrections          : 17
+  of which exact                : 0  (0%)
+
+Recall 80%   Precision 100%
+
+Examples of UNDETECTED errors (the line adds up but is still wrong):
+  invoice 2, line None --                                  no matching ground-truth line
+  invoice 4, line None --                                  no matching ground-truth line
+  invoice 4, line None --                                  no matching ground-truth line
+  invoice 7, line 20 -- Furosemide 40mg                  qty 1700!=4, up 6800!=1700, tot 11560000!=6800
+  invoice 7, line 21 -- Levothyroxine 100mcg             qty 39000!=7, up 273000!=39000, tot 10647000000!=273000
+  invoice 7, line 22 -- Diclofenac Sodium 50mg           qty 1600!=3, up 4800!=1600, tot 7680000!=4800
+  invoice 7, line 23 -- Antibiotic Cream                 qty 3000!=7, up 21000!=3000, tot 63000000!=21000
+  invoice 7, line 24 -- Levothyroxine 100mcg             qty 1300!=3, up 3900!=1300, tot 5070000!=3900
+
+--- What arithmetic CANNOT see ---
+Lines with a misread NAME      : 10 / 218 (5%)
+  invoice 3: 'Tebarate'  instead of  'Tebarat'
+  invoice 5: 'Paroxetine 20mg (Viên nén - Lẻ 1 viên)'  instead of  'Paroxetin 20mg (Viên nén - Lẻ 1 viên)'
+  invoice 5: 'Montelukast 10mg (Viên nén - Lẻ 1 viên)'  instead of  'Montelukusib 10mg (Viên nén - Lẻ 1 viên)'
+  invoice 5: 'Etopolac 600mg (Viên nén - Lẻ 1 viên)'  instead of  'Etodolac 600mg (Viên nén - Lẻ 1 viên)'
+  invoice 6: 'Paroxetine 20mg'  instead of  'Paroxetin 20mg'
+  invoice 6: 'Codaine Phosphate 15mg'  instead of  'Codeine Phosphate 15mg'
+
+How to read this. Recall covers NUMERIC errors: quantity, unit 
+price, total. Validation catches them because the three values 
+contradict each other.
+
+NAME errors are invisible to arithmetic by construction, not 
+through any shortcoming of the implementation: nothing in the 
+invoice reveals that 'Xetoprofen' should have read 'Ketoprofen'. 
+Catching those would need a medication dictionary -- a separate 
+and complementary avenue.

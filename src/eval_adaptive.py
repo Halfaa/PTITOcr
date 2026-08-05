@@ -74,9 +74,17 @@ def main():
     pdf = Path(args.pdf).resolve() if args.pdf else (root / E.DEFAULT_PDF).resolve()
     gt_dir = Path(args.gt_dir).resolve() if args.gt_dir else (root / E.DEFAULT_GT).resolve()
     groups = E.page_groups_from_pdf(pdf)
-    truths = [json.loads(Path(f).read_text(encoding="utf-8"))
-              for f in sorted(glob.glob(str(gt_dir / "*.json")),
-                              key=lambda f: int("".join(c for c in Path(f).stem if c.isdigit()) or 0))]
+    # La vérité de la facture k est invoice_k.json, cherchée PAR INDICE comme
+    # dans eval_teds -- et non par zip avec la liste triée des fichiers. Un
+    # zip s'aligne en silence sur un dossier incomplet : avec seulement
+    # invoice_4..6.json présents, il noterait les groupes 1..3 contre les
+    # vérités 4..6 sans lever la moindre erreur. Chercher par indice fait
+    # qu'une facture sans vérité est SAUTÉE, pas décalée.
+    truths = {}
+    for k in range(1, len(groups) + 1):
+        f = gt_dir / f"invoice_{k}.json"
+        if f.exists():
+            truths[k] = json.loads(f.read_text(encoding="utf-8"))
 
     pages = {"raw": run_pages(args.raw),
              "preprocessed": run_pages(args.preprocessed)}
@@ -89,7 +97,10 @@ def main():
     teds_scores = {"raw": [], "preprocessed": [], "adaptive": []}
     fields_ok = {"raw": 0, "preprocessed": 0, "adaptive": 0}
 
-    for i, (group, gt) in enumerate(zip(groups, truths), 1):
+    for i, group in enumerate(groups, 1):
+        if i not in truths:
+            continue
+        gt = truths[i]
         true_html = E.rows_to_html(E.normalize_rows(E.ground_truth_rows(gt), True))
 
         candidates = {
@@ -134,7 +145,7 @@ def main():
                 print(f"        {name:<15}{str(picked.fields.get(name))[:34]:<36}"
                       f"[{picked.field_sources.get(name, '-')}]")
 
-    n_fields = len(groups) * len(HEADER_FIELDS)
+    n_fields = len(truths) * len(HEADER_FIELDS)
     print("\n" + "-" * 96)
     for name in ("raw", "preprocessed", "adaptive"):
         print(f"  {name:<14}TEDS {st.mean(teds_scores[name]):.3f}"
