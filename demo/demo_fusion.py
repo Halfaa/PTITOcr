@@ -132,6 +132,8 @@ SIGNAUX_MONTRES = [
     ("same_col_count", "même nombre de colonnes"),
     ("table_b_restarts_at_1", "veto — B redémarre à 1"),
     ("table_a_ends_with_total", "veto — A se termine par un total"),
+    ("marker_contradicted_by_numbering",
+     "veto — marqueur contredit par la numérotation (fragment orphelin)"),
 ]
 
 

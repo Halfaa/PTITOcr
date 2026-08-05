@@ -83,6 +83,32 @@ CAS = [
      table(1, 32), table(33, 14),
      "", "", None,
      "indecidable sans le contexte de la page : documente, non teste"),
+
+    # ---------- Fragments orphelins (trouve en manipulant la demo) ----------
+    ("fragments de DEUX factures, marqueurs authentiques des deux cotes",
+     table(1, 21), table(149, 9, ligne_marqueur=True, avec_total=True),
+     "Xem tiếp trang sau...", MARQUEUR, False,
+     "A continue vraiment (vers une page absente) et B continue vraiment "
+     "(une page absente). Les deux marqueurs sont authentiques mais parlent "
+     "de pages qu'on n'a pas : suivant predit 22, obtenu 149. Le marqueur "
+     "prouve que B continue QUELQUE CHOSE, pas qu'il continue A"),
+
+    ("page perdue au milieu d'une MEME facture (ecart au-dela du seuil)",
+     table(1, 20), table(41, 10, ligne_marqueur=True),
+     "Xem tiếp trang sau...", MARQUEUR, False,
+     "vraie continuation dont une page entiere manque : predit 21, obtenu "
+     "41. Indistinguable du cas precedent sans la page manquante -- on "
+     "prefere une fusion manquee (visible : la numerotation saute) a une "
+     "fusion a tort (invisible en aval)"),
+
+    ("secours conserve : fin de A massacree, marqueur sur B",
+     Table(rows=[list(EN_TETE)] + [["?", "Paracetamol", "viên", "", "", ""]
+                                   for _ in range(19)]),
+     table(20, 8, ligne_marqueur=True),
+     "", MARQUEUR, True,
+     "la numerotation de A est illisible : aucune contradiction ne peut "
+     "etre etablie, donc le marqueur garde sa pleine force. C'est le cas "
+     "que le secours existe pour rattraper"),
 ]
 
 

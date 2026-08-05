@@ -472,13 +472,54 @@ def is_continuation(table_a: Table, table_b: Table,
         and (abs(_offset) <= _MAX_INDEX_OFFSET if _offset is not None
              else signals["table_a_has_data"])
     )
+    # A continuation marker on B proves that B continues SOMETHING -- not
+    # that it continues A. The distinction only matters when the two are
+    # different, and the numbering is what tells them apart.
+    #
+    # Observed live in the demo: page 15 of one invoice (ends at 21, with
+    # its own "see next page" marker) followed by page 25 of ANOTHER
+    # invoice (starts at 149, marked "continued from previous page")
+    # because the pages in between were not supplied. Both markers are
+    # genuine -- each page really is a fragment -- but of different
+    # documents. The marker alone merged them: predicted next index 22,
+    # observed 149, and nothing objected.
+    #
+    # So when BOTH numbering ends are readable and B starts nowhere near
+    # where A's size predicts, the marker is contradicted: B is the
+    # continuation of a page we do not have (an orphan), and gluing it to A
+    # fabricates an invoice that never existed. The marker keeps its full
+    # force whenever the numbering is unreadable -- rescuing mangled OCR is
+    # exactly what it is for, and on the three measured real rescues the
+    # predicted offset was -1, far inside the threshold.
+    #
+    # "Readable" must mean COHERENT, not merely "a number was found".
+    # Measured on PP-StructureV3's page 1: the table came back upside down
+    # (header at the bottom, columns permuted, header similarity 0.0) and
+    # the index scanner fished a single spurious "10" out of 21 rows. A
+    # prediction built on that garbage contradicted a genuine continuation
+    # marker and broke a real merge. A numbering is only trusted to
+    # contradict the document when its indices actually progress: the span
+    # from first to last must cover most of the rows it claims to number.
+    _span_a = (last_idx_a - first_idx_a + 1
+               if (first_idx_a is not None and last_idx_a is not None) else 0)
+    _a_numbering_coherent = (
+        len(table_a.data_rows) > 0
+        and _span_a >= 0.5 * len(table_a.data_rows)
+    )
+    signals["marker_contradicted_by_numbering"] = (
+        signals["table_b_has_continuation_marker"]
+        and _a_numbering_coherent
+        and _offset is not None and abs(_offset) > _MAX_INDEX_OFFSET
+    )
+    _marker_trusted = (signals["table_b_has_continuation_marker"]
+                       and not signals["marker_contradicted_by_numbering"])
     # "Same table" guard: requiring a strictly identical column count is too
     # harsh, OCR regularly adds or loses a column from one page to the next.
     # A sufficiently similar header does the job just as well.
     signals["compatible_shape"] = signals["same_col_count"] or signals["header_similarity"] >= 0.5
 
     strong_signal = (
-        signals["table_b_has_continuation_marker"]
+        _marker_trusted
         or signals["index_continuity"]
         or (signals["index_near_continuity"] and signals["compatible_shape"])
         or (signals["table_b_starts_mid_numbering"]
@@ -491,6 +532,11 @@ def is_continuation(table_a: Table, table_b: Table,
         and not signals["table_a_ends_with_total"]
         and (signals["table_a_has_next_page_marker"] or last_idx_a is None or first_idx_b is None)
         and not signals["table_b_restarts_at_1"]
+        # The same numbering contradiction that disarms B's marker disarms
+        # A's: "A continues on the next page" does not make B that page.
+        # Same coherence guard: garbage numbering contradicts nothing.
+        and not (_a_numbering_coherent
+                 and _offset is not None and abs(_offset) > _MAX_INDEX_OFFSET)
     )
 
     # Two vetoes, and both say the same thing: the document itself states
@@ -512,10 +558,11 @@ def is_continuation(table_a: Table, table_b: Table,
     #
     # A continuation marker on B overrides both vetoes, because it is the
     # document asserting the continuation explicitly rather than us
-    # inferring it.
+    # inferring it -- unless the numbering contradicts the marker, in which
+    # case B continues a page we do not have, not A (see above).
     closed_by_document = (signals["table_b_restarts_at_1"]
                           or signals["table_a_ends_with_total"])
-    disqualified = closed_by_document and not signals["table_b_has_continuation_marker"]
+    disqualified = closed_by_document and not _marker_trusted
     signals["decision"] = bool(strong_signal or weak_signal) and not disqualified
     signals["confidence"] = "strong" if strong_signal else ("weak" if weak_signal else "none")
     return signals

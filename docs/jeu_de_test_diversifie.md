@@ -75,6 +75,43 @@ PaddleOCR brut ses 93 % de F1.
 
 ---
 
+## 2 bis. Un troisième défaut, trouvé en manipulant la démo (5 août)
+
+En déposant dans la démo six pages dont deux **fragments** — la page 15
+d'une facture (STT 1–21, « Xem tiếp trang sau ») et la page 25 d'une autre
+(STT 149–157, « Tiếp trang trước ») — l'algorithme les recollait : STT
+sautant de 21 à 149 dans un même tableau.
+
+Les deux marqueurs étaient **authentiques** : chaque page est réellement un
+fragment. Mais un marqueur de continuation prouve que B continue *quelque
+chose*, pas qu'il continue *A*. Or il valait signal fort à lui seul **et**
+levait les deux vetos.
+
+### Le correctif
+
+Quand la numérotation des deux côtés est lisible et que le premier STT de B
+tombe loin de ce que la taille de A prédit (seuil : 5), le marqueur est
+**contredit** et perd sa force — B est la continuation d'une page qu'on n'a
+pas, un orphelin, et on préfère une fusion manquée (visible : la
+numérotation saute) à une fusion à tort (invisible en aval).
+
+Première version du correctif : régression immédiate sur PP-StructureV3, qui
+avait lu une page **à l'envers** (en-tête en bas, similarité 0,0) — le
+scanner d'indices y pêchait un « 10 » parasite, et cette pseudo-numérotation
+contredisait un marqueur légitime. D'où la garde de cohérence : une
+numérotation n'a le droit de contredire le document que si elle *progresse*
+(l'étendue premier→dernier couvre au moins la moitié des lignes).
+
+Trois cas ajoutés à `tests/test_merge_assumptions.py` (fragments orphelins,
+page perdue au milieu d'une même facture, secours conservé sur A massacrée).
+**Zéro régression** : les douze runs gardent leurs précisions et rappels.
+
+Limite assumée : une page perdue au *milieu* d'une même facture (écart 21 →
+41) est désormais séparée aussi — indistinguable du cas orphelin sans la
+page manquante, et l'asymétrie des coûts tranche dans le même sens.
+
+---
+
 ## 3. Un défaut de la vérité terrain, aussi
 
 `page_groups_from_pdf` regroupait les pages en repérant l'**absence** du
