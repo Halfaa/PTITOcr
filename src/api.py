@@ -77,7 +77,14 @@ class Travail:
     resultat: Optional[dict] = None
 
     def etape(self, nom):
-        return next(e for e in self.etapes if e.nom == nom)
+        """L'etape demandee, ou None si elle ne s'applique pas a ce travail.
+
+        Toutes les etapes ne concernent pas tous les travaux : le recollage
+        multi-pages n'a aucun sens sur une page unique. Renvoyer None plutot
+        que de lever permet a la chaine de sauter proprement ce qui ne la
+        concerne pas.
+        """
+        return next((e for e in self.etapes if e.nom == nom), None)
 
     def json(self):
         return {
@@ -104,6 +111,21 @@ ETAPES = [
     ("validation", "Vérification arithmétique"),
     ("choix", "Choix entre lecture brute et prétraitée"),
 ]
+
+# Etapes qui n'ont de sens qu'a partir de deux pages.
+ETAPES_MULTIPAGES = {"fusion"}
+
+
+def construire_etapes(n_pages: int) -> list:
+    """La liste d'etapes pertinente pour ce nombre de pages.
+
+    Afficher « Recollage des tableaux multi-pages » sur une photo unique
+    annonce un travail qui n'aura pas lieu : l'utilisateur attend une etape
+    qui ne peut rien produire. On la retire plutot que de la montrer cochee
+    avec la mention « rien a recoller ».
+    """
+    return [Etape(nom, titre) for nom, titre in ETAPES
+            if n_pages > 1 or nom not in ETAPES_MULTIPAGES]
 
 TRAVAUX: dict[str, Travail] = {}
 _VERROU = threading.Lock()
@@ -167,6 +189,13 @@ def _quad_relatif(quad, largeur, hauteur):
 # --------------------------------------------------------------------------
 
 def _charger_modele(nom):
+    """Charge le modele demande, une fois pour toutes.
+
+    Les modeles Paddle et HunyuanOCR ne cohabitent pas dans le meme
+    environnement -- transformers 4.x contre 5.13. On lance donc l'API
+    depuis le venv correspondant au modele voulu, et l'import n'a lieu qu'ici
+    pour que l'autre famille n'ait pas besoin d'etre installee.
+    """
     if _MODELE["nom"] == nom:
         return _MODELE["objet"]
 
@@ -176,11 +205,69 @@ def _charger_modele(nom):
     elif nom == "ppstructure":
         from paddleocr import PPStructureV3
         objet = PPStructureV3(enable_mkldnn=False)
+    elif nom == "hunyuan":
+        objet = _charger_hunyuan()
     else:
         raise ValueError(f"Modele inconnu pour l'API : {nom}")
 
     _MODELE.update(nom=nom, objet=objet)
     return objet
+
+
+def _charger_hunyuan():
+    """HunyuanOCR-1.5 sur GPU.
+
+    backend="pil" est OBLIGATOIRE : avec le backend torchvision, le
+    reechantillonnage LANCZOS est silencieusement remplace par BICUBIC et le
+    modele produit du charabia -- constate en pratique, sans la moindre
+    erreur levee.
+    """
+    import torch
+    from transformers import AutoProcessor
+
+    identifiant = "tencent/HunyuanOCR"
+    processeur = AutoProcessor.from_pretrained(identifiant, backend="pil",
+                                               trust_remote_code=True)
+    try:
+        from transformers import HunYuanVLForConditionalGeneration as Classe
+    except ImportError:
+        from transformers import AutoModelForCausalLM as Classe
+
+    peripherique = "cuda" if torch.cuda.is_available() else "cpu"
+    modele = Classe.from_pretrained(
+        identifiant, attn_implementation="eager",
+        dtype=torch.bfloat16 if peripherique == "cuda" else torch.float32,
+        device_map=peripherique, trust_remote_code=True)
+    print(f"  HunyuanOCR chargé sur {peripherique}")
+    return ("hunyuan", processeur, modele)
+
+
+def _lire_hunyuan(paquet, chemin):
+    import torch
+    from PIL import Image
+
+    from hunyuan_prompts import ALL as PROMPTS
+
+    _, processeur, modele = paquet
+    image = Image.open(chemin).convert("RGB")
+    messages = [
+        {"role": "system", "content": ""},
+        {"role": "user", "content": [
+            {"type": "image", "image": str(chemin)},
+            {"type": "text", "text": PROMPTS["document"]},
+        ]},
+    ]
+    texte = processeur.apply_chat_template(messages, tokenize=False,
+                                           add_generation_prompt=True)
+    entrees = processeur(text=[texte], images=image, padding=True,
+                         return_tensors="pt")
+    entrees = entrees.to(next(modele.parameters()).device)
+    with torch.no_grad():
+        sortie = modele.generate(**entrees, max_new_tokens=4096, do_sample=False,
+                                 repetition_penalty=1.08)
+    coupe = [s[len(e):] for e, s in zip(entrees["input_ids"], sortie)]
+    return processeur.batch_decode(coupe, skip_special_tokens=True,
+                                   clean_up_tokenization_spaces=False)[0]
 
 
 def _reduire(image):
@@ -204,6 +291,12 @@ def _lire(modele, image):
     with tempfile.TemporaryDirectory() as tmp:
         chemin = Path(tmp) / "page.png"
         cv2.imwrite(str(chemin), _reduire(image))
+
+        # HunyuanOCR rend directement du texte ; les pipelines Paddle
+        # ecrivent des fichiers qu'il faut relire.
+        if isinstance(modele, tuple) and modele[0] == "hunyuan":
+            return _lire_hunyuan(modele, chemin)
+
         for res in modele.predict(str(chemin)):
             res.save_to_markdown(save_path=tmp)
         mds = [m for m in Path(tmp).glob("*.md")]
@@ -314,8 +407,11 @@ def _confiance_source(pages):
 def _assembler(travail: Travail, textes: dict):
     """Fusion, validation, choix adaptatif -- commun au live et au rejeu."""
     # --- 4. Fusion ---------------------------------------------------------
+    # L'etape peut ne pas exister : sur une page unique il n'y a rien a
+    # recoller, et merge_table_sequence rend alors le tableau inchange.
     etape = travail.etape("fusion")
-    etape.etat = "en cours"
+    if etape:
+        etape.etat = "en cours"
 
     candidats, decisions = {}, []
     for source, pages in textes.items():
@@ -346,11 +442,12 @@ def _assembler(travail: Travail, textes: dict):
         fusion, _ = merge_table_sequence(tables, contextes)
         candidats[source] = (fusion[0] if fusion else None, pages)
 
-    etape.etat = "fait"
-    etape.donnees = {"decisions": decisions}
-    fusionnees = sum(1 for d in decisions if d["fusionne"])
-    etape.detail = (f"{fusionnees} fusion(s) sur {len(decisions)} transition(s)"
-                    if decisions else "une seule page, rien à recoller")
+    if etape:
+        etape.etat = "fait"
+        etape.donnees = {"decisions": decisions}
+        fusionnees = sum(1 for d in decisions if d["fusionne"])
+        etape.detail = (f"{fusionnees} fusion(s) sur {len(decisions)} transition(s)"
+                        if decisions else "aucune transition exploitable")
 
     # --- 5. Choix adaptatif ------------------------------------------------
     etape = travail.etape("choix")
@@ -440,8 +537,9 @@ def _rejouer(travail: Travail, run_brut: str, run_pretraite: str, pages: list):
     """Rejoue deux runs deja calcules, sans toucher au modele."""
     for nom in ("reception", "pretraitement", "ocr"):
         etape = travail.etape(nom)
-        etape.etat = "fait"
-        etape.detail = "rejeu d'un run existant"
+        if etape:
+            etape.etat = "fait"
+            etape.detail = "rejeu d'un run existant"
 
     textes = {}
     for source, run in (("raw", run_brut), ("preprocessed", run_pretraite)):
@@ -500,7 +598,7 @@ def creer_app():
 
         travail = Travail(id=uuid.uuid4().hex[:12], mode="live", modele=modele,
                           deux_passes=deux_passes)
-        travail.etapes = [Etape(n, t) for n, t in ETAPES]
+        travail.etapes = construire_etapes(len(contenus))
         with _VERROU:
             TRAVAUX[travail.id] = travail
         _lancer(travail, _traiter, contenus)
@@ -511,7 +609,7 @@ def creer_app():
                       pages: str = Form(...)):
         numeros = [int(p) for p in pages.replace(" ", "").split(",") if p]
         travail = Travail(id=uuid.uuid4().hex[:12], mode="replay", modele="—")
-        travail.etapes = [Etape(n, t) for n, t in ETAPES]
+        travail.etapes = construire_etapes(len(numeros))
         with _VERROU:
             TRAVAUX[travail.id] = travail
         _lancer(travail, _rejouer, run_brut, run_pretraite, numeros)
