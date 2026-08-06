@@ -104,6 +104,22 @@ def check_invoice(invoice) -> dict:
         if b != a + 1:
             gaps.append((a, b))
 
+    # "Aucun trou" et "on ne peut pas savoir" ne sont PAS la meme chose, et
+    # les confondre a une consequence mesurable.
+    #
+    # Quand l'OCR abime l'en-tete au point que la colonne STT n'est plus
+    # reconnue, `indices` est vide, `gaps` aussi -- et tout le monde en aval
+    # lit "numerotation continue". Mesure sur un tableau construit a la main,
+    # avec un trou reel : STT lisible -> confiance 0,600 ; le MEME tableau
+    # avec l'en-tete STT illisible -> 0,750. Abimer la lecture faisait monter
+    # la note. La politique adaptative s'en trouvait biaisee en faveur de la
+    # variante qui detruit l'en-tete, c'est-a-dire exactement le defaut connu
+    # du pretraitement.
+    #
+    # Il faut deux indices lisibles au minimum : avec un seul, il n'existe
+    # aucune paire consecutive a examiner, donc aucune preuve de continuite.
+    index_available = len(indices) >= 2
+
     return {
         "checks": checks,
         "n_lines": len(checks),
@@ -113,6 +129,8 @@ def check_invoice(invoice) -> dict:
         "total_ok": total_ok,
         "total_detail": total_detail,
         "index_gaps": gaps,
+        "index_available": index_available,
+        "n_indices_read": len(indices),
     }
 
 

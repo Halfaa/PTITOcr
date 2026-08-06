@@ -170,9 +170,13 @@ Ordre suggéré :
    programme via un GPU loué. Voir [chandra_ocr2.md](chandra_ocr2.md) : c'est
    le seul modèle de la classe 5 B du comparatif, et sa licence n'a aucune
    restriction géographique, contrairement à celle de HunyuanOCR.
-3. **Vintern-1B-v3.5** — si la sortie tableau est exploitable. Angle
+3. **GLM-OCR** (Z.ai, 0,9 B, MIT) — meilleur TableTEDS publié, et le seul
+   modèle récent de premier plan qui tienne dans 4 Go. Réserve : le
+   vietnamien n'est pas dans ses 8 langues officielles. Voir
+   [glm_ocr.md](glm_ocr.md).
+4. **Vintern-1B-v3.5** — si la sortie tableau est exploitable. Angle
    « modèle spécifiquement vietnamien » intéressant pour le rapport.
-4. **dots.ocr en 4 bits** — si les précédents déçoivent.
+5. **dots.ocr en 4 bits** — si les précédents déçoivent.
 
 ---
 

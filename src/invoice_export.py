@@ -143,13 +143,28 @@ def build_invoice_json(run: str, invoice_no: int, tables, texts, pages) -> dict:
             "computed_from_lines": computed,
             "consistent": result["total_ok"],
         }
+        # `lines_to_check` designe les lignes par leur STT, ce qui suppose que
+        # la colonne STT a ete lue. Quand elle ne l'a pas ete, la liste sortait
+        # remplie de `null` : le JSON annoncait 31 lignes a relire sans dire
+        # LESQUELLES, et le champ le plus utile du livrable devenait inutile.
+        # On donne donc aussi la position dans `items`, qui existe toujours.
+        a_relire = [(i, c) for i, c in enumerate(result["checks"]) if c.is_suspect]
         doc["review"] = {
             "n_lines": result["n_lines"],
             "n_ok": result["n_ok"],
             "n_to_check": result["n_suspect"],
             "n_auto_corrected": result["n_corrected"],
-            "lines_to_check": [c.item.index for c in result["checks"] if c.is_suspect],
+            "lines_to_check": [
+                {"position": i, "stt": c.item.index,
+                 "status": c.status, "detail": c.detail}
+                for i, c in a_relire
+            ],
             "numbering_gaps": result["index_gaps"],
+            # Sans ce drapeau, une numerotation PARFAITE et une numerotation
+            # ILLISIBLE produisent toutes deux `numbering_gaps: []`. Le
+            # consommateur du JSON -- qui est le livrable final -- ne peut pas
+            # les distinguer, et croit verifie ce qui n'a pas pu l'etre.
+            "numbering_checked": result["index_available"],
         }
     else:
         doc["totals"] = None
@@ -167,6 +182,15 @@ def main():
                         help="Output folder (default: results/<run>/json)")
     parser.add_argument("--print", dest="do_print", action="store_true",
                         help="Also print the JSON to stdout")
+    # Sans cette option, un run du jeu diversifié était découpé en factures
+    # selon le PDF du jeu multi-pages : aucune erreur levée, des JSON
+    # produits, et des pages attribuées à la mauvaise facture. Le reste des
+    # scripts d'évaluation accepte --pdf depuis le début ; celui-ci était le
+    # dernier à ne pas le faire.
+    parser.add_argument("--pdf", default=None,
+                        help="PDF source, pour le découpage en factures. "
+                             "Défaut : le jeu multi-pages. Pour le jeu "
+                             "diversifié, passer invoices_variants.pdf.")
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parent.parent
@@ -174,7 +198,8 @@ def main():
     out_dir = Path(args.out) if args.out else root / "results" / args.run / "json"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    groups = page_groups_from_pdf((root / DEFAULT_PDF).resolve())
+    pdf = Path(args.pdf).resolve() if args.pdf else (root / DEFAULT_PDF).resolve()
+    groups = page_groups_from_pdf(pdf)
     wanted = [args.invoice] if args.invoice else range(1, len(groups) + 1)
 
     print(f"Run: {args.run}\n")

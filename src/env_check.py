@@ -47,6 +47,19 @@ ENVIRONMENTS = {
         "packages": ["chandra", "torch", "transformers"],
         "install_hint": "pip install \"chandra-ocr[hf]\"",
     },
+    "glm": {
+        # Meme venv que HunyuanOCR : tous deux veulent un transformers recent
+        # et sont donc incompatibles avec le venv Paddle. L'architecture
+        # `glm_ocr` est plus recente encore que celle de Hunyuan -- si le
+        # chargement echoue sur KeyError: 'glm_ocr', c'est la version de
+        # developpement de transformers qu'il faut, pas une erreur de code.
+        "venv": "venv_hunyuan",
+        "purpose": "GLM-OCR (0,9 B, tient en 4 Go)",
+        "packages": ["transformers", "torch", "torchvision", "numpy", "PIL"],
+        "min_versions": {"transformers": (5, 14)},
+        "install_hint": ("pip install git+https://github.com/huggingface/"
+                         "transformers.git"),
+    },
     "hunyuan": {
         "venv": "venv_hunyuan",
         "purpose": "HunyuanOCR-1.5",

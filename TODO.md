@@ -1,9 +1,10 @@
 # TODO
 
-État au 3 août 2026, semaine 2–3 du stage.
+État au 5 août 2026, semaine 3 du stage.
 
 Rapporté à la timeline officielle, le travail est en avance : les semaines
-1 à 6 sont bouclées, les semaines 7–8 et 9–10 le sont à moitié.
+1 à 8 sont bouclées, les semaines 9–10 à moitié, et le prototype des
+semaines 11–12 existe déjà.
 
 ---
 
@@ -24,24 +25,45 @@ Rapporté à la timeline officielle, le travail est en avance : les semaines
       25 pages, 5 en numérotation continue, à plat et déformées, mesuré.
 - [x] **Export JSON** avec statut d'extraction explicite.
 
-### Les chiffres
+- [x] **Prototype PWA + API** (`src/api.py`, `webapp/`) — photo au téléphone,
+      rendu JSON, chaque étape exposée. Livrable des semaines 11–12.
+- [x] **Chandra OCR 2 sur GPU loué** (`kaggle/bench_kaggle_chandra.ipynb`) —
+      quatrième modèle, cinq branches, protocole identique aux autres.
+- [x] **Protocole d'évaluation unifié** (`scripts/eval_all.py`) — un seul
+      point d'entrée pour les cinq évaluations, avec la bonne vérité terrain
+      par jeu. C'est ce qui rend les colonnes comparables.
+- [x] **Démonstration de la fusion** (`demo/demo_fusion.py`) — on glisse les
+      pages, on voit les morceaux, les signaux de décision, puis le tableau
+      reconstitué avec la provenance de chaque ligne.
 
-| | TEDS | champs | fusion |
-|---|---|---|---|
-| HunyuanOCR adaptatif | 0,974 | 28/32 | 100 % / 100 % |
-| PaddleOCR-VL adaptatif | 0,951 | 24/32 | 100 % / 100 % |
-| PP-StructureV3 | 0,557 | 9/32 | 100 % / 100 % |
+### Les chiffres — tous re-mesurés le 5 août sous `scripts/eval_all.py`
+
+Les valeurs antérieures de ce fichier (0,974 pour Hunyuan) venaient d'états
+intermédiaires du code d'évaluation, améliorés depuis.
+
+| | TEDS brut | TEDS adaptatif | champs | fusion |
+|---|---|---|---|---|
+| **Chandra OCR 2** | 0,916 | **0,966** *(plafond 0,967)* | **29/32** | 100 % / 100 % |
+| HunyuanOCR-1.5 | **0,950** | 0,953 | 28/32 | 100 % / 100 % |
+| PaddleOCR-VL | 0,909 | 0,951 | 24/32 | 100 % / 88 % |
+| PP-StructureV3 | 0,557 | — | 9/32 | 100 % / 100 % |
 
 Et sur le jeu diversifié — 12 factures, 6 gabarits, **jamais vu par les
 algorithmes** :
 
-| | TEDS | champs | fusion |
-|---|---|---|---|
-| à plat | 0,976 | — | 100 % / 100 % |
-| déformé, adaptatif | **0,942** | 44/48 | 100 % |
+| | Chandra | PaddleOCR-VL |
+|---|---|---|
+| à plat | **0,981** | 0,976 |
+| déformé, adaptatif | **0,977** *(= plafond)* | 0,942 *(plafond 0,945)* |
+| champs déformé | 46/48 | 44/48 |
 
-Le plafond du choix parfait était à 0,945 : la règle de décision n'est plus
-le maillon faible.
+Sur le jeu diversifié la politique adaptative atteint **exactement** le
+plafond avec Chandra : la règle de décision ne perd plus rien.
+
+**Le résultat le plus intéressant du comparatif n'est pas un modèle.** En
+lecture brute, Hunyuan gagne ; c'est le prétraitement qui fait passer Chandra
+devant (+0,050, le plus gros gain des trois). L'écart entre les deux meilleurs
+modèles (0,013) est plus petit que ce qu'apporte la Phase 1.
 
 ---
 
@@ -58,21 +80,41 @@ L'astuce est qu'on garde la vérité terrain exacte, ce qu'aucune photo de
 document réel ne permet. Et ça valide le pipeline doc3D en comparant
 déformation simulée et réelle sur le même contenu.
 
-### 2. Le prototype PWA
+### 2. L'étude de dégradation d'image  ⭐ le meilleur rapport valeur/effort
 
-Photo au téléphone, rendu immédiat. Le calcul reste côté serveur, donc l'API
-sert aussi de livrable indépendant. À afficher : le quadrilatère détecté, les
-cadres de l'OCR, la décision de fusion, et les lignes surlignées selon leur
-statut de validation.
+Livrable des semaines 9–10, entièrement faisable sans imprimante et en
+quelques heures : dégrader progressivement les mêmes pages (flou de bougé,
+bruit ISO, compression JPEG, sous-exposition) et tracer la courbe de TEDS.
 
-### 3. NER sur texte libre
+Ça répond à la question que l'encadrante posera : **à partir de quelle
+qualité de photo la chaîne cesse-t-elle de fonctionner ?** Aujourd'hui on
+sait seulement qu'elle marche sur des rendus Blender parfaits. Et ça donne
+une spécification chiffrée au contrôle qualité à la capture, qui reste à
+écrire.
+
+C'est aussi le seul moyen, avant d'avoir des photos réelles, de savoir si
+0,97 est un chiffre robuste ou un chiffre de laboratoire.
+
+### 3. GLM-OCR — le seul modèle SOTA qui tienne en 4 Go
+
+0,9 B, licence MIT, meilleur TableTEDS de tous les modèles évalués, et il
+tourne **sur le poste** — pas de GPU loué, donc une PWA enfin utilisable.
+Déjà câblé : `--model glm` dans `bench_deformed.py`, entrée `glm` dans
+`eval_all.py`.
+
+La réserve : le vietnamien n'est pas dans ses 8 langues officielles. Le smoke
+test d'une page suffit à trancher, et un écart TEDS-Struct/TEDS supérieur à
+0,15 signera un profil PP-StructureV3. Prédictions écrites avant mesure dans
+[docs/glm_ocr.md](docs/glm_ocr.md).
+
+### 4. NER sur texte libre
 
 Partiellement couvert par l'extraction de champs étiquetés. Les entités en
 texte libre (« Glucose : 110 mg/dL ») ne le sont pas — et le corpus actuel
 n'en contient presque pas, il faudra enrichir le générateur pour que la tâche
 ait un sens.
 
-### 4. Anonymisation des données patient
+### 5. Anonymisation des données patient
 
 Phase 4 du sujet, non commencée. À discuter avec l'encadrante : la politique
 d'usage de HunyuanOCR interdit par ailleurs les décisions automatisées en
@@ -104,14 +146,23 @@ médicales, ça ne se livre pas sans relecture.
 européenne, le Royaume-Uni et la Corée du Sud. Développement et déploiement
 au Vietnam : conforme. Attention aux plateformes de calcul dont on ne choisit
 pas la région — Kaggle et Colab en font partie. PaddleOCR-VL, en Apache 2.0,
-n'a aucune de ces contraintes pour 2 points de TEDS de moins.
+n'a aucune de ces contraintes. **Chandra OCR 2** non plus (code Apache 2.0,
+poids OpenRAIL-M modifiée, sans restriction géographique) — c'est pour ça
+que ses benchmarks ont pu tourner sur Kaggle. Le choix du modèle est donc un
+arbitrage à trois termes : précision, coût matériel (5 B ne tiennent pas dans
+4 Go) et licence.
 
 **Hypothèse métier de la fusion.** La colonne STT redémarre à 1 à chaque
 facture. Un format numérotant en continu faisait fusionner deux factures
-distinctes ; corrigé par le veto de clôture, et `tests/test_merge_assumptions.py`
-garde le cas. À revalider sur tout nouveau format.
+distinctes ; corrigé par le veto de clôture. Un second défaut, trouvé en
+manipulant la démo le 5 août : deux **fragments** de factures différentes,
+chacun portant un marqueur de continuation authentique, étaient recollés —
+un marqueur prouve que B continue quelque chose, pas qu'il continue A.
+Corrigé par le veto de numérotation contradictoire, avec garde de cohérence.
+`tests/test_merge_assumptions.py` garde les dix cas. À revalider sur tout
+nouveau format.
 
-**Échantillon.** 20 factures, 7 gabarits, 42 pages. La politique adaptative
+**Échantillon.** 20 factures, 7 gabarits, 42 pages, quatre modèles. La politique adaptative
 tient sur un jeu qu'elle n'a jamais vu, ce qui est un vrai indice de
 généralisation — mais toutes les données restent **synthétiques**, issues d'un
 seul générateur et d'un seul moteur de déformation. Aucune photo réelle à ce
@@ -125,7 +176,7 @@ démarrage et échouent en une seconde plutôt qu'après le chargement du modèl
 le modèle produit du charabia sans lever la moindre erreur. Codé en dur dans
 `scripts/bench_deformed.py`.
 
-**Sept défaillances silencieuses** rencontrées à ce jour, aucune n'ayant levé
-d'erreur. Documentées dans `docs/etat_du_projet.md` — c'est l'argument le plus
+**Quatorze défaillances silencieuses** rencontrées à ce jour, aucune n'ayant levé
+d'erreur. Documentées dans `docs/etat_du_projet.md`, et cinq de plus dans `docs/audit_pipeline.md` (revue ciblée des seuls modules de production, 5 août) — c'est l'argument le plus
 concret en faveur de tout le dispositif d'évaluation, et ça mérite une section
 du rapport.

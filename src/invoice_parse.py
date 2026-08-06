@@ -28,7 +28,17 @@ from table_merge import _fuzzy_eq, _normalize, _find_header_index  # noqa
 # best fuzzy match, which absorbs OCR noise ("so lugng" / "soluong" /
 # "Số lượng").
 COLUMN_KEYWORDS = {
-    "index": ["stt", "so tt"],
+    # "s/t" et "st" : STT est le libellé le plus COURT du tableau, donc le
+    # plus fragile -- perdre une lettre sur trois fait chuter la similarite
+    # sous le seuil, alors que la meme perte sur "Thanh tien" ne se voit pas.
+    # Mesure sur Chandra : il lit "S/T", le rapprochement echoue, et les 33
+    # lignes de la facture 5 sortent avec index=None. Aucune erreur levee --
+    # seule la colonne des numeros disparait, et avec elle la detection des
+    # trous de numerotation.
+    #
+    # Ces deux variantes ne matchent QUE cette colonne : verifie contre les
+    # cinq autres libelles de l'en-tete, aucune collision.
+    "index": ["stt", "so tt", "s/t", "st"],
     "name": ["ten mat hang/dich vu", "ten mat hang", "dich vu", "ten"],
     "unit": ["dvt", "don vi tinh"],
     "quantity": ["so luong", "sl"],

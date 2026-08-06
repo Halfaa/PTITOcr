@@ -157,6 +157,18 @@ def extract_fields(text: str) -> dict:
     would be a line item, not a header field.
     """
     text = re.sub(r"<table.*?</table>", " ", text, flags=re.S)
+    # Les tableaux Markdown doivent disparaitre au meme titre que les <table>.
+    # Ne retirer que le HTML etait un reste de l'epoque ou l'on croyait que
+    # tous les modeles rendaient du HTML : `table_merge` a du apprendre a lire
+    # les tableaux en pipes, mais ce filtre-ci ne l'a jamais su. Une cellule
+    # contenant « Ho ten: ... » -- un nom de medicament mal lu, une ligne de
+    # tableau decalee -- pouvait donc etre servie comme nom de patient, et une
+    # ligne de separation comme nom d'hopital. Verifie : sur un tableau en
+    # pipes seul, `hospital_name` sortait egal a la ligne d'en-tete.
+    #
+    # On ne retire qu'une ligne ENTIEREMENT delimitee par des barres : une
+    # phrase contenant un « | » isole n'est pas une ligne de tableau.
+    text = re.sub(r"^[ \t]*\|.*\|[ \t]*$", " ", text, flags=re.M)
     text = re.sub(r"<[^>]+>", " ", text)
     flat = _deaccent_keep_length(text)
 

@@ -53,14 +53,16 @@ class Confidence:
     n_consistent: int = 0
     total_ok: Optional[bool] = None
     n_gaps: int = 0
+    index_available: bool = False
 
     def __str__(self):
         if not self.n_lines:
             return "no usable table"
+        numbering = (f"{self.n_gaps} numbering gap(s)" if self.index_available
+                     else "numbering unreadable")
         return (f"{self.score:.2f} "
                 f"({self.n_consistent}/{self.n_lines} lines balance, "
-                f"total {'ok' if self.total_ok else 'off'}, "
-                f"{self.n_gaps} numbering gap(s))")
+                f"total {'ok' if self.total_ok else 'off'}, {numbering})")
 
 
 # Weights. Deliberately not tuned: line consistency carries the most because
@@ -83,12 +85,22 @@ def confidence(table) -> Confidence:
     n = result["n_lines"]
     consistent = result["n_ok"] + result["n_corrected"]
 
+    # Absence de preuve n'est pas preuve : un signal illisible ne rapporte
+    # rien, il ne coute rien non plus. Le total suivait deja cette regle ;
+    # la numerotation, non -- une colonne STT detruite valait le bonus plein
+    # « aucun trou », si bien qu'abimer la lecture faisait MONTER la note
+    # (0,600 -> 0,750 sur un tableau ou le trou est reel).
+    #
+    # On ne renormalise surtout pas les poids sur les signaux disponibles :
+    # ca reviendrait a recompenser la perte d'information encore plus fort.
     score = (W_LINES * (consistent / n if n else 0.0)
              + W_TOTAL * (1.0 if result["total_ok"] else 0.0)
-             + W_GAPS * (0.0 if result["index_gaps"] else 1.0))
+             + W_GAPS * (1.0 if (result["index_available"]
+                                 and not result["index_gaps"]) else 0.0))
 
     return Confidence(score, n, consistent, result["total_ok"],
-                      len(result["index_gaps"]))
+                      len(result["index_gaps"]),
+                      result["index_available"])
 
 
 @dataclass

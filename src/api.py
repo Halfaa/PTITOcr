@@ -151,6 +151,14 @@ TAILLE_MAX_OCR = 1600
 # Ne payer la seconde passe que lorsque la premiere doute divise le cout par
 # deux environ, sans rien perdre la ou ca compte.
 SEUIL_DEUXIEME_PASSE = 0.95
+#
+# Depuis le correctif de `adaptive.confidence` (un signal illisible ne
+# rapporte plus le point qu'il rapportait), une lecture dont la colonne STT
+# n'a pas ete reconnue perd 0,15 et passe donc sous ce seuil. C'est voulu :
+# elle DOIT declencher la seconde lecture, puisqu'on ne peut plus verifier sa
+# numerotation. Le prix est quelques secondes de calcul de plus sur ces
+# pages-la ; le gain est qu'on ne livre plus comme sure une extraction dont
+# un tiers des controles n'a pas pu tourner.
 
 
 # --------------------------------------------------------------------------
