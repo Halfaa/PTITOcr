@@ -6,7 +6,7 @@
       3,
       4
     ],
-    "generated_at": "2026-07-28T03:58:08+00:00"
+    "generated_at": "2026-08-06T03:35:42+00:00"
   },
   "document": {
     "hospital_name": "BỆNH VIỆN SONG NGƯ",
@@ -276,6 +276,7 @@
     "n_to_check": 0,
     "n_auto_corrected": 0,
     "lines_to_check": [],
-    "numbering_gaps": []
+    "numbering_gaps": [],
+    "numbering_checked": true
   }
 }

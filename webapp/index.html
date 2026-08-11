@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111418">
+<link rel="manifest" href="/manifest.json">
+<title>Extraction de factures</title>
+<style>
+:root {
+  --fond: #111418;
+  --carte: #191d23;
+  --bord: #2a3038;
+  --texte: #e8eaed;
+  --doux: #9aa4b2;
+  --accent: #4da3ff;
+  --ok: #3fb950;
+  --alerte: #d29922;
+  --erreur: #f85149;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0; background: var(--fond); color: var(--texte);
+  font: 15px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif;
+  padding: 0 0 env(safe-area-inset-bottom);
+}
+header {
+  padding: 18px 20px; border-bottom: 1px solid var(--bord);
+  position: sticky; top: 0; background: var(--fond); z-index: 10;
+}
+h1 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+header p { margin: 4px 0 0; color: var(--doux); font-size: 0.82rem; }
+main { padding: 20px; max-width: 900px; margin: 0 auto; }
+.carte {
+  background: var(--carte); border: 1px solid var(--bord);
+  border-radius: 12px; padding: 16px; margin-bottom: 16px;
+}
+.carte h2 {
+  margin: 0 0 12px; font-size: 0.78rem; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--doux); font-weight: 600;
+}
+
+/* --- capture ---------------------------------------------------------- */
+#zone {
+  border: 2px dashed var(--bord); border-radius: 12px; padding: 32px 20px;
+  text-align: center; cursor: pointer; transition: border-color .15s, background .15s;
+}
+#zone.actif { border-color: var(--accent); background: rgba(77,163,255,.06); }
+#zone strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+#zone span { color: var(--doux); font-size: 0.85rem; }
+input[type=file] { display: none; }
+
+.rangee { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+button, select {
+  background: var(--carte); color: var(--texte); border: 1px solid var(--bord);
+  border-radius: 8px; padding: 10px 16px; font: inherit; font-size: 0.88rem;
+  cursor: pointer;
+}
+button.primaire { background: var(--accent); border-color: var(--accent); color: #06121f; font-weight: 600; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+
+.vignettes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.vignettes img { width: 62px; height: 82px; object-fit: cover; border-radius: 6px; border: 1px solid var(--bord); }
+
+/* --- etapes ----------------------------------------------------------- */
+.etape { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--bord); }
+.etape:last-child { border-bottom: none; }
+.pastille {
+  width: 20px; height: 20px; border-radius: 50%; flex: none; margin-top: 2px;
+  border: 2px solid var(--bord); display: grid; place-items: center;
+  font-size: 11px; font-weight: 700;
+}
+.etape[data-etat="fait"] .pastille { border-color: var(--ok); color: var(--ok); }
+.etape[data-etat="en cours"] .pastille { border-color: var(--accent); border-right-color: transparent; animation: tourne .8s linear infinite; }
+.etape[data-etat="echec"] .pastille { border-color: var(--erreur); color: var(--erreur); }
+@keyframes tourne { to { transform: rotate(360deg); } }
+.etape .titre { font-size: 0.9rem; }
+.etape .detail { color: var(--doux); font-size: 0.8rem; }
+
+/* --- images avec cadre ------------------------------------------------ */
+.pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.page { position: relative; }
+.page img { width: 100%; border-radius: 8px; display: block; border: 1px solid var(--bord); }
+.page svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.page .legende { font-size: 0.76rem; color: var(--doux); margin-top: 5px; }
+
+/* --- tableau ---------------------------------------------------------- */
+.defilant { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+th, td { padding: 7px 9px; text-align: left; border-bottom: 1px solid var(--bord); white-space: nowrap; }
+th { color: var(--doux); font-weight: 600; font-size: 0.76rem; text-transform: uppercase; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr[data-statut="inconsistent"] { background: rgba(248,81,73,.09); }
+tr[data-statut="incomplete"] { background: rgba(210,153,34,.09); }
+tr[data-statut="corrected"] { background: rgba(63,185,80,.08); }
+.etiquette { font-size: 0.7rem; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--bord); }
+
+.champs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.champ .cle { font-size: 0.74rem; color: var(--doux); text-transform: uppercase; letter-spacing: .04em; }
+.champ .valeur { font-size: 0.95rem; }
+.champ .valeur.vide { color: var(--erreur); font-style: italic; }
+.source { font-size: 0.68rem; color: var(--doux); }
+
+.decision { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--bord); font-size: 0.84rem; }
+.decision:last-child { border-bottom: none; }
+.signaux { color: var(--doux); font-size: 0.76rem; }
+.oui { color: var(--ok); } .non { color: var(--doux); }
+.masque { display: none; }
+.erreur { color: var(--erreur); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Extraction de factures médicales</h1>
+  <p>Photo → tableau vérifié → JSON</p>
+</header>
+
+<main>
+
+<div class="carte">
+  <h2>1. Les pages</h2>
+  <div id="zone">
+    <strong>Prendre une photo ou choisir des fichiers</strong>
+    <span>Plusieurs pages d'une même facture : garde l'ordre de lecture</span>
+  </div>
+  <input type="file" id="fichiers" accept="image/*" multiple capture="environment">
+  <div class="vignettes" id="vignettes"></div>
+  <div class="rangee">
+    <select id="modele">
+      <option value="hunyuan">HunyuanOCR-1.5 (GPU)</option>
+      <option value="paddleocr-vl">PaddleOCR-VL</option>
+      <option value="ppstructure">PP-StructureV3</option>
+    </select>
+    <select id="passes" title="Seconde lecture sur l'image prétraitée">
+      <option value="auto">2ᵉ lecture si doute</option>
+      <option value="jamais">1 seule lecture</option>
+      <option value="toujours">2 lectures</option>
+    </select>
+    <button class="primaire" id="lancer" disabled>Extraire</button>
+    <button id="demo">Démonstration</button>
+  </div>
+  <div class="rangee masque" id="zone-demo">
+    <select id="run-brut"></select>
+    <select id="run-pretraite"></select>
+    <input id="pages-demo" value="1,2" style="width:90px;background:var(--carte);color:var(--texte);border:1px solid var(--bord);border-radius:8px;padding:10px">
+    <button id="rejouer">Rejouer</button>
+    <div class="source" id="aide-pages" style="flex-basis:100%"></div>
+  </div>
+</div>
+
+<div class="carte masque" id="carte-etapes">
+  <h2>2. Ce que fait la chaîne</h2>
+  <div id="etapes"></div>
+  <p class="erreur masque" id="message-erreur"></p>
+</div>
+
+<div class="carte masque" id="carte-pages">
+  <h2>3. Localisation de la feuille</h2>
+  <div class="pages" id="apercus"></div>
+</div>
+
+<div class="carte masque" id="carte-fusion">
+  <h2>4. Décision de fusion</h2>
+  <div id="decisions"></div>
+</div>
+
+<div class="carte masque" id="carte-champs">
+  <h2>5. Champs d'en-tête</h2>
+  <div class="champs" id="champs"></div>
+</div>
+
+<div class="carte masque" id="carte-lignes">
+  <h2>6. Lignes, avec leur vérification</h2>
+  <div class="defilant"><table id="tableau"></table></div>
+  <div class="rangee">
+    <button class="primaire" id="telecharger">Télécharger le JSON</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+let fichiers = [], dernier = null;
+
+// --- capture -------------------------------------------------------------
+$("#zone").onclick = () => $("#fichiers").click();
+["dragover", "dragenter"].forEach(e => $("#zone").addEventListener(e, ev => {
+  ev.preventDefault(); $("#zone").classList.add("actif");
+}));
+["dragleave", "drop"].forEach(e => $("#zone").addEventListener(e, ev => {
+  ev.preventDefault(); $("#zone").classList.remove("actif");
+}));
+$("#zone").addEventListener("drop", ev => ajouter([...ev.dataTransfer.files]));
+$("#fichiers").onchange = ev => ajouter([...ev.target.files]);
+
+function ajouter(liste) {
+  fichiers = liste.filter(f => f.type.startsWith("image/"));
+  $("#vignettes").innerHTML = "";
+  fichiers.forEach(f => {
+    const img = new Image();
+    img.src = URL.createObjectURL(f);
+    $("#vignettes").append(img);
+  });
+  $("#lancer").disabled = fichiers.length === 0;
+}
+
+// --- lancement -----------------------------------------------------------
+$("#lancer").onclick = async () => {
+  const form = new FormData();
+  fichiers.forEach(f => form.append("images", f));
+  form.append("modele", $("#modele").value);
+  form.append("deux_passes", $("#passes").value);
+  demarrer(await poster("/api/extract", form));
+};
+
+let runsDispo = [];
+
+$("#demo").onclick = async () => {
+  $("#zone-demo").classList.toggle("masque");
+  if (runsDispo.length) return;
+
+  runsDispo = (await (await fetch("/api/runs")).json()).runs;
+  for (const sel of ["#run-brut", "#run-pretraite"]) {
+    $(sel).innerHTML = runsDispo
+      .map(r => `<option value="${r.nom}">${r.nom} (${r.pages.length} pages)</option>`)
+      .join("");
+  }
+  // Paire par defaut : une lecture brute et sa version pretraitee du meme
+  // jeu. C'est ce que la politique adaptative compare, et sans ce reglage
+  // l'interface proposait deux fois le premier run par ordre alphabetique.
+  const brut = runsDispo.find(r => /warped/.test(r.nom) && !/preproc/.test(r.nom));
+  const pre = runsDispo.find(r => /warped/.test(r.nom) && /preproc/.test(r.nom));
+  if (brut) $("#run-brut").value = brut.nom;
+  if (pre) $("#run-pretraite").value = pre.nom;
+  majPages();
+};
+
+// Les pages disponibles varient d'un run a l'autre : les faire deviner
+// menait a une erreur incomprehensible ("invalid literal for int()").
+function majPages() {
+  const r = runsDispo.find(x => x.nom === $("#run-brut").value);
+  if (!r) return;
+  $("#pages-demo").value = r.pages.slice(0, 2).join(",");
+  $("#aide-pages").textContent = `pages disponibles : ${r.pages.slice(0, 14).join(", ")}`
+    + (r.pages.length > 14 ? " …" : "");
+}
+$("#run-brut").onchange = majPages;
+
+$("#rejouer").onclick = async () => {
+  const form = new FormData();
+  form.append("run_brut", $("#run-brut").value);
+  form.append("run_pretraite", $("#run-pretraite").value);
+  form.append("pages", $("#pages-demo").value);
+  demarrer(await poster("/api/replay", form));
+};
+
+async function poster(url, form) {
+  const r = await fetch(url, { method: "POST", body: form });
+  if (!r.ok) throw new Error(await r.text());
+  return (await r.json()).id;
+}
+
+// --- suivi ---------------------------------------------------------------
+function demarrer(id) {
+  $("#carte-etapes").classList.remove("masque");
+  $("#message-erreur").classList.add("masque");
+  ["#carte-pages", "#carte-fusion", "#carte-champs", "#carte-lignes"]
+    .forEach(s => $(s).classList.add("masque"));
+  $("#lancer").disabled = true;
+  suivre(id);
+}
+
+// On interroge l'etat plutot que d'attendre la reponse : une requete de
+// trois minutes se fait couper par a peu pres tous les intermediaires
+// reseau, et l'utilisateur ne verrait rien pendant ce temps.
+async function suivre(id) {
+  const etat = await (await fetch(`/api/jobs/${id}`)).json();
+  afficherEtapes(etat);
+  if (etat.etat === "en cours") return setTimeout(() => suivre(id), 700);
+
+  $("#lancer").disabled = fichiers.length === 0;
+  if (etat.etat === "echec") {
+    $("#message-erreur").textContent = etat.erreur;
+    $("#message-erreur").classList.remove("masque");
+    return;
+  }
+  dernier = etat;
+  afficherResultat(etat);
+}
+
+function afficherEtapes(etat) {
+  $("#etapes").innerHTML = etat.etapes.map(e => `
+    <div class="etape" data-etat="${e.etat}">
+      <div class="pastille">${e.etat === "fait" ? "✓" : e.etat === "echec" ? "!" : ""}</div>
+      <div>
+        <div class="titre">${e.titre}</div>
+        <div class="detail">${e.detail || "&nbsp;"}</div>
+      </div>
+    </div>`).join("");
+}
+
+function afficherResultat(etat) {
+  const par = Object.fromEntries(etat.etapes.map(e => [e.nom, e]));
+
+  // --- pages avec le quadrilatere detecte
+  const brut = par.reception.donnees.pages || [];
+  const pre = par.pretraitement.donnees.pages || [];
+  if (brut.length) {
+    $("#apercus").innerHTML = brut.map((p, i) => {
+      const info = pre[i] || {};
+      // Le quadrilatere arrive en fractions de l'image, pas en pixels :
+      // l'affichage redimensionne, des pixels seraient faux aussitot.
+      const polygone = info.quad
+        ? `<svg viewBox="0 0 1 1" preserveAspectRatio="none">
+             <polygon points="${info.quad.map(([x, y]) => `${x},${y}`).join(" ")}"
+                      fill="rgba(77,163,255,.14)" stroke="#4da3ff"
+                      stroke-width="0.006" vector-effect="non-scaling-stroke"/>
+           </svg>` : "";
+      const legende = info.quad
+        ? `feuille trouvée · score ${info.score} · ${info.methode}`
+        : (info.repli ? "non recadrée" : "");
+      return `<div><div class="page">${p.apercu ? `<img src="${p.apercu}">` : ""}${polygone}</div>
+              <div class="legende">page ${i + 1} — ${legende}</div></div>`;
+    }).join("");
+    $("#carte-pages").classList.remove("masque");
+  }
+
+  // --- decisions de fusion
+  const decisions = par.fusion.donnees.decisions || [];
+  if (decisions.length) {
+    $("#decisions").innerHTML = decisions.map(d => {
+      const s = d.signaux;
+      const actifs = [
+        s.table_b_has_continuation_marker && "marqueur de continuation",
+        s.index_continuity && "numérotation continue",
+        s.table_b_starts_mid_numbering && "B démarre au-delà de 1",
+        s.table_a_ends_with_total && "A se termine par un total",
+        s.table_b_restarts_at_1 && "B redémarre à 1",
+      ].filter(Boolean);
+      return `<div class="decision">
+        <span class="${d.fusionne ? "oui" : "non"}">${d.fusionne ? "fusionné" : "séparé"}</span>
+        <span>pages ${d.de} → ${d.vers}</span>
+        <span class="signaux">${actifs.join(" · ") || "aucun signal"}
+          ${s.last_index_a != null ? ` · dernier n° ${s.last_index_a} → ${s.first_index_b}` : ""}</span>
+      </div>`;
+    }).join("");
+    $("#carte-fusion").classList.remove("masque");
+  }
+
+  // --- champs
+  const r = etat.resultat, noms = {
+    hospital_name: "Établissement", customer_name: "Patient",
+    invoice_date: "Date", doctor: "Médecin"
+  };
+  $("#champs").innerHTML = Object.entries(noms).map(([cle, titre]) => {
+    const v = r.champs[cle], src = r.champs_source[cle];
+    return `<div class="champ"><div class="cle">${titre}</div>
+      <div class="valeur ${v ? "" : "vide"}">${v || "non trouvé"}</div>
+      ${v ? `<div class="source">lecture ${src}</div>` : ""}</div>`;
+  }).join("");
+  $("#carte-champs").classList.remove("masque");
+
+  // --- lignes
+  if (r.lignes.length) {
+    const etiquettes = { ok: "ok", corrected: "corrigée", inconsistent: "incohérente", incomplete: "incomplète" };
+    $("#tableau").innerHTML = `
+      <thead><tr><th>N°</th><th>Désignation</th><th>Unité</th>
+      <th class="num">Qté</th><th class="num">P.U.</th><th class="num">Total</th><th></th></tr></thead>
+      <tbody>${r.lignes.map(l => `
+        <tr data-statut="${l.statut}">
+          <td>${l.index ?? "—"}</td><td>${l.nom || ""}</td><td>${l.unite || ""}</td>
+          <td class="num">${l.quantite ?? "—"}</td>
+          <td class="num">${l.prix_unitaire?.toLocaleString("fr-FR") ?? "—"}</td>
+          <td class="num">${l.total?.toLocaleString("fr-FR") ?? "—"}</td>
+          <td><span class="etiquette" title="${l.explication || ""}">${etiquettes[l.statut] || l.statut}</span></td>
+        </tr>`).join("")}</tbody>`;
+    $("#carte-lignes").classList.remove("masque");
+  }
+}
+
+$("#telecharger").onclick = () => {
+  const blob = new Blob([JSON.stringify(dernier.resultat, null, 2)],
+                        { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `facture_${dernier.id}.json`;
+  a.click();
+};
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js").catch(() => {});
+}
+</script>
+</body>
+</html>

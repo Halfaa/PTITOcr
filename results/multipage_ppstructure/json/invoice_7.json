@@ -6,17 +6,17 @@
       14,
       15
     ],
-    "generated_at": "2026-07-28T03:58:09+00:00"
+    "generated_at": "2026-08-06T03:35:45+00:00"
   },
   "document": {
     "hospital_name": "NHATHUOC BENHVIENBACHDUONG  i  HOA DON BAN LE",
-    "customer_name": "Dō In Ha Ma BSke don:BS.Bui Binh Cá Su",
+    "customer_name": null,
     "invoice_date": "02-08-2010",
     "doctor": null,
     "address": null,
-    "invoice_number": "XXXXXXXX DT:09XXXXXXXX",
+    "invoice_number": "09XXXXXXXX",
     "payment_method": null,
-    "_field_coverage": 0.56
+    "_field_coverage": 0.44
   },
   "extraction": {
     "status": "ok"
@@ -434,19 +434,84 @@
     "n_to_check": 13,
     "n_auto_corrected": 8,
     "lines_to_check": [
-      null,
-      10,
-      null,
-      4,
-      6,
-      7,
-      8,
-      9,
-      2,
-      2,
-      100,
-      500,
-      23
+      {
+        "position": 0,
+        "stt": null,
+        "status": "inconsistent",
+        "detail": "0 x 2000 = 0, but the line says 16000"
+      },
+      {
+        "position": 1,
+        "stt": 10,
+        "status": "inconsistent",
+        "detail": "3000 x 18000 = 54000000, but the line says 2"
+      },
+      {
+        "position": 2,
+        "stt": null,
+        "status": "inconsistent",
+        "detail": "1500 x 13500 = 20250000, but the line says 3"
+      },
+      {
+        "position": 4,
+        "stt": 4,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 6,
+        "stt": 6,
+        "status": "inconsistent",
+        "detail": "9 is not divisible by 500"
+      },
+      {
+        "position": 7,
+        "stt": 7,
+        "status": "inconsistent",
+        "detail": "6 is not divisible by 50"
+      },
+      {
+        "position": 8,
+        "stt": 8,
+        "status": "inconsistent",
+        "detail": "5 is not divisible by 200"
+      },
+      {
+        "position": 9,
+        "stt": 9,
+        "status": "inconsistent",
+        "detail": "6 is not divisible by 500"
+      },
+      {
+        "position": 13,
+        "stt": 2,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 15,
+        "stt": 2,
+        "status": "inconsistent",
+        "detail": "10 is not divisible by 18000"
+      },
+      {
+        "position": 16,
+        "stt": 100,
+        "status": "inconsistent",
+        "detail": "16 x 6 = 96, but the line says 1600"
+      },
+      {
+        "position": 18,
+        "stt": 500,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 22,
+        "stt": 23,
+        "status": "inconsistent",
+        "detail": "1 x 3000 = 3000, but the line says 21000"
+      }
     ],
     "numbering_gaps": [
       [
@@ -489,6 +554,7 @@
         500,
         20
       ]
-    ]
+    ],
+    "numbering_checked": true
   }
 }

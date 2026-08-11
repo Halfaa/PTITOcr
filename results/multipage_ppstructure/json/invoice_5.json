@@ -7,10 +7,10 @@
       10,
       11
     ],
-    "generated_at": "2026-07-28T03:58:09+00:00"
+    "generated_at": "2026-08-06T03:35:45+00:00"
   },
   "document": {
-    "hospital_name": "a",
+    "hospital_name": "HOA DONTIENTHUOC BENH VIEN XU NU",
     "customer_name": "Tran ChnhPhungHng    are",
     "invoice_date": "09-05-2015",
     "doctor": null,
@@ -516,46 +516,246 @@
     "n_to_check": 40,
     "n_auto_corrected": 0,
     "lines_to_check": [
-      null,
-      2500,
-      7500,
-      4,
-      5,
-      5030,
-      11200,
-      8,
-      9,
-      10,
-      11,
-      12,
-      13,
-      14,
-      12600,
-      50,
-      null,
-      null,
-      19,
-      1,
-      null,
-      90000,
-      75000,
-      null,
-      30,
-      null,
-      1700,
-      null,
-      null,
-      30,
-      75000,
-      29,
-      null,
-      null,
-      50,
-      30,
-      300000,
-      null,
-      null,
-      15400
+      {
+        "position": 0,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 1,
+        "stt": 2500,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 2,
+        "stt": 7500,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 3,
+        "stt": 4,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 4,
+        "stt": 5,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 5,
+        "stt": 5030,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 6,
+        "stt": 11200,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 7,
+        "stt": 8,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 8,
+        "stt": 9,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 9,
+        "stt": 10,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 10,
+        "stt": 11,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 11,
+        "stt": 12,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 12,
+        "stt": 13,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 13,
+        "stt": 14,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 14,
+        "stt": 12600,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 15,
+        "stt": 50,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 16,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 17,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 18,
+        "stt": 19,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 19,
+        "stt": 1,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 20,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 21,
+        "stt": 90000,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 22,
+        "stt": 75000,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 23,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 24,
+        "stt": 30,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 25,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 26,
+        "stt": 1700,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 27,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 28,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 29,
+        "stt": 30,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 30,
+        "stt": 75000,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 31,
+        "stt": 29,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 32,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 33,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 34,
+        "stt": 50,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 35,
+        "stt": 30,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 36,
+        "stt": 300000,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 37,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 38,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 39,
+        "stt": 15400,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
     ],
     "numbering_gaps": [
       [
@@ -638,6 +838,7 @@
         300000,
         15400
       ]
-    ]
+    ],
+    "numbering_checked": true
   }
 }

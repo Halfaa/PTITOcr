@@ -107,6 +107,14 @@ class _TableHTMLParser(HTMLParser):
         self._current_table_html.append(f"</{tag}>")
         if tag in ("td", "th") and self._in_cell:
             text = "".join(self._current_cell_text).strip()
+            # On ne developpe PAS les colspan/rowspan ici, et c'est un choix
+            # mesure. Les developper rendrait la ligne d'en-tete plus fidele
+            # au HTML, mais fabriquerait des cellules que la verite terrain
+            # n'a pas : sur Chandra, TEDS passait de 0,916 a 0,903. Le vrai
+            # probleme n'est de toute facon pas la largeur de l'en-tete mais
+            # le rapprochement des colonnes, et il est traite la ou il se
+            # pose -- voir `invoice_parse.repair_columns`, qui recale les
+            # colonnes numeriques sur l'arithmetique des lignes.
             self._current_row.append(text)
             self._in_cell = False
         elif tag == "tr" and self._in_row:

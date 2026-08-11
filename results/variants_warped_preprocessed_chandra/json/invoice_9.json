@@ -1,0 +1,249 @@
+{
+  "source": {
+    "run": "variants_warped_preprocessed_chandra",
+    "invoice": 9,
+    "pages": [
+      17,
+      18
+    ],
+    "generated_at": "2026-08-06T03:35:35+00:00"
+  },
+  "document": {
+    "hospital_name": "BỆNH VIỆN KIM NGUỒN",
+    "customer_name": "Đặng Eo Hồ",
+    "invoice_date": "24/09/2022",
+    "doctor": "BS. Bùi Bình Cá Sấu",
+    "address": "225 Phố Không Tên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 70,
+      "name": "Indomethacin 50mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 48000,
+      "total": 288000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 71,
+      "name": "Metronidazole 500mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1500,
+      "total": 12000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 72,
+      "name": "Allopurinol 100mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 10,
+      "unit_price": 54000,
+      "total": 540000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 73,
+      "name": "Metoprolol 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1600,
+      "total": 9600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 74,
+      "name": "Hydrocortisone 1% (Tuyp 10g)",
+      "unit": "tuyp",
+      "quantity": 2,
+      "unit_price": 2900,
+      "total": 5800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 75,
+      "name": "Saline Solution (Chai 500ml)",
+      "unit": "chai",
+      "quantity": 2,
+      "unit_price": 500,
+      "total": 1000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 76,
+      "name": "Albuterol Sulfate 90mcg (Lọ xít 10ml)",
+      "unit": "lọ",
+      "quantity": 2,
+      "unit_price": 2700,
+      "total": 5400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 77,
+      "name": "Devodil 50mg (Hộp 60 viên)",
+      "unit": "hộp",
+      "quantity": 8,
+      "unit_price": 171600,
+      "total": 1372800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 78,
+      "name": "Eye Drops (Lọ 10ml)",
+      "unit": "lọ",
+      "quantity": 5,
+      "unit_price": 2000,
+      "total": 10000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 79,
+      "name": "Gabapentin 300mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 51000,
+      "total": 255000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 80,
+      "name": "Prednisolone 5mg (Lọ 10ml)",
+      "unit": "lọ",
+      "quantity": 4,
+      "unit_price": 3100,
+      "total": 12400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 81,
+      "name": "Ibuprofen 400mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 1600,
+      "total": 4800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 82,
+      "name": "Insulin (Chai 10ml)",
+      "unit": "chai",
+      "quantity": 6,
+      "unit_price": 100000,
+      "total": 600000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 83,
+      "name": "Pentazocine 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 2000,
+      "total": 14000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 84,
+      "name": "Loratadine 10mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1800,
+      "total": 16200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 85,
+      "name": "Beclomethasone Dipropionate 100mcg (Lọ xít 10ml)",
+      "unit": "lọ",
+      "quantity": 9,
+      "unit_price": 2800,
+      "total": 25200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 86,
+      "name": "Bestimac Q10 30mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 4950,
+      "total": 29700,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 87,
+      "name": "Lisinopril 10mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1400,
+      "total": 8400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 88,
+      "name": "Paracetamol 500mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1500,
+      "total": 12000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": null,
+    "computed_from_lines": 3222300,
+    "consistent": null
+  },
+  "review": {
+    "n_lines": 19,
+    "n_ok": 19,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": true
+  }
+}

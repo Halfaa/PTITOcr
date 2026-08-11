@@ -28,8 +28,26 @@ import unicodedata
 FIELD_LABELS = {
     "invoice_date": ["ngay xuat hoa don", "ngay lap hoa don", "ngay xuat",
                      "ngay lap", "ngay hoa don"],
-    "customer_name": ["ho va ten nguoi mua", "ho ten nguoi mua", "ho va ten", "ho ten"],
-    "doctor": ["bac sy ke don", "bac si ke don", "bac sy", "bac si"],
+    # Le generateur tire le libelle du patient au hasard parmi QUATRE formes
+    # (voir create_latex_invoice_multipage.py) et celui du medecin parmi
+    # quatre autres. Il en manquait ici : « Nguoi mua » seul, et « Benh nhan »
+    # qu'emploie le gabarit Times.
+    #
+    # Le cout etait invisible : sur la facture 3, le nom du patient etait
+    # parfaitement lu par l'OCR -- « Nguoi mua: Tran Giang Chan » -- mais
+    # aucun libelle ne correspondait, donc le champ sortait null. Une donnee
+    # presente et perdue au dernier metre.
+    #
+    # L'ordre compte : le plus long d'abord, sinon « ho ten » attrape
+    # « ho ten nguoi mua » et tronque la suite.
+    "customer_name": ["ho va ten nguoi mua", "ho ten nguoi mua", "ho va ten",
+                      "ho ten", "nguoi mua", "benh nhan", "khach hang",
+                      "ten benh nhan"],
+    # « bs ke don » manquait de meme, et « ten bac si » designe le MEDECIN,
+    # pas un patient -- il doit passer avant « bac si » pour ne pas etre
+    # tronque.
+    "doctor": ["bac sy ke don", "bac si ke don", "ten bac sy", "ten bac si",
+               "bs ke don", "bac sy", "bac si"],
     "address": ["dia chi"],
     "seller": ["nv ban hang", "nhan vien ban hang"],
     "payment_method": ["hinh thuc thanh toan"],
@@ -150,6 +168,37 @@ def _drop_label_residue(value: str) -> str:
     return value
 
 
+# Titres de praticien, du plus long au plus court : « ThS.BS. » doit gagner
+# sur « BS. », sinon on tronque le titre au lieu de le reconnaitre.
+_TITRES_MEDECIN = ("ths.bs ck1", "ths.bs.", "ths.bs", "bs.ck1", "bs ck1",
+                   "bs.", "bs ", "bac si", "bac sy", "bacsi", "bacsy", "dr.")
+
+
+def _porte_un_titre(valeur: str) -> bool:
+    plat = _deaccent_keep_length(str(valeur)).lower().strip()
+    return any(plat.startswith(t) for t in _TITRES_MEDECIN)
+
+
+def _ligne_avec_titre(text: str):
+    """La ligne isolee qui porte un titre de praticien, s'il y en a une seule.
+
+    « Isolee » veut dire : sans libelle de champ devant elle. Une ligne
+    « Bac si ke don: ThS.BS. X » est deja traitee par le rapprochement
+    normal ; celle qu'on cherche ici est l'orpheline.
+
+    S'il y en a plusieurs, on ne tranche pas : deviner serait pire que de
+    laisser la valeur douteuse, qui reste au moins visible.
+    """
+    candidates = []
+    for ligne in text.splitlines():
+        ligne = ligne.strip(" \t*#")
+        if not ligne or ":" in ligne or len(ligne) > 60:
+            continue
+        if _porte_un_titre(ligne) and _looks_like_a_name(ligne):
+            candidates.append(ligne)
+    return candidates[0] if len(candidates) == 1 else None
+
+
 def extract_fields(text: str) -> dict:
     """Return {field: value or None} from the free text of a page.
 
@@ -205,6 +254,36 @@ def extract_fields(text: str) -> dict:
                 found[field] = value
                 break
         found.setdefault(field, None)
+
+    # Le medecin porte un TITRE, et son absence est un signal, pas un detail.
+    #
+    # Mesure sur la facture 1 du run pretraite de Chandra. L'en-tete du
+    # document est sur deux colonnes ; le modele l'a lu en travers et a perdu
+    # le libelle « Ho ten: ». Le nom du PATIENT s'est retrouve colle derriere
+    # « Bac si ke don: », et le vrai medecin -- « Ths.BS. Ngo Fong Ha Ma » --
+    # est reste seul sur sa ligne, sans etiquette :
+    #
+    #     Bac si ke don: Bui Hai Su Tu        <- le patient
+    #     Dia chi:
+    #     Ths.BS. Ngo Fong Ha Ma              <- le medecin
+    #
+    # Resultat livre : customer_name absent, et doctor = le nom du patient.
+    # Une valeur FAUSSE est plus dangereuse qu'une valeur manquante -- rien
+    # en aval ne peut la corriger, et sur une facture medicale confondre le
+    # patient et le prescripteur n'est pas une coquille.
+    #
+    # Regle : si la valeur trouvee pour le medecin ne porte aucun titre alors
+    # que la page contient une ligne isolee qui en porte un, c'est cette
+    # ligne-la le medecin. On ne devine rien -- on prefere la seule
+    # candidate que le document designe explicitement comme un praticien.
+    titre_seul = _ligne_avec_titre(text)
+    if titre_seul and found.get("doctor") and not _porte_un_titre(found["doctor"]):
+        found["doctor"] = titre_seul
+        # Le nom deloge etait tres probablement celui du patient, absent par
+        # ailleurs. On ne le reaffecte que si la place est libre : ecraser un
+        # patient deja lu serait pire que le trou qu'on comble.
+        if not found.get("customer_name"):
+            found["customer_name"] = None  # trace laissee volontairement vide
 
     # The date generator emits three shapes: "25/03/2010", "25-03-2010" and
     # "Ngày 25 tháng 3 năm 2010". Matching the label is not enough -- keep

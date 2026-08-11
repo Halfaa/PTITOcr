@@ -1,0 +1,271 @@
+{
+  "source": {
+    "run": "variants_warped_chandra",
+    "invoice": 4,
+    "pages": [
+      7,
+      8
+    ],
+    "generated_at": "2026-08-06T03:35:27+00:00"
+  },
+  "document": {
+    "hospital_name": "**NHÀ THUỐC BỆNH VIỆN BẠCH ĐƯƠNG**",
+    "customer_name": "Lê Hải Hà Mã",
+    "invoice_date": "24/11/2022",
+    "doctor": "ThS.BS. Nguyễn Hải Hà Mã",
+    "address": "225 Phố Khổng Tản",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Fluticasone Propionate 100mcg (Lọ xit 10ml)",
+      "unit": "",
+      "quantity": 8,
+      "unit_price": 3000,
+      "total": 24000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Hydrochlorothiazide 25mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 4,
+      "unit_price": 1600,
+      "total": 6400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Etodolac 600mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 8,
+      "unit_price": 1800,
+      "total": 14400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Naproxen Sodium 500mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 1,
+      "unit_price": 1500,
+      "total": 1500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Saline Solution (Chai 500ml)",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 500,
+      "total": 1500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Ibuprofen 400mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 48000,
+      "total": 432000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Piroxicam 20mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 4,
+      "unit_price": 1700,
+      "total": 6800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Albuterol Sulfate 90mcg (Lọ xit 10ml)",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 2700,
+      "total": 24300,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Aspirin 300mg (Hộp 20 viên)",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 24000,
+      "total": 72000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Furosemide 40mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 1700,
+      "total": 5100,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Clarithromycin 500mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 2400,
+      "total": 7200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Digoxin 0,25mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 7,
+      "unit_price": 60000,
+      "total": 420000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Piroxicam 20mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 5,
+      "unit_price": 51000,
+      "total": 255000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Simvastatin 20mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 7,
+      "unit_price": 1500,
+      "total": 10500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Mefenamic Acid 500mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 54000,
+      "total": 486000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Pentazocine 50mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 7,
+      "unit_price": 60000,
+      "total": 420000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Paracetamol 500mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 2,
+      "unit_price": 1500,
+      "total": 3000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Betamethasone Valerate 0.1% (Túi 10g)",
+      "unit": "",
+      "quantity": 7,
+      "unit_price": 3300,
+      "total": 23100,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Warfarin 3mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 5,
+      "unit_price": 1900,
+      "total": 9500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Tebarat (Óng 0.25ml - Lẻ 1 ống)",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 3500,
+      "total": 10500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Aspirin 300mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 6,
+      "unit_price": 1200,
+      "total": 7200,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 2240000,
+    "computed_from_lines": 2240000,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 21,
+    "n_ok": 21,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": true
+  }
+}

@@ -56,6 +56,12 @@ JEUX = {
         "pdf": GEN / "invoices_variants.pdf",
         "gt": GEN / "ground_truth_labels_variants",
     },
+    "variants_encombre": {
+        "titre": "les mêmes 12 factures, déformées, sur fond encombré "
+                 "(3 à 6 feuilles parasites)",
+        "pdf": GEN / "invoices_variants.pdf",
+        "gt": GEN / "ground_truth_labels_variants",
+    },
 }
 
 # --------------------------------------------------------------------------
@@ -72,6 +78,17 @@ MODELES = {
             "variants_flat": ("variants_chandra", None),
             "variants_warped": ("variants_warped_chandra",
                                 "variants_warped_preprocessed_chandra"),
+            "variants_encombre": ("variants_encombre_chandra",
+                                  "variants_encombre_preproc_chandra"),
+        },
+    },
+    "glm": {
+        "titre": "GLM-OCR (0,9 B)",
+        "runs": {
+            "multipage": ("multipage_glm", "multipage_preproc_glm"),
+            "variants_flat": ("variants_glm", None),
+            "variants_warped": ("variants_warped_glm",
+                                "variants_warped_preprocessed_glm"),
         },
     },
     "hunyuan": {

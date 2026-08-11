@@ -1,0 +1,613 @@
+{
+  "source": {
+    "run": "multipage_chandra",
+    "invoice": 1,
+    "pages": [
+      1,
+      2
+    ],
+    "generated_at": "2026-08-06T08:59:10+00:00"
+  },
+  "document": {
+    "hospital_name": "NHÀ THUỐC BỆNH VIỆN BẠCH ĐƯƠNG",
+    "customer_name": "Bùi Hải Sư Tử",
+    "invoice_date": "05/07/2011",
+    "doctor": "ThS.BS. Ngô Fong Hà Mã",
+    "address": "223 Phố Khổng tên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": "Chuyển khoản",
+    "_field_coverage": 1.0
+  },
+  "extraction": {
+    "status": "partial",
+    "reason": "columns not found: index, name, total"
+  },
+  "items": [
+    {
+      "index": null,
+      "name": "",
+      "unit": "1",
+      "quantity": 1,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "2",
+      "quantity": 50,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "3",
+      "quantity": 200,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "4",
+      "quantity": 500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "5",
+      "quantity": 500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "7",
+      "quantity": 500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "8",
+      "quantity": 15,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "9",
+      "quantity": 50,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "10",
+      "quantity": 15,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "11",
+      "quantity": 50,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "12",
+      "quantity": 50,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "13",
+      "quantity": 1030,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "14",
+      "quantity": 40,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "15",
+      "quantity": 500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "16",
+      "quantity": 500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "17",
+      "quantity": 10,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "18",
+      "quantity": 500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "19",
+      "quantity": 250,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "20",
+      "quantity": 300,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "21",
+      "quantity": 25,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "22",
+      "quantity": 20,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "24",
+      "quantity": 50,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "25",
+      "quantity": 400,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "26",
+      "quantity": 500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "27",
+      "quantity": 50,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "28",
+      "quantity": 10,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "29",
+      "quantity": 250,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "29",
+      "quantity": 250,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "30",
+      "quantity": 500,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "31",
+      "quantity": 20,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    },
+    {
+      "index": null,
+      "name": "",
+      "unit": "32",
+      "quantity": 25,
+      "unit_price": null,
+      "total": null,
+      "check": {
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 4104930,
+    "computed_from_lines": 0,
+    "consistent": null
+  },
+  "review": {
+    "n_lines": 31,
+    "n_ok": 0,
+    "n_to_check": 31,
+    "n_auto_corrected": 0,
+    "lines_to_check": [
+      {
+        "position": 0,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 1,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 2,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 3,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 4,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 5,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 6,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 7,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 8,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 9,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 10,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 11,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 12,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 13,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 14,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 15,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 16,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 17,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 18,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 19,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 20,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 21,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 22,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 23,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 24,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 25,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 26,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 27,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 28,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 29,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 30,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
+    ],
+    "numbering_gaps": [],
+    "numbering_checked": false
+  },
+  "signature": {
+    "zone": [
+      0.74,
+      0.3,
+      0.26,
+      0.7
+    ],
+    "encre": 0.1262,
+    "vide": false,
+    "fichier": "invoice_1.png",
+    "page": 2,
+    "note": "zone découpée sur la dernière page de la facture, pas une détection : aucun algorithme n'a authentifié cette signature, elle est fournie pour relecture humaine"
+  }
+}

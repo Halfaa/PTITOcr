@@ -1,0 +1,293 @@
+{
+  "source": {
+    "run": "variants_chandra",
+    "invoice": 5,
+    "pages": [
+      9,
+      10
+    ],
+    "generated_at": "2026-08-06T03:35:19+00:00"
+  },
+  "document": {
+    "hospital_name": "NHÀ THUỐC BVĐK ĐẠI BÀNG",
+    "customer_name": "Đặng Anh Hồ",
+    "invoice_date": "18/12/2020",
+    "doctor": "PGS.TS.BS. Bùi Eo Hồ",
+    "address": "225 Phố Không Tên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Paroxetine 20mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 1,
+      "unit_price": 2500,
+      "total": 2500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Hydrochlorothiazide 25mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 6,
+      "unit_price": 1600,
+      "total": 9600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Fluticasone Propionate 100mcg (Lọ xịt 10ml)",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 3000,
+      "total": 9000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Allopurinol 100mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 6,
+      "unit_price": 1800,
+      "total": 10800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Atorvastatin 20mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 66000,
+      "total": 594000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Diclofenac Potassium 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 10,
+      "unit_price": 1700,
+      "total": 17000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Eye Drops (Lọ 10ml)",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 2000,
+      "total": 18000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Celecoxib 200mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 4,
+      "unit_price": 2100,
+      "total": 8400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Albuterol Sulfate 90mcg (Lọ xịt 10ml)",
+      "unit": "",
+      "quantity": 2,
+      "unit_price": 2700,
+      "total": 5400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Metronidazole 500mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 10,
+      "unit_price": 1500,
+      "total": 15000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Furosemide 40mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 5,
+      "unit_price": 51000,
+      "total": 255000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Loratadine 10mg (Hộp 100 viên)",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 180000,
+      "total": 1620000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Dexamethasone Sodium Phosphate 4mg (Lọ 10ml)",
+      "unit": "",
+      "quantity": 10,
+      "unit_price": 3200,
+      "total": 32000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Ketoprofen 250mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 4,
+      "unit_price": 51000,
+      "total": 204000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Atorvastatin 20mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 10,
+      "unit_price": 2200,
+      "total": 22000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Omeprazole 20mg (Viên nang - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 5,
+      "unit_price": 2500,
+      "total": 12500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Ciprofloxacin 500mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 10,
+      "unit_price": 1800,
+      "total": 18000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Simvastatin 20mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 5,
+      "unit_price": 1500,
+      "total": 7500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Bestimac Q10 30mg (Viên nén - Lẻ 1 viên)",
+      "unit": "",
+      "quantity": 9,
+      "unit_price": 4950,
+      "total": 44550,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Amoxicillin 500mg (Hộp 20 viên)",
+      "unit": "",
+      "quantity": 3,
+      "unit_price": 40000,
+      "total": 120000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Digoxin 0.25mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 2,
+      "unit_price": 60000,
+      "total": 120000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Celecoxib 200mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 5,
+      "unit_price": 63000,
+      "total": 315000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Warfarin 3mg (Hộp 30 viên)",
+      "unit": "",
+      "quantity": 2,
+      "unit_price": 57000,
+      "total": 114000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 3574250,
+    "computed_from_lines": 3574250,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 23,
+    "n_ok": 23,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": true
+  }
+}

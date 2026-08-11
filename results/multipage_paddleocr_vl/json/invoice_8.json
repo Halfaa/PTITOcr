@@ -6,17 +6,17 @@
       16,
       17
     ],
-    "generated_at": "2026-07-28T03:58:09+00:00"
+    "generated_at": "2026-08-06T03:35:44+00:00"
   },
   "document": {
     "hospital_name": "BÊNH VIÊN CƯ GIẢI",
-    "customer_name": "người mhttp://p.b",
+    "customer_name": null,
     "invoice_date": "31/08/2015",
     "doctor": "ThS Bc KN",
     "address": "225 Phố Không Tên",
     "invoice_number": "XXXXX XXXXX",
     "payment_method": null,
-    "_field_coverage": 0.89
+    "_field_coverage": 0.78
   },
   "extraction": {
     "status": "ok"
@@ -243,6 +243,7 @@
     "n_to_check": 0,
     "n_auto_corrected": 0,
     "lines_to_check": [],
-    "numbering_gaps": []
+    "numbering_gaps": [],
+    "numbering_checked": true
   }
 }

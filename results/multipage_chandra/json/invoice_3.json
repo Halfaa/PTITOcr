@@ -1,0 +1,361 @@
+{
+  "source": {
+    "run": "multipage_chandra",
+    "invoice": 3,
+    "pages": [
+      5,
+      6
+    ],
+    "generated_at": "2026-08-06T08:59:11+00:00"
+  },
+  "document": {
+    "hospital_name": "NHÀ THUỐC BỆNH VIỆN THIÊN BÌNH",
+    "customer_name": "Trần Giang Chấn",
+    "invoice_date": "29 tháng 5 năm 2010",
+    "doctor": "ThS.BS. Vũ Khanh Hồ",
+    "address": "225 Phố Khổng Tồn",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Hydrochlorothiazide 25mg",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 48000,
+      "total": 288000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Tebarate",
+      "unit": "ống",
+      "quantity": 9,
+      "unit_price": 3500,
+      "total": 31500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Diclofenac Sodium 50mg",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 1600,
+      "total": 3200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Celecoxib 200mg",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 63000,
+      "total": 189000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Allopurinol 100mg",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1800,
+      "total": 18000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Clarithromycin 500mg",
+      "unit": "hộp",
+      "quantity": 7,
+      "unit_price": 240000,
+      "total": 1680000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Devodil 50mg",
+      "unit": "hộp",
+      "quantity": 7,
+      "unit_price": 171600,
+      "total": 1201200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Indomethacin 50mg",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Pentazocine 50mg",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 2000,
+      "total": 6000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Insulin",
+      "unit": "chai",
+      "quantity": 8,
+      "unit_price": 100000,
+      "total": 800000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Tramadol Hydrochloride 50mg",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 63000,
+      "total": 63000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Paracetamol 500mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1500,
+      "total": 9000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Ibuprofen 400mg",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1600,
+      "total": 12800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Lisinopril 10mg",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1400,
+      "total": 11200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Simvastatin 20mg",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 45000,
+      "total": 225000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Amoxicillin 500mg",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 2000,
+      "total": 14000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Naproxen Sodium 500mg",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 45000,
+      "total": 45000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Efferalgan 500mg",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 50000,
+      "total": 150000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Albuterol Sulfate 90mcg",
+      "unit": "lọ",
+      "quantity": 9,
+      "unit_price": 2700,
+      "total": 24300,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Levothyroxine 100mcg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1300,
+      "total": 7800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Hydrocortisone 1%",
+      "unit": "tuyp",
+      "quantity": 9,
+      "unit_price": 2900,
+      "total": 26100,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Gabapentin 300mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1700,
+      "total": 15300,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Ketoprofen 250mg",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 51000,
+      "total": 459000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 24,
+      "name": "Montelukusib 10mg",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 3000,
+      "total": 9000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 25,
+      "name": "Meloxicam 15mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1900,
+      "total": 11400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 26,
+      "name": "Ketoprofen 250mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1700,
+      "total": 15300,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 27,
+      "name": "Metformin 500mg",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 1200,
+      "total": 2400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 28,
+      "name": "Piroxicam 20mg",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 51000,
+      "total": 459000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 5778100,
+    "computed_from_lines": 5778100,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 28,
+    "n_ok": 28,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": true
+  },
+  "signature": {
+    "zone": [
+      0.74,
+      0.3,
+      0.26,
+      0.7
+    ],
+    "encre": 0.0357,
+    "vide": false,
+    "fichier": "invoice_3.png",
+    "page": 6,
+    "note": "zone découpée sur la dernière page de la facture, pas une détection : aucun algorithme n'a authentifié cette signature, elle est fournie pour relecture humaine"
+  }
+}

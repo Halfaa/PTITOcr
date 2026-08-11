@@ -1,0 +1,304 @@
+{
+  "source": {
+    "run": "multipage_preproc_chandra",
+    "invoice": 8,
+    "pages": [
+      16,
+      17
+    ],
+    "generated_at": "2026-08-06T07:55:24+00:00"
+  },
+  "document": {
+    "hospital_name": "BỆNH VIỆN CỤ GIẢI",
+    "customer_name": "Bui Anh Phương Hoàng",
+    "invoice_date": "31/08/2015",
+    "doctor": "ThS.BS CK1 Nguyễn Hải Hà Mã",
+    "address": "225 Phố Không Tên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Loratadine 10mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1800,
+      "total": 16200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Hydrochlorothiazide 25mg",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 1600,
+      "total": 3200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Pentazocine 50mg",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 2000,
+      "total": 4000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Amoxicillin 500mg",
+      "unit": "hộp",
+      "quantity": 4,
+      "unit_price": 40000,
+      "total": 160000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Metformin 500mg",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 36000,
+      "total": 180000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Mefenamic Acid 500mg",
+      "unit": "viên",
+      "quantity": 4,
+      "unit_price": 1800,
+      "total": 7200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Tebarat",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 70000,
+      "total": 210000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Metoprolol 50mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1600,
+      "total": 14400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Furosemide 40mg",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 51000,
+      "total": 51000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Aspirin 300mg",
+      "unit": "hộp",
+      "quantity": 10,
+      "unit_price": 24000,
+      "total": 240000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Simvastatin 20mg",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 45000,
+      "total": 405000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Mefenamic Acid 500mg",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 54000,
+      "total": 270000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Furosemide 40mg",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 1700,
+      "total": 11900,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Clarithromycin 500mg",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 2400,
+      "total": 21600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Ibuprofen 400mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1600,
+      "total": 9600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Codeine Phosphate 15mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1800,
+      "total": 10800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Bestimac Q10 30mg",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 148500,
+      "total": 445500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Montelukast 10mg",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 3000,
+      "total": 21000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Celecoxib 200mg",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 2100,
+      "total": 2100,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Warfarin 3mg",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1900,
+      "total": 19000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Clarithromycin 500mg",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 240000,
+      "total": 1200000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Simvastatin 20mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1500,
+      "total": 9000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Efferaigan 500mg",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 50000,
+      "total": 300000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 24,
+      "name": "Etodolac 600mg",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 54000,
+      "total": 54000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 3665500,
+    "computed_from_lines": 3665500,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 24,
+    "n_ok": 24,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": true
+  }
+}

@@ -6,7 +6,7 @@
       16,
       17
     ],
-    "generated_at": "2026-07-28T03:58:08+00:00"
+    "generated_at": "2026-08-06T03:35:42+00:00"
   },
   "document": {
     "hospital_name": "BỆNH VIÊN CỰ GIẢI",
@@ -231,21 +231,89 @@
       "check": {
         "status": "ok"
       }
+    },
+    {
+      "index": 20,
+      "name": "Warfarin 3mg",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1900,
+      "total": 19000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Clarithromycin 500mg",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 240000,
+      "total": 1200000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Simvastatin 20mg",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1500,
+      "total": 9000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Efferastatin 500mg",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 30000,
+      "total": 300000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "6 x 30000 = 180000, but the line says 300000"
+      }
+    },
+    {
+      "index": 24,
+      "name": "Etodolac 600mg",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 54000,
+      "total": 54000,
+      "check": {
+        "status": "ok"
+      }
     }
   ],
   "totals": {
     "declared": null,
-    "computed_from_lines": 2083500,
+    "computed_from_lines": 3665500,
     "consistent": null
   },
   "review": {
-    "n_lines": 19,
-    "n_ok": 18,
-    "n_to_check": 1,
+    "n_lines": 24,
+    "n_ok": 22,
+    "n_to_check": 2,
     "n_auto_corrected": 0,
     "lines_to_check": [
-      17
+      {
+        "position": 16,
+        "stt": 17,
+        "status": "inconsistent",
+        "detail": "3 x 149500 = 448500, but the line says 445500"
+      },
+      {
+        "position": 22,
+        "stt": 23,
+        "status": "inconsistent",
+        "detail": "6 x 30000 = 180000, but the line says 300000"
+      }
     ],
-    "numbering_gaps": []
+    "numbering_gaps": [],
+    "numbering_checked": true
   }
 }

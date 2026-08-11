@@ -1,0 +1,363 @@
+{
+  "source": {
+    "run": "variants_warped_chandra",
+    "invoice": 1,
+    "pages": [
+      1,
+      2
+    ],
+    "generated_at": "2026-08-06T03:35:26+00:00"
+  },
+  "document": {
+    "hospital_name": "BỆNH VIỆN KIM NGƯU",
+    "customer_name": "Phạm Dũng Sự Tử",
+    "invoice_date": "08/01/2014",
+    "doctor": "BS. Ngô Hải Chấn",
+    "address": "223 Phố Không tên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Gabapentin 300mg (Hộp 30 viên)Terbutaline Sulfate 90mcg (Lọ xít 10ml)",
+      "unit": "lọ",
+      "quantity": 6,
+      "unit_price": 51000,
+      "total": 408000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "6 x 51000 = 306000, but the line says 408000"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Baclomethasone Dipropionate 100mcg (Lọ xít 10ml)",
+      "unit": "lọ",
+      "quantity": 4,
+      "unit_price": 2500,
+      "total": 15000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "4 x 2500 = 10000, but the line says 15000"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Indomethacin 50mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 7,
+      "unit_price": 2800,
+      "total": 11200,
+      "check": {
+        "status": "inconsistent",
+        "detail": "7 x 2800 = 19600, but the line says 11200"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Omeprazole 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 48000,
+      "total": 336000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "5 x 48000 = 240000, but the line says 336000"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Ciprofloxacin 500mg (Viên nén - Lọ 1 viên)",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 75000,
+      "total": 375000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "6 x 75000 = 450000, but the line says 375000"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Piroxicam 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 180000,
+      "total": 1080000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Naproxen Sodium 500mg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 51000,
+      "total": 306000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "7 x 51000 = 357000, but the line says 306000"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Diclofenac Sodium 50mg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1500,
+      "total": 10500,
+      "check": {
+        "status": "inconsistent",
+        "detail": "9 x 1500 = 13500, but the line says 10500"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Ailopurinol 100mg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 1600,
+      "total": 14400,
+      "check": {
+        "status": "inconsistent",
+        "detail": "2 x 1600 = 3200, but the line says 14400"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Etidolac 600mg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1800,
+      "total": 3600,
+      "check": {
+        "status": "inconsistent",
+        "detail": "6 x 1800 = 10800, but the line says 3600"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Betamethasone Valerate 0.1% (Tùy 10g)",
+      "unit": "tùy",
+      "quantity": 2,
+      "unit_price": 1800,
+      "total": 10800,
+      "check": {
+        "status": "inconsistent",
+        "detail": "2 x 1800 = 3600, but the line says 10800"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Betamethasone Valerate 0.1% (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 3300,
+      "total": 6600,
+      "check": {
+        "status": "inconsistent",
+        "detail": "9 x 3300 = 29700, but the line says 6600"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Codium Phosphate 15mg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 1800,
+      "total": 16200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Metrolidazole 500mg (Hộp 20 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 30000,
+      "total": 270000,
+      "check": {
+        "status": "inconsistent",
+        "detail": "5 x 30000 = 150000, but the line says 270000"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Diclofenac Potassium 50mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 51000,
+      "total": 255000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Piroxicam 20mg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 8,
+      "unit_price": 1700,
+      "total": 8500,
+      "check": {
+        "status": "inconsistent",
+        "detail": "8 x 1700 = 13600, but the line says 8500"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Furosemide 40mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 8,
+      "unit_price": 51000,
+      "total": 408000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Simvastatin 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 45000,
+      "total": 135000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Bestimac Q10 30mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 4950,
+      "total": 49500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Meloxicam 15mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 57000,
+      "total": 285000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Amoxicillin 500mg (Viên nang - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 2000,
+      "total": 2000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 4006300,
+    "computed_from_lines": 4006300,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 21,
+    "n_ok": 8,
+    "n_to_check": 13,
+    "n_auto_corrected": 0,
+    "lines_to_check": [
+      {
+        "position": 0,
+        "stt": 1,
+        "status": "inconsistent",
+        "detail": "6 x 51000 = 306000, but the line says 408000"
+      },
+      {
+        "position": 1,
+        "stt": 2,
+        "status": "inconsistent",
+        "detail": "4 x 2500 = 10000, but the line says 15000"
+      },
+      {
+        "position": 2,
+        "stt": 3,
+        "status": "inconsistent",
+        "detail": "7 x 2800 = 19600, but the line says 11200"
+      },
+      {
+        "position": 3,
+        "stt": 4,
+        "status": "inconsistent",
+        "detail": "5 x 48000 = 240000, but the line says 336000"
+      },
+      {
+        "position": 4,
+        "stt": 5,
+        "status": "inconsistent",
+        "detail": "6 x 75000 = 450000, but the line says 375000"
+      },
+      {
+        "position": 6,
+        "stt": 7,
+        "status": "inconsistent",
+        "detail": "7 x 51000 = 357000, but the line says 306000"
+      },
+      {
+        "position": 7,
+        "stt": 8,
+        "status": "inconsistent",
+        "detail": "9 x 1500 = 13500, but the line says 10500"
+      },
+      {
+        "position": 8,
+        "stt": 9,
+        "status": "inconsistent",
+        "detail": "2 x 1600 = 3200, but the line says 14400"
+      },
+      {
+        "position": 9,
+        "stt": 10,
+        "status": "inconsistent",
+        "detail": "6 x 1800 = 10800, but the line says 3600"
+      },
+      {
+        "position": 10,
+        "stt": 11,
+        "status": "inconsistent",
+        "detail": "2 x 1800 = 3600, but the line says 10800"
+      },
+      {
+        "position": 11,
+        "stt": 12,
+        "status": "inconsistent",
+        "detail": "9 x 3300 = 29700, but the line says 6600"
+      },
+      {
+        "position": 13,
+        "stt": 14,
+        "status": "inconsistent",
+        "detail": "5 x 30000 = 150000, but the line says 270000"
+      },
+      {
+        "position": 15,
+        "stt": 16,
+        "status": "inconsistent",
+        "detail": "8 x 1700 = 13600, but the line says 8500"
+      }
+    ],
+    "numbering_gaps": [],
+    "numbering_checked": true
+  }
+}

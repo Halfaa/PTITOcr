@@ -16,3 +16,11 @@ pillow>=10.0
 # TEDS (metrique d'evaluation de reconnaissance de tableaux)
 apted
 PyMuPDF
+
+# --- API et interface (src/api.py + webapp/) ---------------------------
+# python-multipart est obligatoire pour recevoir des fichiers : sans lui
+# FastAPI refuse de demarrer, avec un message qui le dit clairement.
+fastapi
+uvicorn[standard]
+python-multipart
+

@@ -6,17 +6,17 @@
       3,
       4
     ],
-    "generated_at": "2026-07-28T03:58:09+00:00"
+    "generated_at": "2026-08-06T03:35:44+00:00"
   },
   "document": {
     "hospital_name": "BENH VIEN SONG NGU  D  HOA DON BAN HANG",
     "customer_name": "Vū Khanh Su Tù",
     "invoice_date": null,
-    "doctor": "kednLeiChn",
+    "doctor": null,
     "address": null,
     "invoice_number": "XXXXXXX",
     "payment_method": null,
-    "_field_coverage": 0.67
+    "_field_coverage": 0.56
   },
   "extraction": {
     "status": "ok"
@@ -307,22 +307,102 @@
     "n_to_check": 16,
     "n_auto_corrected": 5,
     "lines_to_check": [
-      150,
-      1030,
-      1900,
-      6,
-      15000,
-      8,
-      9,
-      10,
-      11,
-      50,
-      null,
-      2,
-      2,
-      40,
-      10,
-      25
+      {
+        "position": 1,
+        "stt": 150,
+        "status": "inconsistent",
+        "detail": "48000 x 48000 = 2304000000, but the line says 2"
+      },
+      {
+        "position": 2,
+        "stt": 1030,
+        "status": "inconsistent",
+        "detail": "148500 x 445500 = 66156750000, but the line says 3"
+      },
+      {
+        "position": 5,
+        "stt": 1900,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 6,
+        "stt": 6,
+        "status": "inconsistent",
+        "detail": "2900 x 7 = 20300, but the line says 1"
+      },
+      {
+        "position": 7,
+        "stt": 15000,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 8,
+        "stt": 8,
+        "status": "inconsistent",
+        "detail": "250000 x 5 = 1250000, but the line says 50000"
+      },
+      {
+        "position": 9,
+        "stt": 9,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 10,
+        "stt": 10,
+        "status": "inconsistent",
+        "detail": "3000 is not divisible by 7"
+      },
+      {
+        "position": 11,
+        "stt": 11,
+        "status": "inconsistent",
+        "detail": "10 x 1 = 10, but the line says 102000"
+      },
+      {
+        "position": 14,
+        "stt": 50,
+        "status": "inconsistent",
+        "detail": "13500 x 14 = 189000, but the line says 0"
+      },
+      {
+        "position": 15,
+        "stt": null,
+        "status": "inconsistent",
+        "detail": "2000 is not divisible by 15"
+      },
+      {
+        "position": 17,
+        "stt": 2,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      },
+      {
+        "position": 18,
+        "stt": 2,
+        "status": "inconsistent",
+        "detail": "19 is not divisible by 50"
+      },
+      {
+        "position": 19,
+        "stt": 40,
+        "status": "inconsistent",
+        "detail": "51000 x 357000 = 18207000000, but the line says 20"
+      },
+      {
+        "position": 20,
+        "stt": 10,
+        "status": "inconsistent",
+        "detail": "42000 x 42000 = 1764000000, but the line says 21"
+      },
+      {
+        "position": 21,
+        "stt": 25,
+        "status": "inconsistent",
+        "detail": "1600 x 14400 = 23040000, but the line says 22"
+      }
     ],
     "numbering_gaps": [
       [
@@ -393,6 +473,7 @@
         10,
         25
       ]
-    ]
+    ],
+    "numbering_checked": true
   }
 }

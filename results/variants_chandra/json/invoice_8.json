@@ -1,0 +1,293 @@
+{
+  "source": {
+    "run": "variants_chandra",
+    "invoice": 8,
+    "pages": [
+      15,
+      16
+    ],
+    "generated_at": "2026-08-06T03:35:20+00:00"
+  },
+  "document": {
+    "hospital_name": "NHÀ THUỐC BỆNH VIỆN THIÊN BÌNH",
+    "customer_name": "Bùi Anh Hà Mã",
+    "invoice_date": "06/01/2018",
+    "doctor": "BS. Đỗ Eo Mèo",
+    "address": "225 Phố Không Tên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Naproxen Sodium 500mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 45000,
+      "total": 135000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Warfarin 3mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 57000,
+      "total": 513000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Ibuprofen 400mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 2,
+      "unit_price": 48000,
+      "total": 96000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Metronidazole 500mg (Hộp 20 viên)",
+      "unit": "hộp",
+      "quantity": 2,
+      "unit_price": 30000,
+      "total": 60000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Bestimac Q10 30mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 4950,
+      "total": 14850,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Metoprolol 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 1600,
+      "total": 11200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Albuterol Sulfate 90mcg (Lọ xịt 10ml)",
+      "unit": "lọ",
+      "quantity": 6,
+      "unit_price": 2700,
+      "total": 16200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Pentazocine 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 2000,
+      "total": 18000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Diclofenac Potassium 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 5,
+      "unit_price": 1700,
+      "total": 8500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Tebarat (Ống 0.25ml - Lẻ 1 ống)",
+      "unit": "ống",
+      "quantity": 5,
+      "unit_price": 3500,
+      "total": 17500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Indomethacin 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Eye Drops (Lọ 10ml)",
+      "unit": "lọ",
+      "quantity": 10,
+      "unit_price": 2000,
+      "total": 20000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Amoxicillin 500mg (Viên nang - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 4,
+      "unit_price": 2000,
+      "total": 8000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Montelukast 10mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 90000,
+      "total": 270000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Lisinopril 10mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 5,
+      "unit_price": 1400,
+      "total": 7000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Prednisolone 5mg (Lọ 10ml)",
+      "unit": "lọ",
+      "quantity": 5,
+      "unit_price": 3100,
+      "total": 15500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Paroxetine 20mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 2500,
+      "total": 22500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Metformin 500mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 36000,
+      "total": 180000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Omeprazole 20mg (Viên nang - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 2500,
+      "total": 15000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Devodil 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 2860,
+      "total": 8580,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Hydrocortisone 1% (Túyp 10g)",
+      "unit": "túyp",
+      "quantity": 7,
+      "unit_price": 2900,
+      "total": 20300,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Ciprofloxacin 500mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 4,
+      "unit_price": 1800,
+      "total": 7200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Etodolac 600mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 54000,
+      "total": 54000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 1519930,
+    "computed_from_lines": 1519930,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 23,
+    "n_ok": 23,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": true
+  }
+}

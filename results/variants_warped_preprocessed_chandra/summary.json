@@ -1,0 +1,105 @@
+{
+  "run": "variants_warped_preprocessed_chandra",
+  "generated_at": "2026-08-06T03:53:25+00:00",
+  "documents": {
+    "invoices": 12,
+    "pages": 25,
+    "pages_per_invoice": 2.08,
+    "multi_page_invoices": 12,
+    "extraction_status": {
+      "ok": 12
+    },
+    "fully_ok": {
+      "found": 12,
+      "max": 12,
+      "rate": 1.0
+    }
+  },
+  "header_fields": {
+    "hospital_name": {
+      "found": 12,
+      "max": 12,
+      "rate": 1.0
+    },
+    "customer_name": {
+      "found": 8,
+      "max": 12,
+      "rate": 0.667
+    },
+    "invoice_date": {
+      "found": 11,
+      "max": 12,
+      "rate": 0.917
+    },
+    "doctor": {
+      "found": 9,
+      "max": 12,
+      "rate": 0.75
+    },
+    "address": {
+      "found": 11,
+      "max": 12,
+      "rate": 0.917
+    },
+    "invoice_number": {
+      "found": 11,
+      "max": 12,
+      "rate": 0.917
+    },
+    "payment_method": {
+      "found": 0,
+      "max": 12,
+      "rate": 0.0
+    },
+    "all_fields": {
+      "found": 62,
+      "max": 84,
+      "rate": 0.738
+    }
+  },
+  "line_items": {
+    "total": 319,
+    "arithmetically_ok": {
+      "found": 319,
+      "max": 319,
+      "rate": 1.0
+    },
+    "auto_corrected": {
+      "found": 0,
+      "max": 319,
+      "rate": 0.0
+    },
+    "to_review": {
+      "found": 0,
+      "max": 319,
+      "rate": 0.0
+    },
+    "per_invoice_avg": 26.6
+  },
+  "grand_totals": {
+    "declared_readable": {
+      "found": 7,
+      "max": 12,
+      "rate": 0.583
+    },
+    "consistent_when_readable": {
+      "found": 7,
+      "max": 7,
+      "rate": 1.0
+    },
+    "sum_declared": 36373040
+  },
+  "numbering": {
+    "checkable": {
+      "found": 12,
+      "max": 12,
+      "rate": 1.0
+    },
+    "no_gap_when_checkable": {
+      "found": 12,
+      "max": 12,
+      "rate": 1.0
+    }
+  },
+  "reading": "Chaque bloc donne trouvé / maximum atteignable. Aucun chiffre ici n'utilise de vérité terrain : ce résumé mesure ce que la chaîne a extrait et ce qu'elle sait de sa propre fiabilité, donc il vaut aussi sur des factures réelles."
+}

@@ -1,0 +1,381 @@
+{
+  "source": {
+    "run": "variants_warped_preprocessed_chandra",
+    "invoice": 6,
+    "pages": [
+      11,
+      12
+    ],
+    "generated_at": "2026-08-06T03:35:34+00:00"
+  },
+  "document": {
+    "hospital_name": "BỆNH VIỆN MA KẾT",
+    "customer_name": "Bùi In Hà Mã",
+    "invoice_date": "07/08/2019",
+    "doctor": "TS.BS CK2 Vũ Bình Gấu",
+    "address": "225 Phố Không Tên",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 1,
+      "name": "Saline Solution (Chai 500ml)",
+      "unit": "chai",
+      "quantity": 6,
+      "unit_price": 500,
+      "total": 3000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Omeprazole 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 8,
+      "unit_price": 75000,
+      "total": 600000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Nimesulide 100mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1900,
+      "total": 19000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Efferalgan 500mg (Hộp 10 viên)",
+      "unit": "hộp",
+      "quantity": 10,
+      "unit_price": 50000,
+      "total": 500000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Metoprolol 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Nasal Spray (Chai 15ml)",
+      "unit": "chai",
+      "quantity": 7,
+      "unit_price": 1500,
+      "total": 10500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Indomethacin 50mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 48000,
+      "total": 288000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Naproxen Sodium 500mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 10,
+      "unit_price": 45000,
+      "total": 450000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Diclofenac Potassium 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 4,
+      "unit_price": 1700,
+      "total": 6800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Terbutaline Sulfate 90mcg (Lọ xịt 10ml)",
+      "unit": "lọ",
+      "quantity": 10,
+      "unit_price": 2500,
+      "total": 25000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Gabapentin 300mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 8,
+      "unit_price": 51000,
+      "total": 408000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Atorvastatin 20mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 7,
+      "unit_price": 2200,
+      "total": 15400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Piroxicam 20mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 1700,
+      "total": 3400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Paracetamol 500mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1500,
+      "total": 9000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Montelukusib 10mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 9,
+      "unit_price": 3000,
+      "total": 27000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Mefenamic Acid 500mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 54000,
+      "total": 270000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Insulin (Chai 10ml)",
+      "unit": "chai",
+      "quantity": 7,
+      "unit_price": 100000,
+      "total": 700000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Paroxetine 20mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 5,
+      "unit_price": 2500,
+      "total": 12500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Losartan 50mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 6,
+      "unit_price": 60000,
+      "total": 360000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Ketoprofen 250mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 1700,
+      "total": 1700,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Bestimac Q10 30mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 7,
+      "unit_price": 148500,
+      "total": 1039500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Warfarin 3mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 57000,
+      "total": 57000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Meloxicam 15mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 57000,
+      "total": 285000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 24,
+      "name": "Allopurinol 100mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 1800,
+      "total": 10800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 25,
+      "name": "Piroxicam 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 51000,
+      "total": 255000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 26,
+      "name": "Codeine Phosphate 15mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 2,
+      "unit_price": 1800,
+      "total": 3600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 27,
+      "name": "Omeprazole 20mg (Viên nang - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 5,
+      "unit_price": 2500,
+      "total": 12500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 28,
+      "name": "Simvastatin 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 7,
+      "unit_price": 45000,
+      "total": 315000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 29,
+      "name": "Devodil 50mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 6,
+      "unit_price": 2860,
+      "total": 17160,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 30,
+      "name": "Gabapentin 300mg (Viên nén - Lẻ 1 viên)",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1700,
+      "total": 17000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 31,
+      "name": "Loratadine 10mg (Hộp 100 viên)",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 180000,
+      "total": 180000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 5903460,
+    "computed_from_lines": 5903460,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 31,
+    "n_ok": 31,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": true
+  }
+}

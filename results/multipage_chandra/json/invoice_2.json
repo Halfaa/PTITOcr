@@ -1,0 +1,296 @@
+{
+  "source": {
+    "run": "multipage_chandra",
+    "invoice": 2,
+    "pages": [
+      3,
+      4
+    ],
+    "generated_at": "2026-08-06T08:59:10+00:00"
+  },
+  "document": {
+    "hospital_name": "BỆNH VIỆN SONG NGƯ",
+    "customer_name": "Vũ Khanh Sư Tử",
+    "invoice_date": "25 tháng 3 năm 2010",
+    "doctor": "BS. Lê Hải Chấn",
+    "address": "225 Phố Khổng Tồn",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "partial",
+    "reason": "columns not found: index"
+  },
+  "items": [
+    {
+      "index": null,
+      "name": "Naproxen Sodium 500mg",
+      "unit": "1",
+      "quantity": 1,
+      "unit_price": 45000,
+      "total": 45000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Metoprolol 50mg",
+      "unit": "2",
+      "quantity": 1,
+      "unit_price": 48000,
+      "total": 48000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Bestimac Q10 30mg",
+      "unit": "3",
+      "quantity": 3,
+      "unit_price": 148500,
+      "total": 445500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Metoprolol 50mg",
+      "unit": "4",
+      "quantity": 8,
+      "unit_price": 1600,
+      "total": 12800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Simvastatin 20mg",
+      "unit": "5",
+      "quantity": 4,
+      "unit_price": 1500,
+      "total": 6000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Warfarin 3mg",
+      "unit": "6",
+      "quantity": 1,
+      "unit_price": 1900,
+      "total": 1900,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Hydrocortisone 1%",
+      "unit": "7",
+      "quantity": 5,
+      "unit_price": 2900,
+      "total": 14500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Terbutaline Sulfate 90mcg",
+      "unit": "8",
+      "quantity": 6,
+      "unit_price": 2500,
+      "total": 15000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Efferalgan 500mg",
+      "unit": "9",
+      "quantity": 5,
+      "unit_price": 50000,
+      "total": 250000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Indomethacin 50mg",
+      "unit": "10",
+      "quantity": 7,
+      "unit_price": 1600,
+      "total": 11200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Atorvastatin 20mg",
+      "unit": "11",
+      "quantity": 7,
+      "unit_price": 66000,
+      "total": 462000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Fluticasone Propionate 100mcg",
+      "unit": "12",
+      "quantity": 1,
+      "unit_price": 3000,
+      "total": 3000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Diclofenac Potassium 50mg",
+      "unit": "13",
+      "quantity": 2,
+      "unit_price": 51000,
+      "total": 102000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Tramadol Hydrochloride 50mg",
+      "unit": "14",
+      "quantity": 10,
+      "unit_price": 63000,
+      "total": 630000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Prednisolone 5mg",
+      "unit": "15",
+      "quantity": 2,
+      "unit_price": 3100,
+      "total": 6200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Metronidazole 500mg",
+      "unit": "16",
+      "quantity": 9,
+      "unit_price": 1500,
+      "total": 13500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Eye Drops",
+      "unit": "17",
+      "quantity": 6,
+      "unit_price": 2000,
+      "total": 12000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Ibuprofen 400mg",
+      "unit": "18",
+      "quantity": 2,
+      "unit_price": 48000,
+      "total": 96000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Pentazocine 50mg",
+      "unit": "19",
+      "quantity": 2,
+      "unit_price": 60000,
+      "total": 120000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Furosemide 40mg",
+      "unit": "20",
+      "quantity": 7,
+      "unit_price": 51000,
+      "total": 357000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Lisinopril 10mg",
+      "unit": "21",
+      "quantity": 1,
+      "unit_price": 42000,
+      "total": 42000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Hydrochlorothiazide 25mg",
+      "unit": "22",
+      "quantity": 9,
+      "unit_price": 1600,
+      "total": 14400,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 2708000,
+    "computed_from_lines": 2708000,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 22,
+    "n_ok": 22,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": false
+  },
+  "signature": {
+    "zone": [
+      0.74,
+      0.3,
+      0.26,
+      0.7
+    ],
+    "encre": 0.1347,
+    "vide": false,
+    "fichier": "invoice_2.png",
+    "page": 4,
+    "note": "zone découpée sur la dernière page de la facture, pas une détection : aucun algorithme n'a authentifié cette signature, elle est fournie pour relecture humaine"
+  }
+}

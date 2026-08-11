@@ -187,6 +187,12 @@ def main():
     # produits, et des pages attribuées à la mauvaise facture. Le reste des
     # scripts d'évaluation accepte --pdf depuis le début ; celui-ci était le
     # dernier à ne pas le faire.
+    # La zone de signature ne se decoupe que si l'on sait ou sont les images
+    # sources : les .md du run n'en gardent aucune trace.
+    parser.add_argument("--images-dir", default=None,
+                        help="Dossier des images du run. Si fourni, la zone "
+                             "de signature de la DERNIÈRE page de chaque "
+                             "facture est exportée en PNG.")
     parser.add_argument("--pdf", default=None,
                         help="PDF source, pour le découpage en factures. "
                              "Défaut : le jeu multi-pages. Pour le jeu "
@@ -218,6 +224,30 @@ def main():
             continue
 
         doc = build_invoice_json(args.run, k, tables, texts, pages)
+
+        # La signature ne figure que sur la DERNIÈRE page d'une facture.
+        # C'est le découpage en factures qui le dit -- aucun détecteur n'est
+        # nécessaire, et aucun ne ferait mieux : mesuré, le taux d'encre de
+        # la zone ne sépare pas les pages qui en portent une de celles qui
+        # n'en portent pas, la colonne des totaux occupant la même région.
+        if args.images_dir and pages:
+            import cv2
+
+            from signature import exporter as exporter_signature
+
+            derniere = pages[-1]
+            candidats = (sorted(Path(args.images_dir).glob(f"page_{derniere}-*.png"))
+                         or sorted(Path(args.images_dir).glob(f"page_{derniere}.*")))
+            if candidats:
+                image = cv2.imread(str(candidats[0]))
+                doc["signature"] = exporter_signature(
+                    image, out_dir.parent / "signatures" / f"invoice_{k}.png")
+                doc["signature"]["page"] = derniere
+                doc["signature"]["note"] = (
+                    "zone découpée sur la dernière page de la facture, pas "
+                    "une détection : aucun algorithme n'a authentifié cette "
+                    "signature, elle est fournie pour relecture humaine")
+
         path = out_dir / f"invoice_{k}.json"
         path.write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
 

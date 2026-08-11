@@ -139,6 +139,73 @@ def _hunyuan_predict(processor, model, image_path: Path,
                                   clean_up_tokenization_spaces=False)[0]
 
 
+GLM_MODEL_ID = "zai-org/GLM-OCR"
+
+# GLM-OCR n'accepte que trois amorces, et pas de consigne libre : sa doc parle
+# de "prompt limited". « Text Recognition: » rend la page entière en Markdown,
+# tableaux compris -- c'est ce qu'il nous faut, puisque `invoice_fields` lit
+# l'en-tête dans le texte hors tableau. « Table Recognition: » ne rendrait que
+# la grille et nous ferait perdre les champs patient/médecin.
+GLM_PROMPTS = {
+    "document": "Text Recognition:",
+    "table": "Table Recognition:",
+    "formula": "Formula Recognition:",
+}
+
+
+def _load_glm():
+    """GLM-OCR (Z.ai), 0,9 B — le seul modèle récent qui tienne en 4 Go.
+
+    Deux différences avec les autres modèles du banc.
+
+    **L'architecture `glm_ocr` est récente.** Elle n'existe pas dans les
+    transformers 4.x du venv Paddle, et pas non plus dans les premières 5.x.
+    En cas de `KeyError: 'glm_ocr'`, il faut la version de développement :
+        pip install git+https://github.com/huggingface/transformers.git
+
+    **La chaîne officielle est en deux étages** — PP-DocLayoutV3 pour la mise
+    en page, puis GLM-OCR pour la reconnaissance — et n'est accessible que par
+    leur SDK. On appelle ici le modèle seul, comme pour les trois autres :
+    c'est la comparaison qui compte, et lui adjoindre un détecteur de mise en
+    page que les autres n'ont pas fausserait le protocole. Si le modèle seul
+    se révèle prometteur, le SDK complet devient une seconde mesure à faire.
+    """
+    import torch
+    from transformers import AutoModelForImageTextToText, AutoProcessor
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Loading {GLM_MODEL_ID} on {device} (~2 GB in bf16)...")
+    processor = AutoProcessor.from_pretrained(GLM_MODEL_ID)
+    model = AutoModelForImageTextToText.from_pretrained(
+        GLM_MODEL_ID,
+        dtype=torch.bfloat16 if device == "cuda" else torch.float32,
+        device_map=device,
+    )
+    model.eval()
+    print("  GLM-OCR loaded.")
+    return processor, model
+
+
+def _glm_predict(processor, model, image_path: Path,
+                 prompt_key: str = "document") -> str:
+    import torch
+
+    messages = [{"role": "user", "content": [
+        {"type": "image", "url": str(image_path)},
+        {"type": "text", "text": GLM_PROMPTS[prompt_key]},
+    ]}]
+    inputs = processor.apply_chat_template(
+        messages, tokenize=True, add_generation_prompt=True,
+        return_dict=True, return_tensors="pt").to(model.device)
+    # token_type_ids : accepté par le processeur, refusé par generate(). C'est
+    # le seul écart entre l'exemple de la carte modèle et un appel standard.
+    inputs.pop("token_type_ids", None)
+    with torch.no_grad():
+        generated = model.generate(**inputs, max_new_tokens=8192, do_sample=False)
+    trimmed = generated[0][inputs["input_ids"].shape[1]:]
+    return processor.decode(trimmed, skip_special_tokens=True)
+
+
 CHANDRA_MODEL_ID = "datalab-to/chandra-ocr-2"
 
 
@@ -226,7 +293,8 @@ def build_entry(image_path: Path, img_output_dir: Path, meta: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", choices=["paddleocr-vl", "ppstructure", "hunyuan", "chandra"], required=True)
+    parser.add_argument("--model", choices=["paddleocr-vl", "ppstructure", "hunyuan",
+                                            "chandra", "glm"], required=True)
     parser.add_argument("--images-dir", required=True, help="Folder holding the warped images (e.g. doc3D-renderer/img/multipage_test)")
     parser.add_argument("--limit", type=int, default=None, help="Only process the first N images")
     parser.add_argument("--output", default=None, help="Run name. Defaults to folder name + model.")
@@ -235,7 +303,8 @@ def main():
                              "document_full also keeps headers and footers.")
     args = parser.parse_args()
 
-    _require_env({"hunyuan": "hunyuan", "chandra": "chandra"}.get(args.model, "paddle"))
+    _require_env({"hunyuan": "hunyuan", "chandra": "chandra",
+                  "glm": "glm"}.get(args.model, "paddle"))
 
     images_dir = Path(args.images_dir)
     dataset_name = images_dir.name
@@ -265,7 +334,8 @@ def main():
     # Only load the (large) model if at least one image still needs processing.
     pipeline = None
     model_title = {"paddleocr-vl": "PaddleOCR-VL", "ppstructure": "PP-StructureV3",
-                   "hunyuan": "HunyuanOCR-1.5", "chandra": "Chandra OCR 2"}[args.model]
+                   "hunyuan": "HunyuanOCR-1.5", "chandra": "Chandra OCR 2",
+                   "glm": "GLM-OCR"}[args.model]
 
     def build_pipeline():
         """Load the model. Called ONCE, outside the per-image try/except.
@@ -290,6 +360,8 @@ def main():
         if args.model == "hunyuan":
             print("Loading HunyuanOCR-1.5...")
             return _load_hunyuan()
+        if args.model == "glm":
+            return _load_glm()
         return _load_chandra()
 
     def get_pipeline():
@@ -303,10 +375,13 @@ def main():
 
         PaddleOCR exposes result objects that know how to serialise
         themselves; HunyuanOCR returns raw text, which we write ourselves."""
-        if args.model in ("hunyuan", "chandra"):
+        if args.model in ("hunyuan", "chandra", "glm"):
             if args.model == "hunyuan":
                 processor, model = get_pipeline()
                 text = _hunyuan_predict(processor, model, image_path, args.prompt)
+            elif args.model == "glm":
+                processor, model = get_pipeline()
+                text = _glm_predict(processor, model, image_path)
             else:
                 text = _chandra_predict(get_pipeline(), image_path)
             (img_output_dir / f"{image_path.stem}.md").write_text(text, encoding="utf-8")

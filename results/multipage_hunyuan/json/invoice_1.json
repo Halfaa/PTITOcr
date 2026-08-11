@@ -6,7 +6,7 @@
       1,
       2
     ],
-    "generated_at": "2026-07-28T03:58:07+00:00"
+    "generated_at": "2026-08-06T03:35:42+00:00"
   },
   "document": {
     "hospital_name": "NHÀ THUỐC BỆNH VIỆN BẠCH DƯƠNG",
@@ -397,18 +397,74 @@
     "n_to_check": 11,
     "n_auto_corrected": 0,
     "lines_to_check": [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      11,
-      12,
-      13,
-      14
+      {
+        "position": 0,
+        "stt": 1,
+        "status": "inconsistent",
+        "detail": "5 x 2900 = 14500, but the line says 2900"
+      },
+      {
+        "position": 1,
+        "stt": 2,
+        "status": "inconsistent",
+        "detail": "6 x 63000 = 378000, but the line says 63000"
+      },
+      {
+        "position": 2,
+        "stt": 3,
+        "status": "inconsistent",
+        "detail": "9 x 69000 = 621000, but the line says 69000"
+      },
+      {
+        "position": 3,
+        "stt": 4,
+        "status": "inconsistent",
+        "detail": "8 x 2400 = 19200, but the line says 21600"
+      },
+      {
+        "position": 4,
+        "stt": 5,
+        "status": "inconsistent",
+        "detail": "4 x 5000 = 20000, but the line says 40000"
+      },
+      {
+        "position": 5,
+        "stt": 6,
+        "status": "inconsistent",
+        "detail": "10 x 100000 = 1000000, but the line says 400000"
+      },
+      {
+        "position": 6,
+        "stt": 7,
+        "status": "inconsistent",
+        "detail": "9 x 36000 = 324000, but the line says 360000"
+      },
+      {
+        "position": 10,
+        "stt": 11,
+        "status": "inconsistent",
+        "detail": "7 x 2100 = 14700, but the line says 2000"
+      },
+      {
+        "position": 11,
+        "stt": 12,
+        "status": "inconsistent",
+        "detail": "9 x 4950 = 44550, but the line says 14700"
+      },
+      {
+        "position": 12,
+        "stt": 13,
+        "status": "inconsistent",
+        "detail": "9 x 1700 = 15300, but the line says 44350"
+      },
+      {
+        "position": 13,
+        "stt": 14,
+        "status": "inconsistent",
+        "detail": "9 x 4950 = 44550, but the line says 44350"
+      }
     ],
-    "numbering_gaps": []
+    "numbering_gaps": [],
+    "numbering_checked": true
   }
 }

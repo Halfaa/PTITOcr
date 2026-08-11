@@ -7,7 +7,7 @@
       10,
       11
     ],
-    "generated_at": "2026-07-28T03:58:08+00:00"
+    "generated_at": "2026-08-06T03:35:43+00:00"
   },
   "document": {
     "hospital_name": "BÊNH VIÊN XỨ NỮ",
@@ -410,8 +410,14 @@
     "n_to_check": 1,
     "n_auto_corrected": 0,
     "lines_to_check": [
-      null
+      {
+        "position": 33,
+        "stt": null,
+        "status": "incomplete",
+        "detail": "too many missing values to verify"
+      }
     ],
-    "numbering_gaps": []
+    "numbering_gaps": [],
+    "numbering_checked": true
   }
 }

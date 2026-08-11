@@ -6,17 +6,17 @@
       7,
       8
     ],
-    "generated_at": "2026-07-28T03:58:09+00:00"
+    "generated_at": "2026-08-06T03:35:44+00:00"
   },
   "document": {
     "hospital_name": "BENH VIEN SONG NGU  c  HOA DON TIEN THUOC",
     "customer_name": "Vū Khanh Su ù",
     "invoice_date": null,
-    "doctor": "keBIn",
+    "doctor": null,
     "address": null,
-    "invoice_number": "XXXXXXX DT:09 XXXXXXXX",
+    "invoice_number": "09 XXXXXXXX",
     "payment_method": null,
-    "_field_coverage": 0.56
+    "_field_coverage": 0.44
   },
   "extraction": {
     "status": "ok"
@@ -338,15 +338,60 @@
     "n_to_check": 9,
     "n_auto_corrected": 3,
     "lines_to_check": [
-      100,
-      null,
-      90,
-      null,
-      null,
-      null,
-      20,
-      50,
-      26
+      {
+        "position": 3,
+        "stt": 100,
+        "status": "inconsistent",
+        "detail": "39000 x 390000 = 15210000000, but the line says 4"
+      },
+      {
+        "position": 4,
+        "stt": null,
+        "status": "inconsistent",
+        "detail": "70000 x 560000 = 39200000000, but the line says 5"
+      },
+      {
+        "position": 5,
+        "stt": 90,
+        "status": "inconsistent",
+        "detail": "2500 x 15000 = 37500000, but the line says 6"
+      },
+      {
+        "position": 10,
+        "stt": null,
+        "status": "inconsistent",
+        "detail": "28600 x 11 = 314600, but the line says 150"
+      },
+      {
+        "position": 12,
+        "stt": null,
+        "status": "inconsistent",
+        "detail": "750000 x 13 = 9750000, but the line says 20"
+      },
+      {
+        "position": 13,
+        "stt": null,
+        "status": "inconsistent",
+        "detail": "480000 x 14 = 6720000, but the line says 50"
+      },
+      {
+        "position": 14,
+        "stt": 20,
+        "status": "inconsistent",
+        "detail": "1500 x 12000 = 18000000, but the line says 15"
+      },
+      {
+        "position": 15,
+        "stt": 50,
+        "status": "inconsistent",
+        "detail": "60000 x 360000 = 21600000000, but the line says 16"
+      },
+      {
+        "position": 25,
+        "stt": 26,
+        "status": "inconsistent",
+        "detail": "4 x 1500 = 6000, but the line says 600024000"
+      }
     ],
     "numbering_gaps": [
       [
@@ -377,6 +422,7 @@
         19,
         21
       ]
-    ]
+    ],
+    "numbering_checked": true
   }
 }

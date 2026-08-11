@@ -75,6 +75,10 @@ class Travail:
     erreur: Optional[str] = None
     etapes: list = field(default_factory=list)
     resultat: Optional[dict] = None
+    # Lecture des QR codes, faite a la reception sur l'image pleine
+    # resolution. Conservee ici pour que l'assemblage final la retrouve : a
+    # ce moment-la, les images ont deja ete reduites et recadrees.
+    qr: Optional[dict] = None
 
     def etape(self, nom):
         """L'etape demandee, ou None si elle ne s'applique pas a ce travail.
@@ -328,9 +332,31 @@ def _traiter(travail: Travail, pages_brutes: list):
         if image is None:
             raise ValueError("Image illisible (format non reconnu)")
         images.append(image)
+    # Le QR se lit ICI, sur l'image telle qu'elle est arrivee -- avant le
+    # pretraitement qui recadre, et surtout avant `_reduire` qui ramene tout
+    # a TAILLE_MAX_OCR pour le modele.
+    #
+    # Ramener une photo de 4000 px a 1600 divise la taille du QR par 2,5. Or
+    # un decodeur a besoin d'environ 3 pixels par module : sur nos rendus a
+    # 900 px le QR fait 67 px, soit 2,7 px/module -- il decode depuis le PDF
+    # et ne decode plus une fois gondole par Blender. Il n'y avait aucune
+    # marge. Reduire avant de lire reviendrait a jeter celle qui reste.
+    from qrcode_lecture import lire_qr, qualite_de_capture
+
+    lectures_qr = [lire_qr(i) for i in images]
+    qualite = qualite_de_capture(lectures_qr)
+
     etape.etat = "fait"
     etape.detail = f"{len(images)} page(s)"
-    etape.donnees = {"pages": [{"apercu": _en_data_uri(i)} for i in images]}
+    if qualite["etat"] != "sans_objet":
+        etape.detail += f" — {qualite['message']}"
+    etape.donnees = {
+        "pages": [{"apercu": _en_data_uri(i),
+                   "qr": q if q["trouve"] else None}
+                  for i, q in zip(images, lectures_qr)],
+        "qualite_capture": qualite,
+    }
+    travail.qr = {"lectures": lectures_qr, "qualite": qualite}
 
     # --- 2. Pretraitement --------------------------------------------------
     etape = travail.etape("pretraitement")
@@ -516,6 +542,12 @@ def _assembler(travail: Travail, textes: dict):
         "total_declare": (parse_table(retenu.table).grand_total
                           if retenu.table is not None else None),
         "extraction": "ok" if lignes else "aucune ligne extraite",
+        # Le QR voyage jusqu'ici depuis la reception : c'est la seule donnee
+        # du document dont la lecture soit verifiable de facon absolue, et
+        # « la capture etait-elle assez bonne » est une information que le
+        # consommateur du JSON veut, meme quand l'extraction a reussi.
+        "qr": (travail.qr["qualite"] if travail.qr else None),
+        "qr_urls": (travail.qr["qualite"]["urls"] if travail.qr else []),
     }
     travail.etat = "fini"
 

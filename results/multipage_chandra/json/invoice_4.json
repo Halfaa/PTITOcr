@@ -1,0 +1,351 @@
+{
+  "source": {
+    "run": "multipage_chandra",
+    "invoice": 4,
+    "pages": [
+      7,
+      8
+    ],
+    "generated_at": "2026-08-06T08:59:12+00:00"
+  },
+  "document": {
+    "hospital_name": "BỆNH VIỆN SONG NGU",
+    "customer_name": "Vũ Khanh Sư Tử",
+    "invoice_date": "20-04-2011",
+    "doctor": "Bác sĩ Đặng In Phương Hoàng",
+    "address": "225 Phố Khổng Tồn",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.89
+  },
+  "extraction": {
+    "status": "partial",
+    "reason": "columns not found: index"
+  },
+  "items": [
+    {
+      "index": null,
+      "name": "Aspirin 300mg",
+      "unit": "1",
+      "quantity": 7,
+      "unit_price": 24000,
+      "total": 168000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Celecoxib 200mg",
+      "unit": "2",
+      "quantity": 1,
+      "unit_price": 2100,
+      "total": 2100,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Paroxetine 20mg",
+      "unit": "3",
+      "quantity": 5,
+      "unit_price": 2500,
+      "total": 12500,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Levothyroxine 100mcg",
+      "unit": "4",
+      "quantity": 10,
+      "unit_price": 39000,
+      "total": 390000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Tebarat",
+      "unit": "5",
+      "quantity": 8,
+      "unit_price": 70000,
+      "total": 560000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Terbutaline Sulfate 90mcg",
+      "unit": "6",
+      "quantity": 6,
+      "unit_price": 2500,
+      "total": 15000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Amoxicillin 500mg",
+      "unit": "7",
+      "quantity": 7,
+      "unit_price": 2000,
+      "total": 14000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Aspirin 300mg",
+      "unit": "8",
+      "quantity": 4,
+      "unit_price": 1200,
+      "total": 4800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Tramadol Hydrochloride 50mg",
+      "unit": "9",
+      "quantity": 9,
+      "unit_price": 2100,
+      "total": 18900,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Pentazocine 50mg",
+      "unit": "10",
+      "quantity": 3,
+      "unit_price": 2000,
+      "total": 6000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Devodil 50mg",
+      "unit": "11",
+      "quantity": 10,
+      "unit_price": 2860,
+      "total": 28600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Antibiotic Cream",
+      "unit": "12",
+      "quantity": 1,
+      "unit_price": 3000,
+      "total": 3000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Paroxetine 20mg",
+      "unit": "13",
+      "quantity": 10,
+      "unit_price": 75000,
+      "total": 750000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Diclofenac Sodium 50mg",
+      "unit": "14",
+      "quantity": 10,
+      "unit_price": 48000,
+      "total": 480000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Simvastatin 20mg",
+      "unit": "15",
+      "quantity": 8,
+      "unit_price": 1500,
+      "total": 12000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Pentazocine 50mg",
+      "unit": "16",
+      "quantity": 6,
+      "unit_price": 60000,
+      "total": 360000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Piroxicam 20mg",
+      "unit": "17",
+      "quantity": 10,
+      "unit_price": 51000,
+      "total": 510000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Gabapentin 300mg",
+      "unit": "18",
+      "quantity": 2,
+      "unit_price": 51000,
+      "total": 102000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Indomethacin 50mg",
+      "unit": "19",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Clarithromycin 500mg",
+      "unit": "20",
+      "quantity": 6,
+      "unit_price": 2400,
+      "total": 14400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Betamethasone Valerate 0.1%",
+      "unit": "21",
+      "quantity": 8,
+      "unit_price": 3300,
+      "total": 26400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Hydrocortisone 1%",
+      "unit": "22",
+      "quantity": 6,
+      "unit_price": 2900,
+      "total": 17400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Metformin 500mg",
+      "unit": "23",
+      "quantity": 7,
+      "unit_price": 36000,
+      "total": 252000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Piroxicam 20mg",
+      "unit": "24",
+      "quantity": 6,
+      "unit_price": 1700,
+      "total": 10200,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Etodolac 600mg",
+      "unit": "25",
+      "quantity": 6,
+      "unit_price": 54000,
+      "total": 324000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Metronidazole 500mg",
+      "unit": "26",
+      "quantity": 4,
+      "unit_price": 1500,
+      "total": 6000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": null,
+      "name": "Fluticasone Propionate 100mcg",
+      "unit": "27",
+      "quantity": 8,
+      "unit_price": 3000,
+      "total": 24000,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": 4112900,
+    "computed_from_lines": 4112900,
+    "consistent": true
+  },
+  "review": {
+    "n_lines": 27,
+    "n_ok": 27,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": false
+  },
+  "signature": {
+    "zone": [
+      0.74,
+      0.3,
+      0.26,
+      0.7
+    ],
+    "encre": 0.0134,
+    "vide": false,
+    "fichier": "invoice_4.png",
+    "page": 8,
+    "note": "zone découpée sur la dernière page de la facture, pas une détection : aucun algorithme n'a authentifié cette signature, elle est fournie pour relecture humaine"
+  }
+}

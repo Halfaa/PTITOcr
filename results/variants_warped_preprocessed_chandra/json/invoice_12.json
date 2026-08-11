@@ -1,0 +1,194 @@
+{
+  "source": {
+    "run": "variants_warped_preprocessed_chandra",
+    "invoice": 12,
+    "pages": [
+      24,
+      25
+    ],
+    "generated_at": "2026-08-06T03:35:35+00:00"
+  },
+  "document": {
+    "hospital_name": "NHÀ THUỐC BỆNH VIỆN THIÊN BÌNH",
+    "customer_name": null,
+    "invoice_date": "16/12/2023",
+    "doctor": null,
+    "address": "225 Phố Khổng Tồn",
+    "invoice_number": "XXXX XXXX",
+    "payment_method": null,
+    "_field_coverage": 0.67
+  },
+  "extraction": {
+    "status": "ok"
+  },
+  "items": [
+    {
+      "index": 135,
+      "name": "Losartan 50mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 60000,
+      "total": 540000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 136,
+      "name": "Dexamethasone Sodium Phosphate 4mg (Lọ 10ml)",
+      "unit": "lọ",
+      "quantity": 4,
+      "unit_price": 3200,
+      "total": 12800,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 137,
+      "name": "Albuterol Sulfate 90mcg (Lọ xịt 10ml)",
+      "unit": "lọ",
+      "quantity": 3,
+      "unit_price": 2700,
+      "total": 8100,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 138,
+      "name": "Levothyroxine 100mcg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 10,
+      "unit_price": 1300,
+      "total": 13000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 139,
+      "name": "Naproxen Sodium 500mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 9,
+      "unit_price": 45000,
+      "total": 405000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 140,
+      "name": "Omeprazole 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 3,
+      "unit_price": 75000,
+      "total": 225000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 141,
+      "name": "Meloxicam 15mg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 1900,
+      "total": 5700,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 142,
+      "name": "Ciprofloxacin 500mg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 3,
+      "unit_price": 1800,
+      "total": 5400,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 143,
+      "name": "Devodil 50mg (Hộp 60 viên)",
+      "unit": "hộp",
+      "quantity": 10,
+      "unit_price": 171600,
+      "total": 1716000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 144,
+      "name": "Hydrochlorothiazide 25mg (Viên nén - Lọ 1 viên)",
+      "unit": "viên",
+      "quantity": 1,
+      "unit_price": 1600,
+      "total": 1600,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 145,
+      "name": "Simvastatin 20mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 1,
+      "unit_price": 45000,
+      "total": 45000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 146,
+      "name": "Aspirin 300mg (Hộp 20 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 24000,
+      "total": 120000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 147,
+      "name": "Allopurinol 100mg (Hộp 30 viên)",
+      "unit": "hộp",
+      "quantity": 5,
+      "unit_price": 54000,
+      "total": 270000,
+      "check": {
+        "status": "ok"
+      }
+    },
+    {
+      "index": 148,
+      "name": "Beclomethasone Dipropionate 100mcg (Lọ xịt 10ml)",
+      "unit": "lọ",
+      "quantity": 3,
+      "unit_price": 2800,
+      "total": 8400,
+      "check": {
+        "status": "ok"
+      }
+    }
+  ],
+  "totals": {
+    "declared": null,
+    "computed_from_lines": 3376000,
+    "consistent": null
+  },
+  "review": {
+    "n_lines": 14,
+    "n_ok": 14,
+    "n_to_check": 0,
+    "n_auto_corrected": 0,
+    "lines_to_check": [],
+    "numbering_gaps": [],
+    "numbering_checked": true
+  }
+}

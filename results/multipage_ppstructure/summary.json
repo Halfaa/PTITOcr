@@ -1,0 +1,107 @@
+{
+  "run": "multipage_ppstructure",
+  "generated_at": "2026-08-06T03:53:24+00:00",
+  "documents": {
+    "invoices": 8,
+    "pages": 17,
+    "pages_per_invoice": 2.12,
+    "multi_page_invoices": 8,
+    "extraction_status": {
+      "header_not_found": 1,
+      "ok": 6,
+      "partial": 1
+    },
+    "fully_ok": {
+      "found": 6,
+      "max": 8,
+      "rate": 0.75
+    }
+  },
+  "header_fields": {
+    "hospital_name": {
+      "found": 8,
+      "max": 8,
+      "rate": 1.0
+    },
+    "customer_name": {
+      "found": 4,
+      "max": 8,
+      "rate": 0.5
+    },
+    "invoice_date": {
+      "found": 3,
+      "max": 8,
+      "rate": 0.375
+    },
+    "doctor": {
+      "found": 2,
+      "max": 8,
+      "rate": 0.25
+    },
+    "address": {
+      "found": 2,
+      "max": 8,
+      "rate": 0.25
+    },
+    "invoice_number": {
+      "found": 7,
+      "max": 8,
+      "rate": 0.875
+    },
+    "payment_method": {
+      "found": 1,
+      "max": 8,
+      "rate": 0.125
+    },
+    "all_fields": {
+      "found": 27,
+      "max": 56,
+      "rate": 0.482
+    }
+  },
+  "line_items": {
+    "total": 185,
+    "arithmetically_ok": {
+      "found": 72,
+      "max": 185,
+      "rate": 0.389
+    },
+    "auto_corrected": {
+      "found": 23,
+      "max": 185,
+      "rate": 0.124
+    },
+    "to_review": {
+      "found": 90,
+      "max": 185,
+      "rate": 0.486
+    },
+    "per_invoice_avg": 23.1
+  },
+  "grand_totals": {
+    "declared_readable": {
+      "found": 4,
+      "max": 8,
+      "rate": 0.5
+    },
+    "consistent_when_readable": {
+      "found": 0,
+      "max": 4,
+      "rate": 0.0
+    },
+    "sum_declared": 16705100
+  },
+  "numbering": {
+    "checkable": {
+      "found": 7,
+      "max": 8,
+      "rate": 0.875
+    },
+    "no_gap_when_checkable": {
+      "found": 1,
+      "max": 7,
+      "rate": 0.143
+    }
+  },
+  "reading": "Chaque bloc donne trouvé / maximum atteignable. Aucun chiffre ici n'utilise de vérité terrain : ce résumé mesure ce que la chaîne a extrait et ce qu'elle sait de sa propre fiabilité, donc il vaut aussi sur des factures réelles."
+}

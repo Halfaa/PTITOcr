@@ -1,0 +1,106 @@
+{
+  "run": "multipage_chandra",
+  "generated_at": "2026-08-06T07:55:24+00:00",
+  "documents": {
+    "invoices": 8,
+    "pages": 17,
+    "pages_per_invoice": 2.12,
+    "multi_page_invoices": 8,
+    "extraction_status": {
+      "partial": 3,
+      "ok": 5
+    },
+    "fully_ok": {
+      "found": 5,
+      "max": 8,
+      "rate": 0.625
+    }
+  },
+  "header_fields": {
+    "hospital_name": {
+      "found": 8,
+      "max": 8,
+      "rate": 1.0
+    },
+    "customer_name": {
+      "found": 7,
+      "max": 8,
+      "rate": 0.875
+    },
+    "invoice_date": {
+      "found": 8,
+      "max": 8,
+      "rate": 1.0
+    },
+    "doctor": {
+      "found": 8,
+      "max": 8,
+      "rate": 1.0
+    },
+    "address": {
+      "found": 8,
+      "max": 8,
+      "rate": 1.0
+    },
+    "invoice_number": {
+      "found": 8,
+      "max": 8,
+      "rate": 1.0
+    },
+    "payment_method": {
+      "found": 2,
+      "max": 8,
+      "rate": 0.25
+    },
+    "all_fields": {
+      "found": 49,
+      "max": 56,
+      "rate": 0.875
+    }
+  },
+  "line_items": {
+    "total": 218,
+    "arithmetically_ok": {
+      "found": 171,
+      "max": 218,
+      "rate": 0.784
+    },
+    "auto_corrected": {
+      "found": 14,
+      "max": 218,
+      "rate": 0.064
+    },
+    "to_review": {
+      "found": 33,
+      "max": 218,
+      "rate": 0.151
+    },
+    "per_invoice_avg": 27.2
+  },
+  "grand_totals": {
+    "declared_readable": {
+      "found": 7,
+      "max": 8,
+      "rate": 0.875
+    },
+    "consistent_when_readable": {
+      "found": 5,
+      "max": 7,
+      "rate": 0.714
+    },
+    "sum_declared": 36200630
+  },
+  "numbering": {
+    "checkable": {
+      "found": 5,
+      "max": 8,
+      "rate": 0.625
+    },
+    "no_gap_when_checkable": {
+      "found": 4,
+      "max": 5,
+      "rate": 0.8
+    }
+  },
+  "reading": "Chaque bloc donne trouvé / maximum atteignable. Aucun chiffre ici n'utilise de vérité terrain : ce résumé mesure ce que la chaîne a extrait et ce qu'elle sait de sa propre fiabilité, donc il vaut aussi sur des factures réelles."
+}

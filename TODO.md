@@ -67,6 +67,40 @@ modèles (0,013) est plus petit que ce qu'apporte la Phase 1.
 
 ---
 
+## Demandé en réunion (6 août)
+
+1. **Photos réelles** — imprimer puis photographier. Bloqué sur l'imprimante.
+2. **Jeu à fonds encombrés** — ✅ **fait et mesuré**. La localisation de
+   feuille s'effondre : IoU 0,84 → 0,37, et **0/20 pages exploitables contre
+   22/25**. Le plafond tombe aussi (0,86 → 0,51), donc ce n'est pas le
+   sélecteur mais la segmentation elle-même : seuillage et contours ne
+   peuvent pas isoler une feuille au milieu d'autres feuilles. La suite
+   logique est une **segmentation apprise**.
+   Détail : [docs/fonds_encombres.md](docs/fonds_encombres.md).
+
+   **Reste à faire :** passer Chandra dessus. Le notebook Kaggle est câblé
+   (branches `variants_encombre_chandra` et `..._preproc_chandra`), le zip
+   `kaggle/images_variants_encombre.zip` est prêt. La question ouverte n'est
+   plus le recadrage mais la **lecture** : que produit le modèle quand on lui
+   donne un recadrage *faux* plutôt qu'absent ? Le cas à craindre est un
+   tableau cohérent mais issu d'une feuille parasite — la confiance
+   arithmétique ne le verrait pas.
+
+   **Avant de lancer**, compléter le jeu : il n'a que 20 pages, et pas les 20
+   premières. Le tri par nom des textures a coupé les pages 5 à 9, ce qui
+   ampute la facture 5. `-Depuis 20 -Nombre 5` la rétablit.
+
+   *Ancienne note, conservée pour le contexte :*
+   `doc3D-renderer/distracteurs.py`, option `-Parasites` dans
+   `render_variants.ps1`. Blender n'étant pas dans l'environnement de
+   développement, un rendu de vérification (`-Verifier`) est indispensable
+   avant le jeu complet. Voir [docs/fonds_encombres.md](docs/fonds_encombres.md).
+3. **Comparatif avec / sans prétraitement** — ✅ fait, les données existaient
+   déjà : [docs/avec_sans_pretraitement.md](docs/avec_sans_pretraitement.md).
+4. **Cloud** — évoqué, à cadrer plus tard.
+
+---
+
 ## À faire — par ordre de valeur
 
 ### 1. Les photos réelles  ⭐ le plus urgent
@@ -176,7 +210,7 @@ démarrage et échouent en une seconde plutôt qu'après le chargement du modèl
 le modèle produit du charabia sans lever la moindre erreur. Codé en dur dans
 `scripts/bench_deformed.py`.
 
-**Quatorze défaillances silencieuses** rencontrées à ce jour, aucune n'ayant levé
+**Dix-huit défaillances silencieuses** rencontrées à ce jour, aucune n'ayant levé
 d'erreur. Documentées dans `docs/etat_du_projet.md`, et cinq de plus dans `docs/audit_pipeline.md` (revue ciblée des seuls modules de production, 5 août) — c'est l'argument le plus
 concret en faveur de tout le dispositif d'évaluation, et ça mérite une section
 du rapport.
