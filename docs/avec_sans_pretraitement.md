@@ -24,7 +24,7 @@ page par page.**
 |---|---|---|---|
 | HunyuanOCR-1.5 | **0,950** | 0,879 | 0,953 |
 | PaddleOCR-VL | 0,909 | 0,951 | 0,951 |
-| Chandra OCR 2 | 0,916 | **0,966** | 0,966 |
+| Chandra OCR 2 | 0,916 | **0,966** | 0,967 |
 
 ![Avec et sans prétraitement](../demo/figures/08-with-without-preprocessing.png)
 

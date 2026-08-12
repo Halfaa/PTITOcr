@@ -110,12 +110,49 @@ def _candidate_masks(small):
     return candidates
 
 
-def _document_score(contour, image_area):
+# Poids de la prime de centralite. A 0,6, un candidat colle au bord de
+# l'image garde 40 % de sa note : la position pese, sans jamais ecraser la
+# forme. Valeur a confirmer par scripts/sonde_plafond.py.
+_POIDS_CENTRALITE = 0.6
+
+
+def _prime_centralite(contour, centre, demi_diagonale):
+    """Facteur multiplicatif favorisant le candidat le plus central.
+
+    On photographie ce qu'on vise. Sur un bureau couvert de papiers, la
+    feuille cible est celle que la camera a au centre ; les autres sont
+    decalees. C'est le seul indice de l'encombrement qui ne suppose PAS que
+    le fond soit different du papier -- et c'est exactement l'hypothese qui
+    s'effondre ici.
+
+    Le renderer place d'ailleurs les parasites ainsi : `distracteurs.py`
+    les recule (RECUL = 0,9) et les ecarte lateralement de 0,50 a 0,95 fois
+    la taille de la cible. La prime n'est donc pas un reglage sur mesure pour
+    notre jeu de test, c'est la traduction du geste de cadrage.
+
+    Absent du scoring jusqu'ici : surface, convexite, rectangularite et
+    allongement sont tous des criteres de FORME, aucun de POSITION.
+    """
+    moments = cv2.moments(contour)
+    if moments["m00"] <= 0:
+        return 1.0
+    cx = moments["m10"] / moments["m00"]
+    cy = moments["m01"] / moments["m00"]
+    d = np.hypot(cx - centre[0], cy - centre[1]) / max(demi_diagonale, 1e-6)
+    return float(max(0.0, 1.0 - _POIDS_CENTRALITE * min(d, 1.0)))
+
+
+def _document_score(contour, image_area, centre=None):
     """How much does this contour look like a sheet of paper?
 
     Three criteria, all necessary: it must occupy a plausible share of the
     frame, be close to convex (a sheet has no notches), and fill its own
     bounding rectangle well (a sheet is rectangular, even seen at an angle).
+
+    `centre` active la prime de centralite (voir `_prime_centralite`). Par
+    defaut None : le comportement est alors STRICTEMENT celui d'avant, pour
+    que la sonde puisse comparer les deux sans risquer de deplacer les
+    chiffres deja publies.
     """
     area = cv2.contourArea(contour)
     ratio = area / image_area
@@ -132,6 +169,11 @@ def _document_score(contour, image_area):
     rect_area = rect[1][0] * rect[1][1]
     rectangularity = area / rect_area if rect_area > 0 else 0.0
 
+    prime = 1.0
+    if centre is not None:
+        prime = _prime_centralite(contour, centre,
+                                  float(np.hypot(*centre)))
+
     # Aspect prior. A table locked onto by mistake is a WIDE STRIP (l/h of 3
     # or more); a sheet of paper is A4-ish (0.7 to 1.4 either way). Penalise
     # extreme aspect ratios instead of rejecting outright, so unusual but
@@ -140,9 +182,9 @@ def _document_score(contour, image_area):
     if min(w, h) > 0:
         aspect = max(w, h) / min(w, h)
         if aspect > 2.0:
-            return convexity * rectangularity * (2.0 / aspect)
+            return convexity * rectangularity * (2.0 / aspect) * prime
 
-    return convexity * rectangularity
+    return convexity * rectangularity * prime
 
 
 def _text_mask(small):
@@ -464,6 +506,57 @@ def expand_from_centroid(points, factor, width, height):
     return out
 
 
+# Rapport minimal entre les deux variances de profil pour conclure que le
+# texte est a la verticale.
+#
+# Calibre sur un temoin dont on connaît la reponse : les 25 pages plates de
+# tex/multipage_variants, droites par construction. A 1,0 le critere se
+# trompe sur une page ; a partir de 1,4 il n'en rate plus aucune.
+_MARGE_VERTICALITE = 1.4
+
+
+def texte_vertical(image) -> bool:
+    """Le texte du recadrage est-il couche d'un quart de tour ?
+
+    Le defaut. `_order_corners` ordonne les coins dans le repere de l'IMAGE :
+    le coin « en haut a gauche » est celui de plus petite somme x+y. Pour une
+    feuille posee de travers, ce coin n'est pas celui du DOCUMENT, et
+    l'homographie rend alors une page parfaitement mise a plat... mais
+    couchee. Le quadrilatere est bon, la mise a plat est bonne, seule
+    l'orientation est fausse -- ce qui la rend **invisible a l'IoU**, qui ne
+    compare que des surfaces. Voila pourquoi le defaut a survecu a toutes les
+    mesures de recadrage faites jusqu'ici.
+
+    Mesure : 10 recadrages sur 25 dans le jeu a fonds encombres, et 3 sur 25
+    dans le jeu PROPRE dont les chiffres sont deja publies. Ce n'est donc pas
+    un effet du desordre ; c'etait simplement assez rare pour passer
+    inapercu.
+
+    Le critere. Une ligne de texte alterne encre et blanc perpendiculairement
+    a elle-meme : le profil de projection oscille beaucoup en travers des
+    lignes, peu le long. On compare les deux variances.
+
+    Pourquoi on SIGNALE au lieu de corriger. Savoir que le texte est vertical
+    ne dit pas dans quel sens tourner : les deux quarts de tour donnent du
+    texte horizontal, l'un a l'endroit, l'autre a l'envers. Le depart
+    demanderait de lever l'ambiguite a 180 degres, et l'heuristique classique
+    -- l'encre penche vers le haut de la ligne a cause des hampes et des
+    diacritiques -- a ete essayee ici : elle ne classe correctement que 21
+    pages temoins sur 25. Tourner a l'aveugle mettrait donc une page sur six
+    la tete en bas, ce qui est pire que couche. Tant qu'aucun classifieur
+    d'orientation n'est en place, on remonte l'information au lieu de
+    parier dessus.
+    """
+    gris = image if image.ndim == 2 else cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    petit = cv2.resize(gris, (600, 600))
+    encre = 255.0 - cv2.GaussianBlur(petit, (3, 3), 0)
+    encre -= encre.mean()
+
+    var_en_travers = encre.mean(axis=1).var()   # lignes horizontales
+    var_le_long = encre.mean(axis=0).var()      # lignes verticales
+    return bool(var_le_long > _MARGE_VERTICALITE * var_en_travers)
+
+
 def four_point_transform(image, quad):
     """Flatten the quadrilateral into a rectangle (bird's eye view).
 
@@ -738,6 +831,9 @@ def preprocess(image, do_illumination=True, do_denoise=True,
             info["method"] = "homography"
         info["quad_found"] = True
         info["quad"] = quad.tolist()
+        # Un recadrage juste peut sortir couche : on le signale, faute de
+        # pouvoir le redresser sans risquer le demi-tour (voir la fonction).
+        info["texte_vertical"] = texte_vertical(result)
     else:
         result = image.copy()
         info["fallback"] = ("sheet outline not reliably found -- geometry left "
@@ -905,7 +1001,7 @@ def main():
     print(f"{len(images)} image(s) in {images_dir}")
     print(f"Output -> {out_dir}\n")
 
-    n_found, debug_rows = 0, []
+    n_found, n_couches, couchees, debug_rows = 0, 0, [], []
     for i, path in enumerate(images, start=1):
         image = cv2.imread(str(path))
         if image is None:
@@ -924,13 +1020,18 @@ def main():
         )
         cv2.imwrite(str(out_dir / path.name), result)
         n_found += info["quad_found"]
+        if info.get("texte_vertical"):
+            n_couches += 1
+            couchees.append(path.name)
 
         if args.debug:
             view = debug_view(image, info.get("quad"), result)
             cv2.imwrite(str(debug_dir / path.name), view)
             debug_rows.append(_debug_row(path.name, view, info, image.shape))
 
-        status = (f"cropped (score {info['score']})" if info["quad_found"]
+        status = (f"cropped (score {info['score']})"
+                  + (" COUCHE" if info.get("texte_vertical") else "")
+                  if info["quad_found"]
                   else "enhanced only")
         print(f"[{i}/{len(images)}] {path.name}  {image.shape[1]}x{image.shape[0]}"
               f" -> {info['output_size'][0]}x{info['output_size'][1]}   {status}")
@@ -938,6 +1039,17 @@ def main():
     if not args.no_crop:
         print(f"\nDocument located on {n_found}/{len(images)} images "
               f"({n_found / len(images):.0%})")
+        if n_couches:
+            # Un recadrage COUCHE est juste au sens de l'IoU et faux au sens
+            # de la lecture : c'est exactement le genre de defaut qu'une
+            # mesure de surface ne peut pas voir.
+            print(f"Texte a la verticale sur {n_couches}/{len(images)} "
+                  f"recadrages -- l'IoU ne le voit pas, le modele si.")
+            for nom in couchees[:12]:
+                print(f"    {nom}")
+            print("  Non corrige : les deux quarts de tour donnent du texte "
+                  "horizontal,\n  et rien ici ne dit lequel est a l'endroit. "
+                  "Voir texte_vertical().")
     else:
         print("\nPhotometric correction only (cropping disabled -- use --crop "
               "to enable).")

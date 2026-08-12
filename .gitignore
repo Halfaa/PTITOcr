@@ -38,3 +38,9 @@ benchmark_report_*.html
 .DS_Store
 Thumbs.db
 *.log
+
+# Sonde de plafond : environnement et poids du modele, jamais versionnes.
+# FastSAM-s.pt fait 23 Mo et se retelecharge tout seul au premier appel.
+venv_sam/
+FastSAM-s.pt
+*.pt

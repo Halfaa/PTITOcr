@@ -167,6 +167,31 @@ def html_to_tree(html: str):
 # Metric
 # --------------------------------------------------------------------------
 
+# Au-dela de ce rapport de taille entre les deux arbres, la prediction est
+# declaree DEGENEREE et notee 0 sans appeler APTED.
+#
+# Ce n'est pas un raccourci de confort, c'est une borne demontrable. La
+# distance d'edition vaut au moins la difference des nombres de noeuds : il
+# faut bien inserer ou supprimer l'ecart. Donc
+#
+#     TEDS <= 1 - |n_pred - n_vrai| / max(...) = min(...) / max(...) = 1 / r
+#
+# ou r est le rapport de taille. A r = 4, le score ne pouvait pas depasser
+# 0,25 ; l'arrondir a 0 ne change aucune conclusion.
+#
+# Pourquoi il en faut un. APTED est cubique. Sur une page ou le modele part
+# en boucle -- 288 lignes la ou la verite en a 20 -- il ne rend jamais la
+# main. Mesure sur variants_encombre_preproc_chandra : l'evaluation se
+# figeait a l'invoice 9, sans erreur ni message, et `eval_all.py` qui capture
+# la sortie n'affichait RIEN. Un garde-fou sur la TAILLE plutot qu'un delai
+# d'attente garde le score reproductible d'une machine a l'autre.
+_RAPPORT_DEGENERE = 4.0
+
+# En dessous de cette taille, APTED termine de toute facon : inutile de
+# renoncer a un vrai calcul sur un petit tableau tres incomplet.
+_TAILLE_MINI_GARDE = 120
+
+
 def teds(pred_html: str, true_html: str, structure_only: bool = False) -> float:
     """TEDS score between two HTML tables. 0.0 if either one is empty."""
     pred_tree = html_to_tree(pred_html)
@@ -174,8 +199,56 @@ def teds(pred_html: str, true_html: str, structure_only: bool = False) -> float:
     if pred_tree is None or true_tree is None:
         return 0.0
 
+    n_pred, n_true = pred_tree.n_nodes(), true_tree.n_nodes()
+    grand = max(n_pred, n_true)
+
+    # Le garde-fou ne joue QUE dans le sens couteux, celui ou la prediction
+    # est trop grosse. Une prediction trop PETITE ne coute rien a APTED, et
+    # son score est calculable : le zeroter par symetrie jetterait une
+    # information exacte pour rien.
+    if n_pred > _TAILLE_MINI_GARDE and n_pred > _RAPPORT_DEGENERE * n_true:
+        return 0.0
+
     distance = APTED(pred_tree, true_tree, _Config(structure_only)).compute_edit_distance()
-    return 1.0 - distance / max(pred_tree.n_nodes(), true_tree.n_nodes())
+
+    # Le plancher a zero n'est pas cosmetique.
+    #
+    # La formule de PubTabNet normalise par max(n_pred, n_vrai), mais la
+    # distance d'edition peut DEPASSER ce maximum : l'appariement doit
+    # respecter l'ordre et la filiation, donc quand les deux grilles n'ont
+    # rien a voir, renommer devient impossible et il faut tout supprimer puis
+    # tout reinserer. On observe alors -0,011 -- une similarite negative, qui
+    # ne veut rien dire et qui tire la moyenne sous le minimum atteignable.
+    return max(0.0, 1.0 - distance / grand)
+
+
+def diagnostic(pred_html: str, true_html: str) -> dict:
+    """Taille des deux arbres et nature de l'echec, sans rien calculer.
+
+    Deux echecs de forme, opposes, que le score seul confond en un 0,000 :
+
+      emballe   la prediction est bien plus grosse que la verite -- le modele
+                a boucle. C'est le cas que le garde-fou intercepte.
+      tronque   elle est bien plus petite -- il n'a presque rien lu.
+
+    Ils appellent des reponses differentes, d'ou l'interet de les nommer.
+    """
+    pred_tree = html_to_tree(pred_html)
+    true_tree = html_to_tree(true_html)
+    vide = {"n_pred": 0, "n_vrai": 0, "rapport": 0.0,
+            "emballe": False, "tronque": False, "degenere": False}
+    if pred_tree is None or true_tree is None:
+        return vide
+
+    n_pred, n_true = pred_tree.n_nodes(), true_tree.n_nodes()
+    if not n_true:
+        return vide
+    emballe = (n_pred > _TAILLE_MINI_GARDE
+               and n_pred > _RAPPORT_DEGENERE * n_true)
+    tronque = n_pred * _RAPPORT_DEGENERE < n_true
+    return {"n_pred": n_pred, "n_vrai": n_true, "rapport": n_pred / n_true,
+            "emballe": emballe, "tronque": tronque,
+            "degenere": emballe or tronque}
 
 
 def rows_to_html(rows) -> str:

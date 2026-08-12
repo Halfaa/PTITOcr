@@ -146,7 +146,7 @@ unifié (`scripts/eval_all.py`), détail dans
 |---|---|---|---|---|
 | TEDS brut | 0,916 | **0,950** | 0,909 | 0,557 |
 | TEDS prétraité | **0,966** | 0,879* | 0,951 | — |
-| TEDS adaptatif | **0,966** | 0,953 | 0,951 | — |
+| TEDS adaptatif | **0,967** | 0,953 | 0,951 | — |
 | plafond | 0,967 | 0,955 | 0,955 | — |
 | champs (adaptatif) | **29/32** | 28/32 | 24/32 | 9/32 |
 | fusion P/R | 100/100 | 100/100 | 100/88 | 100/100 |
@@ -174,7 +174,7 @@ cohérent avec son benchmark vietnamien (80,4 %, en régression sur Chandra 1).
 **Pas anticipé.** Chandra est le modèle qui profite **le plus** du
 prétraitement : +0,050 sur le jeu multi-pages, là où Hunyuan perdait sur son
 ancien run prétraité. Aplanies et éclairées uniformément, ses lectures
-prennent la tête partout : meilleur adaptatif multi-pages (0,966), meilleur
+prennent la tête partout : meilleur adaptatif multi-pages (0,967), meilleur
 sur le diversifié à plat (0,981) comme déformé (0,977, **au plafond** — la
 règle de décision ne perd rien).
 

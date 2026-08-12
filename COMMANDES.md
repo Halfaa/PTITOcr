@@ -294,6 +294,36 @@ affiche maintenant les numéros rendus et les absents ; `-Depuis` complète :
 .\render_variants.ps1 -FolderId variants_encombre -Parasites -1 -Depuis 20 -Nombre 5
 ```
 
+Sonde de plafond — le recadrage peut-il marcher sur fond encombré ?
+
+```powershell
+python scripts\sonde_plafond.py --jeu variants_encombre        # sans SAM
+python scripts\sonde_plafond.py --jeu variants_encombre --sam
+python scripts\sonde_plafond.py --jeu variants_warped --sam    # non-régression
+```
+
+Deux colonnes à ne pas confondre : le **plafond** dépend du générateur de
+candidats, l'**obtenu** du scoring. Un plafond qui ne bouge pas malgré SAM
+signifie que les candidats ne contiennent toujours pas la feuille, et qu'il
+faut une segmentation apprise. SAM va dans un venv séparé — surtout pas dans
+`venv`, épinglé numpy<2 pour PaddleOCR :
+
+```powershell
+python -m venv venv_sam ; venv_sam\Scripts\activate
+python -m pip install --upgrade pip
+pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+pip install --no-cache-dir ultralytics "opencv-python<4.12"
+```
+
+Deux épingles qui comptent. `opencv-python<4.12` : les 5.x rendent `None` sur
+un `.exr` **sans lever d'erreur**, la sonde ne lirait plus les masques UV. Et
+le torch CPU explicite : la roue CUDA par défaut pèse 2,4 Go contre 200 Mo,
+pour un modèle de 23 Mo qui tourne très bien sur processeur.
+
+Si pip sort `THESE PACKAGES DO NOT MATCH THE HASHES`, c'est un téléchargement
+tronqué, pas une compromission : `--no-cache-dir` évite de recycler le wheel
+incomplet, et mettre pip à jour règle le reste.
+
 Vérité terrain du recadrage — chaque masque UV doit être d'un seul tenant,
 sinon les parasites ont fui dans la passe UV et l'IoU mesuré est faux :
 

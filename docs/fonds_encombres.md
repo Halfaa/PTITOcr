@@ -329,3 +329,246 @@ identifiée par une expérience conçue pour la chercher.
 
 Voir [avec_sans_pretraitement.md](avec_sans_pretraitement.md) pour les
 chiffres de référence sur fonds propres.
+
+---
+
+## 7. Résultats OCR (12 août) — Chandra sur les 25 pages encombrées
+
+Runs `variants_encombre_chandra` et `variants_encombre_preproc_chandra`,
+protocole `scripts/eval_all.py`, mêmes 12 factures et même vérité terrain que
+le jeu propre.
+
+| | brut | prétraité | adaptatif | *rappel : jeu propre* |
+|---|---|---|---|---|
+| TEDS (avec fusion) | **0,604** | 0,313 | — | 0,944 / 0,906 |
+| TEDS-Struct | 0,714 | 0,410 | — | 0,983 |
+| TEDS par facture (`eval_adaptive`) | 0,261 | 0,167 | **0,257** | 0,944 / 0,906 / 0,977 |
+| plafond adaptatif | | | 0,358 | 0,977 |
+| champs d'en-tête | **62 %** | 15 % | 62 % | 96 % |
+| fusion P / R | 67 / 46 % | 80 / 44 % | | 100 / 100 % |
+
+Les deux lignes TEDS ne mesurent pas la même chose : `eval_teds` note le
+tableau extrait, `eval_adaptive` note le tableau *analysé en facture*, plus
+exigeant. Les comparer entre elles n'a pas de sens ; comparer chaque ligne
+d'une colonne à l'autre, si.
+
+### La prédiction se vérifie, y compris la plus inquiétante
+
+Les trois issues envisagées au §6 se produisent, sur des pages différentes.
+
+**La lecture brute tient à peu près, la prétraitée s'effondre.** 0,604 contre
+0,313, et surtout 62 % contre **15 %** sur les champs d'en-tête. Sur un fond
+encombré, le prétraitement ne dégrade pas la lecture : il la fait porter sur
+autre chose.
+
+**Deux pages font emballer le modèle.** Sur la facture 3, Chandra rend un
+tableau d'une ligne et **2 470 colonnes** — 2 473 nœuds pour 212 attendus. Il
+n'a pas mal lu, il a bouclé jusqu'à la limite de génération. C'est un mode
+d'échec distinct, qu'aucun OCR meilleur ne corrige : il appelle un garde-fou
+en sortie, qui refuse un tableau hors d'échelle au lieu de le transmettre.
+
+**Et le pire cas est là.** Facture 4, lecture prétraitée : 11 lignes sur 11
+arithmétiquement équilibrées, aucun trou de numérotation, **confiance 0,75** —
+et 2 médicaments sur 21 en commun avec la vérité terrain. TEDS 0,000. La
+validation arithmétique note la *cohérence* d'un tableau, jamais sa
+*provenance* : une facture voisine bien recadrée boucle tout aussi bien que la
+bonne.
+
+### Conséquence sur la politique adaptative
+
+Elle choisissait la lecture prétraitée en cas d'égalité de confiance, réglage
+qui valait +0,010 TEDS quand il a été posé. Remesuré :
+
+| jeu | départage « prétraité » | départage « brut » |
+|---|---|---|
+| multipage | 0,966 | **0,967** *(= plafond)* |
+| variants_warped | 0,977 | 0,977 *(= plafond)* |
+| variants_encombre | 0,154 | **0,257** |
+
+Le départage vers la lecture brute n'est jamais moins bon et évite
+l'effondrement : `adaptive.choose` a donc `prefer_table="raw"` par défaut.
+L'asymétrie est structurelle — une lecture brute peut lire *mal*, elle ne peut
+pas lire *ailleurs*.
+
+Cela ne règle pas le fond. Le plafond adaptatif est à 0,358 : même un
+sélecteur parfait resterait très bas, parce que les deux candidats sont
+mauvais. Il faudrait un signal de confiance sur le **recadrage**, pas sur le
+tableau.
+
+### Trois défauts trouvés en produisant ces chiffres
+
+**TEDS pouvait être négatif.** −0,011 sur la facture 3. La formule de
+PubTabNet normalise par `max(n_pred, n_vrai)`, mais la distance d'édition peut
+dépasser ce maximum quand les deux grilles n'ont rien de commun : l'appariement
+doit respecter l'ordre et la filiation, donc renommer devient impossible et il
+faut tout supprimer puis tout réinsérer. Une similarité négative tire la
+moyenne sous son minimum atteignable. Plancher à 0 dans `src/teds.py`.
+
+**L'évaluation se figeait sans rien dire.** APTED est cubique ; sur l'arbre à
+2 473 nœuds il ne rendait jamais la main, et comme `eval_all.py` capture la
+sortie, le récapitulatif restait vide *sans message*. Deux garde-fous :
+`src/teds.py` déclare dégénérée toute prédiction plus de 4× plus grosse que la
+vérité — c'est une borne démontrable, `TEDS ≤ 1/rapport`, donc arrondir 0,25 à
+0 ne change aucune conclusion — et `eval_all.py` abandonne une évaluation qui
+dépasse dix minutes en le signalant.
+
+**Un recadrage sur dix sort couché.** `_order_corners` ordonne les coins dans
+le repère de l'*image* : pour une feuille posée de travers, le coin de plus
+petite somme x+y n'est pas celui du *document*, et l'homographie rend une page
+bien mise à plat mais tournée d'un quart de tour. Le quadrilatère est bon, la
+mise à plat est bonne — **l'IoU ne peut donc pas le voir**, il ne compare que
+des surfaces. Mesuré : 10 recadrages sur 25 ici, et **3 sur 25 dans le jeu
+propre dont les chiffres sont publiés**. Ce n'est pas un effet du désordre,
+c'était seulement assez rare pour passer inaperçu.
+
+Non corrigé, délibérément : savoir que le texte est vertical ne dit pas dans
+quel sens tourner, et l'heuristique classique du demi-tour (l'encre penche vers
+le haut de la ligne) ne classe correctement que 21 pages témoins sur 25.
+Tourner à l'aveugle mettrait une page sur six la tête en bas. `preprocess.py`
+signale donc `texte_vertical` au lieu de parier.
+
+### Ce qu'il faut retenir pour la réunion
+
+Le fond encombré ne casse pas l'OCR — il casse la **localisation**, et tout ce
+qui en dépend. Trois briques manquent, et ce sont trois briques *apprises* :
+
+1. une segmentation de document (le plafond de recadrage est à 0,51) ;
+2. un classifieur d'orientation (ambiguïté à 180°, insoluble par heuristique) ;
+3. un signal de confiance sur le recadrage, pas seulement sur le tableau.
+
+Voir [avec_sans_pretraitement.md](avec_sans_pretraitement.md) pour les
+chiffres sur fonds propres.
+
+---
+
+## 8. Sonde de plafond (12 août) — SAM ne sauve pas le recadrage
+
+`scripts/sonde_plafond.py`. Le 0,51 mesuré au §5 est une propriété du
+**générateur de candidats**, pas du problème : changer de générateur change le
+plafond, mieux choisir parmi les mêmes candidats ne le change pas. D'où cette
+sonde, avant d'engager deux semaines sur une segmentation apprise.
+
+| jeu | générateur | plafond | obtenu | +centralité | exploitables |
+|---|---|---|---|---|---|
+| encombré | actuel | 0,52 | 0,45 | 0,45 | 0/25 |
+| encombré | SAM | 0,46 | 0,35 | 0,41 | 1/25 |
+| encombré | actuel+SAM | **0,59** | 0,41 | 0,47 | 1/25 |
+| propre | actuel | **0,87** | 0,81 | 0,83 | 22/25 |
+| propre | SAM | 0,64 | 0,58 | 0,61 | 11/25 |
+| propre | actuel+SAM | 0,86 | 0,67 | 0,72 | 15/25 |
+
+FastSAM-s, image pleine résolution ramenée à 1024 px, seuillages inchangés à
+480 px.
+
+**La sélection n'est pas le maillon faible.** L'écart plafond − obtenu vaut
+0,07 des deux côtés, sur un jeu où tout marche comme sur un jeu où rien ne
+marche. Le tri prend presque toujours le meilleur candidat disponible ; c'est
+le vivier qui s'effondre. Deuxième confirmation, par une voie indépendante de
+celle du §5.
+
+**SAM n'y change rien.** +0,07 de plafond sur l'encombré, pour un seuil
+d'exploitabilité à 0,70 jamais atteint. Et sur le jeu propre il **dégrade** :
+22 pages exploitables deviennent 15. Il n'entrera donc pas en production.
+
+**Ce n'est pas une affaire de granularité**, contrairement à ce qu'on pouvait
+craindre en voyant SAM faire moins bien à 1024 px qu'à 480. Le diagnostic de
+couverture — aire du meilleur masque rapportée à l'aire réelle de la feuille —
+donne, sur 173 masques par image :
+
+| groupe | pages | IoU moyen |
+|---|---|---|
+| morceaux (<50 %) | 7 | 0,07 |
+| bonne taille (50–100 %) | 12 | 0,62 |
+| trop gros (>100 %) | 6 | 0,59 |
+
+Les trois modes coexistent. Et surtout, **même là où le masque a la bonne
+taille, l'IoU plafonne à 0,62** : SAM ne se contente pas de mal découper, il ne
+désigne pas la bonne feuille. Avec 173 candidats par image, si la feuille
+était proprement segmentée, l'un d'eux dépasserait 0,90.
+
+### Un piège de méthode, rencontré ici
+
+La première version du diagnostic comparait la couverture **moyenne** (69 %) à
+un seuil unique et concluait « les masques ont la bonne taille ». Faux : cette
+moyenne mélangeait 7 pages à 15 % et 6 pages à 130 %, deux échecs opposés qui
+s'annulent. Une statistique de position ne veut rien dire sur une distribution
+bimodale. Le script compte désormais les groupes.
+
+### Ce que la sonde a tranché, et ce qu'elle n'a pas tranché
+
+Tranché : **une segmentation générique n'est pas la réponse.** SAM est
+entraîné à découper des objets du monde ; une feuille posée sur d'autres
+feuilles n'en est pas un pour lui.
+
+Non tranché : un modèle entraîné **spécifiquement** sur nos masques UV. L'échec
+de SAM ne prouve pas qu'il échouerait — il montre seulement que la compétence
+ne se transfère pas gratuitement. L'argument des étiquettes gratuites au pixel
+près tient toujours, mais on sait maintenant que la tâche est réellement
+difficile sur ce type de scène, ce qui change le pari.
+
+Reste aussi une réserve inscrite au §7 : nos rendus **n'ont pas de profondeur
+de champ**. Sur une vraie photo, les feuilles du fond seraient floues — indice
+très discriminant que ce jeu ne fournit pas, et que SAM comme un modèle
+entraîné exploiteraient. Notre scène est donc plus dure que la réalité.
+
+---
+
+## 9. La réponse : un signal de provenance, et il était gratuit (12 août)
+
+Le problème reformulé n'est pas « trouver la feuille », c'est « **ne jamais
+lire un autre document sans le savoir** ». Sous cette forme, la solution
+n'exige aucun entraînement : le signal de provenance manquant existe déjà
+dans la chaîne.
+
+**L'asymétrie qui rend le test possible.** La lecture brute voit la scène
+entière — la facture cible est *forcément* dans son champ, et son tableau
+principal (le plus grand) est presque toujours le bon. La lecture prétraitée,
+elle, peut porter sur n'importe quelle feuille. Si leurs contenus ne se
+recoupent pas, c'est le recadrage qui est parti ailleurs.
+
+`adaptive.concordance()` compare donc les **noms de médicaments** des deux
+lectures (similarité tolérante, SequenceMatcher ≥ 0,7, parce que le même nom
+lu deux fois porte des dégâts OCR différents — et les noms plutôt que les
+nombres, parce que deux factures de la même pharmacie partagent des prix
+ronds, presque jamais leurs listes de produits). Sous 30 % de lignes communes,
+la lecture prétraitée est écartée avant même l'arbitrage par confiance.
+
+Mesuré sur les fusions du jeu encombré :
+
+| facture | concordance | verdict |
+|---|---|---|
+| 4 (le pire cas du §7) | — | prétraitée **écartée**, TEDS 0,000 → 0,762 |
+| 3, 12 | — | prétraitée **écartée**, +0,306 et +0,163 |
+| 7 | élevée | conservée — et elle est réellement meilleure (0,276 contre 0,158) |
+| 5 | 0,92 | même document, lecture prétraitée fidèle |
+| 2 | 0,75 | même document — échec *structurel*, hors périmètre du test |
+| jeux propres | 0,56–0,92 | jamais déclenché : multipage 0,967 et diversifié 0,977, inchangés |
+
+**Ce que le garde change vraiment.** Sur ce jeu, le départage `prefer="raw"`
+attrapait déjà les factures 3, 4 et 12 — mais par chance : leurs confiances
+étaient à égalité (0,75 contre 0,75 pour la facture 4), et l'égalité se
+départage vers le brut. Qu'une seule ligne parasite de plus fasse monter la
+confiance prétraitée à 0,76, et le tableau étranger passait. Le garde rend ce
+cas **impossible par construction**, quelle que soit la confiance : c'est la
+différence entre un accident évité et un accident impossible.
+
+**Ce qu'il ne couvre pas, dit clairement.** La facture 2 lit le bon document
+mais le structure si mal que son TEDS est nul, avec une confiance pourtant
+supérieure au brut. C'est un échec de *cohérence structurelle*, pas de
+*provenance* — un autre garde-fou (tableau hors d'échelle, déjà présent dans
+`teds.py` côté évaluation) devra exister côté production.
+
+### Les trois étages de la réponse, du plus sûr au plus ambitieux
+
+1. **Provenance par concordance** — fait, mesuré, en production dans
+   `adaptive.choose()`. Coût : zéro inférence de plus.
+2. **Segmentation par le texte, pas par le papier.** La piste classique qui
+   reste ouverte : un document est un *bloc de texte cohérent* (échelle,
+   orientation, alignement), pas une zone claire. `_text_mask` existe déjà ;
+   regrouper ses composantes par orientation et échelle, prendre le bloc le
+   plus central. C'est l'indice qui survit au blanc-sur-blanc.
+3. **Segmentation apprise sur nos masques UV.** Le pari à deux semaines,
+   désormais éclairé : l'échec de SAM montre que la compétence ne se
+   transfère pas, pas qu'elle ne s'apprend pas — un modèle entraîné sur nos
+   rendus apprendrait précisément ce que SAM n'a pas, la *définition de la
+   cible* (la feuille centrée dominante). À décider avec l'encadrante.

@@ -103,6 +103,62 @@ def confidence(table) -> Confidence:
                       result["index_available"])
 
 
+# En dessous de cette part de lignes communes, les deux lectures ne decrivent
+# pas le meme document. Le seuil est volontairement bas : deux lectures du
+# MEME document, meme tres abimees, partagent bien plus du tiers de leurs
+# noms de medicaments ; deux factures differentes n'en partagent presque
+# aucun (mesure sur le jeu encombre : 2/21 pour la facture 4).
+_SEUIL_CONCORDANCE = 0.30
+
+# Sous ce nombre de lignes lisibles, la concordance n'est pas significative.
+_MIN_LIGNES_CONCORDANCE = 3
+
+
+def _nom_normalise(texte: str) -> str:
+    return " ".join(str(texte).lower().split())
+
+
+def concordance(table_a, table_b) -> Optional[float]:
+    """Les deux tableaux decrivent-ils le MEME document ?
+
+    C'est le signal de provenance qui manquait. La confiance arithmetique
+    note la coherence interne d'un tableau -- elle ne peut pas voir qu'un
+    recadrage parti sur une feuille voisine a produit une facture parfaite
+    mais etrangere (11/11 lignes equilibrees, confiance 0,75, et 2
+    medicaments sur 21 en commun avec la verite : facture 4 du jeu a fonds
+    encombres).
+
+    L'asymetrie qui rend le test possible : la lecture BRUTE voit la scene
+    entiere, la facture cible est forcement dans son champ, et son tableau
+    principal -- le plus grand -- est presque toujours le bon. La lecture
+    pretraitee, elle, peut porter sur n'importe quelle feuille. Si leurs
+    contenus ne se recoupent pas, c'est le recadrage qui est parti ailleurs.
+
+    On compare les noms de medicaments, pas les nombres : deux factures de la
+    meme pharmacie partagent des prix ronds, presque jamais leurs listes de
+    produits. La similarite est tolerante (SequenceMatcher >= 0,7) parce que
+    les memes noms lus deux fois portent des degats OCR differents.
+
+    Rend None quand le test n'est pas significatif (trop peu de lignes d'un
+    cote ou de l'autre) : l'appelant retombe alors sur l'arbitrage normal.
+    """
+    from difflib import SequenceMatcher
+
+    if table_a is None or table_b is None:
+        return None
+    noms_a = [_nom_normalise(i.name) for i in parse_table(table_a).items if i.name]
+    noms_b = [_nom_normalise(i.name) for i in parse_table(table_b).items if i.name]
+    if len(noms_a) < _MIN_LIGNES_CONCORDANCE or len(noms_b) < _MIN_LIGNES_CONCORDANCE:
+        return None
+
+    communs = 0
+    for nom in noms_b:
+        if any(SequenceMatcher(None, nom, autre).ratio() >= 0.7
+               for autre in noms_a):
+            communs += 1
+    return communs / len(noms_b)
+
+
 @dataclass
 class Choice:
     """What the policy kept, and why."""
@@ -112,9 +168,13 @@ class Choice:
     fields: dict = field(default_factory=dict)
     field_sources: dict = field(default_factory=dict)
     confidences: dict = field(default_factory=dict)
+    # None : test non significatif ; sinon la part des lignes pretraitees
+    # retrouvees dans la lecture brute.
+    concordance: Optional[float] = None
+    provenance_rejetee: bool = False
 
 
-def choose(candidates, prefer_table="preprocessed",
+def choose(candidates, prefer_table="raw",
            field_order=("raw", "preprocessed")):
     """Pick the best table and the best value for each header field.
 
@@ -126,11 +186,31 @@ def choose(candidates, prefer_table="preprocessed",
     Two independent decisions, because the two components fail
     independently:
 
-    TABLE -- highest confidence wins. On a tie, `prefer_table` breaks it:
-    when both readings balance perfectly the arithmetic can no longer
-    separate them, and falling back to the variant that is better on average
-    is the honest thing to do. Measured: ties happen on half the invoices,
-    and breaking them toward the pre-processed reading is worth +0.010 TEDS.
+    TABLE -- highest confidence wins. On a tie, `prefer_table` breaks it :
+    quand les deux lectures bouclent parfaitement, l'arithmetique ne peut
+    plus les separer et il faut un depart arbitraire.
+
+    Il pointait vers la lecture PRETRAITEE, ce qui valait alors +0,010 TEDS.
+    Remesure sur Chandra, avec les jeux dont on dispose aujourd'hui :
+
+        jeu                 depart "preprocessed"   depart "raw"
+        multipage                       0,966           0,967  (= plafond)
+        variants_warped                 0,977           0,977  (= plafond)
+        variants_encombre               0,154           0,257
+
+    Le depart vers la lecture brute n'est jamais moins bon, et il evite un
+    effondrement. La raison est asymetrique : un mauvais recadrage produit un
+    tableau qui BOUCLE quand meme -- il est arithmetiquement parfait, il
+    porte simplement sur le mauvais bout de papier. La facture 4 du jeu
+    encombre en est l'exemple : 11 lignes sur 11 equilibrees, aucun trou de
+    numerotation, confiance 0,75... et 2 medicaments sur 21 en commun avec la
+    verite terrain. La lecture brute, elle, ne peut pas se tromper de
+    document : au pire elle lit mal, jamais ailleurs.
+
+    C'est aussi la limite de fond de cette politique, a dire telle quelle :
+    la confiance note la COHERENCE d'un tableau, pas sa PROVENANCE. Aucun
+    reglage du depart ne la corrigera ; il faudrait un signal sur le
+    recadrage lui-meme.
 
     HEADER FIELDS -- first non-empty value in `field_order`. There is no
     arithmetic to check a patient name against, so redundancy cannot rank
@@ -144,7 +224,23 @@ def choose(candidates, prefer_table="preprocessed",
     for name, (table, _) in candidates.items():
         result.confidences[name] = confidence(table)
 
-    best = max(result.confidences.items(),
+    # Verification de PROVENANCE, avant l'arbitrage par confiance.
+    #
+    # La confiance ne sait comparer que des coherences internes, et un
+    # recadrage parti sur une feuille voisine produit un tableau
+    # parfaitement coherent. On ecarte donc d'abord toute lecture pretraitee
+    # dont le contenu ne recoupe pas celui de la lecture brute -- qui, elle,
+    # ne peut pas s'etre trompee de scene.
+    en_lice = dict(candidates)
+    if "raw" in candidates and "preprocessed" in candidates:
+        result.concordance = concordance(candidates["raw"][0],
+                                         candidates["preprocessed"][0])
+        if (result.concordance is not None
+                and result.concordance < _SEUIL_CONCORDANCE):
+            result.provenance_rejetee = True
+            del en_lice["preprocessed"]
+
+    best = max(((n, result.confidences[n]) for n in en_lice),
                key=lambda kv: (kv[1].score, kv[0] == prefer_table))
     result.table_source = best[0]
     result.table = candidates[best[0]][0]

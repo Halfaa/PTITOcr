@@ -117,6 +117,18 @@ MODELES = {
 
 # --------------------------------------------------------------------------
 
+# Une évaluation qui dépasse ce délai est considérée comme bloquée.
+#
+# Le plus long des runs propres tient en une minute. La marge est donc large,
+# et elle protège d'un blocage réel : sur `variants_encombre_preproc_chandra`,
+# une page où le modèle était parti en boucle donnait à APTED un arbre de
+# 2473 nœuds pour 212 attendus, et l'algorithme — cubique — ne rendait jamais
+# la main. Comme la sortie est capturée, le récapitulatif restait figé sans
+# afficher la moindre ligne. `src/teds.py` intercepte maintenant ce cas en
+# amont ; ce délai reste le filet de sécurité pour celui qu'on n'a pas prévu.
+DELAI = 600
+
+
 def lancer(script: str, *args) -> str:
     """Exécute une évaluation et rend sa sortie.
 
@@ -125,8 +137,16 @@ def lancer(script: str, *args) -> str:
     quand l'environnement ne convient pas. Importé, un `sys.exit` tuerait
     tout le récapitulatif au lieu de signaler une seule évaluation en échec.
     """
-    r = subprocess.run([sys.executable, script, *map(str, args)],
-                       cwd=RACINE, capture_output=True, text=True)
+    commande = [sys.executable, script, *map(str, args)]
+    try:
+        r = subprocess.run(commande, cwd=RACINE, capture_output=True,
+                           text=True, timeout=DELAI)
+    except subprocess.TimeoutExpired:
+        return (f"[BLOQUÉ] {' '.join(map(str, commande[1:]))}\n"
+                f"Aucune réponse après {DELAI} s, évaluation abandonnée.\n"
+                "Une sortie OCR hors d'échelle rend le calcul de TEDS "
+                "intraitable ;\nrelance ce script seul pour voir sur quelle "
+                "facture il s'arrête.")
     return r.stdout + ("\n[stderr]\n" + r.stderr if r.returncode else "")
 
 

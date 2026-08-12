@@ -29,7 +29,7 @@ import json
 import re
 
 from table_merge import extract_tables, merge_table_sequence  # noqa: E402
-from teds import teds, rows_to_html  # noqa: E402
+from teds import diagnostic, rows_to_html, teds  # noqa: E402
 
 GEN_DIR = Path("..") / "synthetic_invoice_generator" / "hospital_pharmacy"
 DEFAULT_PDF = GEN_DIR / "invoices_multipage_xelatex.pdf"
@@ -215,6 +215,7 @@ def main():
     print("-" * len(header))
 
     totals = {"without": [], "with": [], "s_without": [], "s_with": []}
+    degeneres = []
 
     for k, pages in enumerate(groups, start=1):
         gt_file = gt_dir / f"invoice_{k}.json"
@@ -245,9 +246,21 @@ def main():
         for key, value in scores.items():
             totals[key].append(value)
 
+        # Une prediction hors d'echelle est notee 0 sans passer par APTED. Le
+        # dire ici est important : sans cette marque, un 0,000 ressemble a une
+        # lecture ratee comme une autre, alors qu'il s'agit d'un modele parti
+        # en boucle -- un mode d'echec different, qui appelle une autre
+        # reponse (un garde-fou en sortie d'OCR, pas un meilleur OCR).
+        diag = diagnostic(merged_html, true_html)
+        if diag["degenere"]:
+            degeneres.append((k, diag))
+        note = (f"  <- {'emballe' if diag['emballe'] else 'tronque'}, "
+                f"{diag['n_pred']} noeuds pour {diag['n_vrai']}"
+                if diag["degenere"] else "")
+
         gain = scores["with"] - scores["without"]
         print(f"invoice_{k:<3}{str(pages):<12}{scores['without']:>10.3f}{scores['with']:>11.3f}"
-              f"{gain:>+8.3f}{scores['s_without']:>14.3f}{scores['s_with']:>13.3f}")
+              f"{gain:>+8.3f}{scores['s_without']:>14.3f}{scores['s_with']:>13.3f}{note}")
 
     if not totals["without"]:
         print("\nNo invoice could be scored.")
@@ -265,6 +278,22 @@ def main():
     print(f"Gap          {gap:.3f}  -> " + (
         "errors come mostly from READING the text" if gap > 0.1
         else "structure and content degrade together"))
+
+    if degeneres:
+        print(f"\nPredictions HORS D'ECHELLE : {len(degeneres)}/{len(totals['with'])}")
+        for k, d in degeneres:
+            print(f"  invoice_{k:<3} {'emballe' if d['emballe'] else 'tronque':<8} "
+                  f"{d['n_pred']:>6} noeuds pour {d['n_vrai']:>4} attendus"
+                  f"  (x{d['rapport']:.1f})")
+        n_emb = sum(1 for _, d in degeneres if d["emballe"])
+        if n_emb:
+            print(f"\n  {n_emb} EMBALLEE(S) : le modele n'a pas mal lu, il a boucle")
+            print("  jusqu'a la limite de generation. Un OCR meilleur n'y change")
+            print("  rien -- il faut un garde-fou en sortie qui refuse un tableau")
+            print("  hors d'echelle au lieu de le transmettre en aval.")
+        if len(degeneres) - n_emb:
+            print(f"\n  {len(degeneres) - n_emb} TRONQUEE(S) : presque rien n'a ete lu.")
+            print("  Echec franc, donc visible : c'est le cas le moins dangereux.")
 
 
 if __name__ == "__main__":

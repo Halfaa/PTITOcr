@@ -36,7 +36,7 @@ intermédiaire du code d'évaluation.
 | PP-StructureV3 | — | 0.557 | 0.857 | **0.300** | ~60 s (CPU) |
 
 En lecture brute. Avec prétraitement puis politique adaptative, le
-classement s'inverse : Chandra 0.966 (plafond 0.967), Hunyuan 0.953,
+classement s'inverse : Chandra 0.967 (= plafond), Hunyuan 0.953,
 PaddleOCR-VL 0.951 — voir [chandra_ocr2.md](chandra_ocr2.md) pour le
 détail et les réserves de comparabilité sur le run prétraité de Hunyuan.
 

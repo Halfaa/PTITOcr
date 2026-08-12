@@ -43,7 +43,7 @@ intermédiaires du code d'évaluation, améliorés depuis.
 
 | | TEDS brut | TEDS adaptatif | champs | fusion |
 |---|---|---|---|---|
-| **Chandra OCR 2** | 0,916 | **0,966** *(plafond 0,967)* | **29/32** | 100 % / 100 % |
+| **Chandra OCR 2** | 0,916 | **0,967** *(= plafond)* | **29/32** | 100 % / 100 % |
 | HunyuanOCR-1.5 | **0,950** | 0,953 | 28/32 | 100 % / 100 % |
 | PaddleOCR-VL | 0,909 | 0,951 | 24/32 | 100 % / 88 % |
 | PP-StructureV3 | 0,557 | — | 9/32 | 100 % / 100 % |
@@ -78,17 +78,21 @@ modèles (0,013) est plus petit que ce qu'apporte la Phase 1.
    logique est une **segmentation apprise**.
    Détail : [docs/fonds_encombres.md](docs/fonds_encombres.md).
 
-   **Reste à faire :** passer Chandra dessus. Le notebook Kaggle est câblé
-   (branches `variants_encombre_chandra` et `..._preproc_chandra`), le zip
-   `kaggle/images_variants_encombre.zip` est prêt. La question ouverte n'est
-   plus le recadrage mais la **lecture** : que produit le modèle quand on lui
-   donne un recadrage *faux* plutôt qu'absent ? Le cas à craindre est un
-   tableau cohérent mais issu d'une feuille parasite — la confiance
-   arithmétique ne le verrait pas.
+   **Chandra mesuré dessus le 12 août**, 25 pages, les deux branches. TEDS
+   0,604 brut contre 0,313 prétraité, champs 62 % contre **15 %**. Les trois
+   issues prévues se produisent, y compris la pire : facture 4, lecture
+   prétraitée, **11 lignes sur 11 arithmétiquement équilibrées, confiance
+   0,75, et 2 médicaments sur 21 en commun avec la vérité**. La confiance note
+   la cohérence d'un tableau, jamais sa provenance.
 
-   **Avant de lancer**, compléter le jeu : il n'a que 20 pages, et pas les 20
-   premières. Le tri par nom des textures a coupé les pages 5 à 9, ce qui
-   ampute la facture 5. `-Depuis 20 -Nombre 5` la rétablit.
+   Trois défauts trouvés en produisant ces chiffres, tous corrigés ou
+   signalés : TEDS pouvait être **négatif** (−0,011), l'évaluation se
+   **figeait sans message** sur une sortie emballée de 2 473 nœuds, et
+   **un recadrage sur dix sort couché** — 3/25 même dans le jeu propre, un
+   défaut que l'IoU ne peut pas voir puisqu'il ne compare que des surfaces.
+
+   Le départage de `adaptive.choose` passe à `"raw"` : jamais moins bon sur
+   les jeux propres (0,967 et 0,977, tous deux au plafond), +0,103 ici.
 
    *Ancienne note, conservée pour le contexte :*
    `doc3D-renderer/distracteurs.py`, option `-Parasites` dans
