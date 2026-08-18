@@ -57,7 +57,17 @@ def main():
     parser.add_argument("--batch", default="multipage_test")
     parser.add_argument("--doc3d", default=None)
     parser.add_argument("--min-score", type=float, default=0.55)
+    parser.add_argument("--sans-centralite", action="store_true",
+                        help="Neutralise la prime de centralite, pour un A/B "
+                             "a jeu constant. C'est le SEUL moyen de savoir "
+                             "ce qu'elle apporte a la chaine complete : la "
+                             "sonde ne mesure qu'un sous-ensemble.")
     args = parser.parse_args()
+
+    if args.sans_centralite:
+        import preprocess
+        preprocess._POIDS_CENTRALITE = 0.0
+        print("Prime de centralite NEUTRALISEE\n")
 
     root = Path(__file__).resolve().parent.parent
     doc3d = Path(args.doc3d) if args.doc3d else (root / DOC3D).resolve()

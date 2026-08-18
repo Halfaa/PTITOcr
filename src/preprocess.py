@@ -116,6 +116,11 @@ def _candidate_masks(small):
 _POIDS_CENTRALITE = 0.6
 
 
+def _centre(petit):
+    """Le centre de l'image, en (x, y)."""
+    return (petit.shape[1] / 2.0, petit.shape[0] / 2.0)
+
+
 def _prime_centralite(contour, centre, demi_diagonale):
     """Facteur multiplicatif favorisant le candidat le plus central.
 
@@ -132,6 +137,29 @@ def _prime_centralite(contour, centre, demi_diagonale):
 
     Absent du scoring jusqu'ici : surface, convexite, rectangularite et
     allongement sont tous des criteres de FORME, aucun de POSITION.
+
+    ELLE N'EST PAS BRANCHEE EN PRODUCTION, ET C'EST UN RESULTAT.
+    ---------------------------------------------------------
+    `scripts/sonde_plafond.py` lui donnait +0,016 d'IoU sur le jeu propre et
+    0,000 sur l'encombre : jamais negative, on l'a donc activee. Mesuree
+    ensuite sur la CHAINE COMPLETE, verdict inverse :
+
+        jeu          sans prime    avec prime
+        propre         0,84          0,84       (identique)
+        encombre       0,40          0,32       (recadrages 20/25 -> 15/25)
+
+    La cause est une interaction que la sonde ne pouvait pas voir. La prime
+    est MULTIPLICATIVE, et `detect_document_quad` compare le score a un seuil
+    ABSOLU (`min_score`). Elle ne se contente donc pas de reordonner les
+    candidats : elle les fait passer sous le seuil, et la chaine renonce a
+    recadrer. Sur le jeu encombre elle a rejete cinq pages, dont les pages 5
+    et 24 qui sortaient a 0,63 -- les deux MEILLEURS recadrages du jeu.
+
+    La lecon est generale : une ponderation qui ne devrait exprimer qu'une
+    PREFERENCE entre candidats devient un critere d'ADMISSION des qu'elle
+    multiplie un score compare a un seuil. Une version « rang seulement »
+    serait defendable ; en l'etat, la fonction reste ici pour la sonde et
+    pour cette note, rien de plus.
     """
     moments = cv2.moments(contour)
     if moments["m00"] <= 0:

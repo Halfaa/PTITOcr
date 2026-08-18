@@ -103,6 +103,17 @@ modèles (0,013) est plus petit que ce qu'apporte la Phase 1.
    déjà : [docs/avec_sans_pretraitement.md](docs/avec_sans_pretraitement.md).
 4. **Cloud** — évoqué, à cadrer plus tard.
 
+### ⚠ À vérifier : PaddleOCR-VL dewarpe-t-il tout seul ?
+
+Découvert en branchant DBNet. `PaddleOCR()` active par défaut un classifieur
+d'orientation **et un dewarping UVDoc** en amont. Si `PaddleOCRVL` fait de
+même — `bench_deformed.py` l'instancie avec les réglages par défaut — alors
+nos runs « PaddleOCR-VL brut » passaient déjà par un dewarping appris, et le
+comparatif avec/sans prétraitement sur ce modèle mesurait **notre**
+prétraitement par-dessus **le leur**. Ça n'invalide pas les chiffres de
+Chandra ni de Hunyuan, mais ça change la lecture de la ligne PaddleOCR-VL.
+Une inspection du pipeline suffit à trancher.
+
 ---
 
 ## À faire — par ordre de valeur

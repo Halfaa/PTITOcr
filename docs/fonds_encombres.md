@@ -494,6 +494,101 @@ moyenne mélangeait 7 pages à 15 % et 6 pages à 130 %, deux échecs opposés q
 s'annulent. Une statistique de position ne veut rien dire sur une distribution
 bimodale. Le script compte désormais les groupes.
 
+### Le témoin qui manquait : 0,70 est-il seulement atteignable ?
+
+Contrôle jamais fait, et il aurait dû l'être en premier. Tous les générateurs
+rendent un `minAreaRect`, un **rectangle tourné**. Or une feuille photographiée
+de biais et gondolée n'est pas un rectangle : le meilleur rectangle qui
+l'englobe garde forcément du fond à l'intérieur. Comparer nos scores à 0,70
+n'a donc de sens que si 0,70 est dans le domaine du possible.
+
+`--oracle` donne au scoring le contour **exact** de la feuille, pris dans la
+vérité terrain. Il triche par construction ; il ne mesure pas une détection,
+il mesure le plafond de la **représentation**.
+
+| jeu | plafond ORACLE | notre plafond | écart | obtenu |
+|---|---|---|---|---|
+| propre | 0,86 | **0,86** | **0,00** | 0,83 |
+| encombré | 0,85 | 0,52 | **0,33** | 0,45 |
+
+Les deux lignes se répondent, et chacune dit une chose différente.
+
+**Sur le jeu propre, notre générateur atteint EXACTEMENT le plafond de forme.**
+0,86 contre 0,86 : aucun générateur, appris ou non, ne peut proposer un meilleur
+rectangle sur ce jeu. C'est un résultat plus fort que ce qu'on avait écrit
+jusqu'ici — le module de prétraitement n'est pas « bon », il est **optimal pour
+la représentation qu'on lui a donnée**. Tout ce qui reste (0,86 → 0,83) est de
+la sélection, et la prime de centralité en récupère la moitié.
+
+**Sur le jeu encombré, l'écart de 0,33 est une pure perte de détection.** Ni la
+forme du candidat, ni la métrique, ni le jeu de test — trois explications
+commodes désormais écartées. Cela valide de poursuivre sur la détection, et
+notamment sur le front-end de texte, seule piste dont on sait qu'elle a été
+mal alimentée plutôt que réfutée.
+
+**Et le 0,86 lui-même est une limite qu'on s'impose.** Il ne vient pas des
+images mais du `minAreaRect` : une feuille gondolée vue de biais n'est pas un
+rectangle. Passer à un quadrilatère libre, ou à la mise à plat par courbes que
+`curved_flatten` sait déjà faire, rendrait ces 0,14 sur les deux jeux. À
+relativiser cependant : sur fond propre la chaîne sort déjà 0,977 de TEDS en
+adaptatif, donc ces 0,14 d'IoU n'ont presque plus de valeur en lecture. C'est
+une réserve pour le jour où le recadrage sera le facteur limitant.
+
+### La prime de centralité : retenue par la sonde, rejetée par la chaîne
+
+Épisode instructif, gardé ici parce que l'erreur est facile à refaire.
+
+L'idée tenait debout : on photographie ce qu'on vise, donc la bonne feuille
+est la plus centrée — et c'est le seul indice qui ne suppose pas un fond
+différent du papier. La sonde lui donnait +0,016 d'IoU sur le jeu propre et
+0,000 sur l'encombré : jamais négative, on l'a donc activée en production.
+
+Mesurée ensuite sur la **chaîne complète**, verdict inverse :
+
+| jeu | sans prime | avec prime |
+|---|---|---|
+| propre | 0,84 | 0,84 |
+| encombré | **0,40** | 0,32 *(recadrages 20/25 → 15/25)* |
+
+La cause est une interaction que la sonde ne pouvait pas voir. La prime est
+**multiplicative**, et `detect_document_quad` compare le score à un seuil
+**absolu** (`min_score`). Elle ne se contente donc pas de réordonner les
+candidats : elle les fait passer sous le seuil, et la chaîne renonce à
+recadrer. Sur le jeu encombré elle a rejeté cinq pages, dont les pages 5 et
+24 qui sortaient à 0,63 — **les deux meilleurs recadrages du jeu**.
+
+Deux leçons. La première est générale : une pondération censée exprimer une
+*préférence* entre candidats devient un critère d'*admission* dès qu'elle
+multiplie un score comparé à un seuil. La seconde porte sur la méthode : la
+sonde mesure un sous-ensemble de la chaîne, et un gain qu'elle annonce doit
+être confirmé par `eval_preprocess`, jamais publié sur sa seule foi. D'où
+l'option `--sans-centralite`, qui permet l'A/B à jeu constant.
+
+La prime est retirée de la production. `_prime_centralite` reste dans le
+code, pour la sonde et pour cette note.
+
+### Bilan des générateurs : la voie non apprise est épuisée
+
+| générateur | plafond, jeu encombré |
+|---|---|
+| seuillages + GrabCut (actuel) | 0,52 |
+| SAM / FastSAM | 0,46 – 0,56 |
+| blocs de texte, morphologie | 0,33 |
+| blocs de texte, DBNet appris | 0,43 |
+| **toutes unions confondues** | **0,59** |
+| *témoin ORACLE* | *0,85* |
+
+Quatre familles d'indices indépendantes — photométrie, segmentation générique
+d'objets, morphologie de texte, détection de texte apprise — butent toutes
+entre 0,33 et 0,59 quand 0,85 est atteignable. Ce n'est plus une série de
+maladresses, c'est une limite de la classe de méthodes.
+
+**La segmentation apprise sur nos masques UV n'est donc plus un pari, c'est la
+conclusion.** Et elle arrive avec trois choses qu'on n'avait pas au début de
+la journée : la certitude que 0,85 est atteignable, la preuve que l'écart est
+bien de la détection, et des étiquettes au pixel près, gratuites et en
+quantité illimitée.
+
 ### Ce que la sonde a tranché, et ce qu'elle n'a pas tranché
 
 Tranché : **une segmentation générique n'est pas la réponse.** SAM est
@@ -562,11 +657,54 @@ supérieure au brut. C'est un échec de *cohérence structurelle*, pas de
 
 1. **Provenance par concordance** — fait, mesuré, en production dans
    `adaptive.choose()`. Coût : zéro inférence de plus.
-2. **Segmentation par le texte, pas par le papier.** La piste classique qui
-   reste ouverte : un document est un *bloc de texte cohérent* (échelle,
-   orientation, alignement), pas une zone claire. `_text_mask` existe déjà ;
-   regrouper ses composantes par orientation et échelle, prendre le bloc le
-   plus central. C'est l'indice qui survit au blanc-sur-blanc.
+2. **Segmentation par le texte, pas par le papier** — implémentée, pas encore
+   concluante. `candidats_texte()` dans `scripts/sonde_plafond.py`, option
+   `--texte`.
+
+   L'idée : un document est un *bloc de texte cohérent*, pas une zone claire.
+   Deux mots appartiennent à la même feuille s'ils sont proches, de même
+   corps et de **même inclinaison** — ce dernier critère est le discriminant
+   fort, puisque chaque feuille posée sur le bureau a sa propre rotation là
+   où sa luminance est identique à celle des voisines. Graphe de voisinage,
+   composantes connexes, une enveloppe convexe par bloc.
+
+   Le regroupement fait son travail — 1 à 3 blocs par image, là où sont les
+   feuilles. **C'est la détection des mots qui ne suit pas** : le front-end
+   morphologique (gradient + Otsu + fermeture) trouve 26 à 138 mots par page
+   quand une facture en contient plus de trois cents, et sur deux pages sur
+   dix il n'en trouve pas assez pour former le moindre bloc. L'idée n'est
+   pas invalidée, elle est mal alimentée.
+
+   Deux réglages mesurés au passage, contre-intuitifs tous les deux. La
+   détection doit tourner à **1400 px et non aux 480 px de travail** — à 480,
+   sur une scène encombrée où la feuille cible n'occupe qu'un quart du cadre,
+   un caractère fait deux pixels et il ne reste que 5 mots par page. Et le
+   noyau de fermeture doit rester **petit** : k=5 rend 138 mots, k=27 en rend
+   63, parce qu'élargir ne recolle pas mieux les mots, ça fusionne des
+   colonnes entières du tableau.
+
+   Testée avec les deux front-ends, morphologique et appris (`--dbnet`,
+   détecteur DBNet de PaddleOCR). Le verdict ne bouge pas :
+
+   | front-end de détection des mots | plafond seul | plafond en union |
+   |---|---|---|
+   | morphologie | 0,33 | 0,54 |
+   | DBNet, coordonnées faussées | 0,37 | 0,53 |
+   | DBNet, coordonnées correctes | **0,43** | **0,54** |
+
+   Le détecteur appris fait bien mieux que la morphologie *seul* (0,43 contre
+   0,33), ce qui confirme que le front-end était le maillon faible. Mais
+   **l'union ne bouge pas** : les blocs de texte n'apportent pas de candidat
+   que les seuillages n'avaient pas déjà. La piste est donc close.
+
+   **Un piège rencontré en chemin, et qui déborde de cette piste.** Par
+   défaut, `PaddleOCR()` fait tourner en amont un classifieur d'orientation
+   (`PP-LCNet_x1_0_doc_ori`) **et un dewarping (`UVDoc`)**. La détection se
+   fait donc sur une image redressée, et les polygones rendus sont dans le
+   repère de *cette* image — pas dans le nôtre. On récupère des boîtes
+   parfaitement valides, simplement au mauvais endroit, et rien ne le signale.
+   Il faut passer `use_doc_orientation_classify=False` et
+   `use_doc_unwarping=False`.
 3. **Segmentation apprise sur nos masques UV.** Le pari à deux semaines,
    désormais éclairé : l'échec de SAM montre que la compétence ne se
    transfère pas, pas qu'elle ne s'apprend pas — un modèle entraîné sur nos

@@ -113,6 +113,237 @@ def candidats_actuels(petit, image=None, echelle=1.0):
     return contours
 
 
+# Deux mots de texte appartiennent au meme document s'ils sont proches, de
+# meme taille et de meme inclinaison. Ces trois seuils definissent « meme ».
+_DIST_MAX = 6.0      # en hauteurs de caractere
+_RAPPORT_TAILLE = 1.7
+_ANGLE_MAX = 18.0    # degres
+
+
+def _mots(petit):
+    """Les blocs-mots de l'image : centre, taille, inclinaison."""
+    gris = cv2.cvtColor(petit, cv2.COLOR_BGR2GRAY)
+    grad = cv2.morphologyEx(gris, cv2.MORPH_GRADIENT, np.ones((3, 3), np.uint8))
+    _, bw = cv2.threshold(grad, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # Noyau de 5, pas de 9, et surtout pas proportionnel a la resolution.
+    # Mesure sur une page encombree : k=5 rend 138 mots, k=9 en rend 109,
+    # k=27 seulement 63. Elargir le noyau ne recolle pas mieux les mots, il
+    # fusionne des colonnes entieres du tableau, et les pates obtenues sont
+    # rejetees par le filtre de forme.
+    fusion = cv2.morphologyEx(bw, cv2.MORPH_CLOSE, np.ones((1, 5), np.uint8))
+
+    n, etiquettes, stats, centres = cv2.connectedComponentsWithStats(fusion, 8)
+    mots = []
+    for i in range(1, n):
+        x, y, w, h, aire = stats[i]
+        # Un mot imprime est plus LARGE que haut. Les veines d'un marbre ou
+        # les fibres d'une moquette donnent des taches rondes ou verticales.
+        if aire < 20 or not (3 <= h <= petit.shape[0] // 15) or w < 1.5 * h:
+            continue
+        points = cv2.findNonZero((etiquettes == i).astype(np.uint8))
+        (_, _), (rw, rh), angle = cv2.minAreaRect(points)
+        if rw < rh:                      # normaliser : l'angle du GRAND cote
+            angle += 90.0
+        mots.append({"centre": centres[i], "hauteur": float(h),
+                     "angle": angle % 180.0, "points": points})
+    return mots
+
+
+# Cote long auquel on cherche le texte.
+#
+# Surtout PAS les 480 px de travail : a cette echelle, sur une scene encombree
+# ou la feuille cible n'occupe qu'un quart du cadre, un caractere fait deux
+# pixels et le filtre de forme ne retient plus rien -- mesure, 5 mots sur une
+# page entiere. Meme lecon qu'avec SAM : 480 px est un compromis regle pour
+# des taches de luminance, pas pour du texte.
+COTE_TEXTE = 1400
+
+# Front-end de detection des mots : morphologique par defaut, DBNet avec
+# --dbnet. Le premier ne demande rien, le second demande `venv`.
+MOTS_APPRIS = False
+
+
+_detecteur = None
+
+
+def _mots_dbnet(image):
+    """Les mots vus par le detecteur de texte de PaddleOCR (DBNet).
+
+    Le front-end morphologique de `_mots` est le maillon faible de la piste
+    texte : mesure, 26 a 138 mots par page la ou une facture en contient plus
+    de trois cents, et deux pages sur dix n'en donnent pas assez pour former
+    le moindre bloc. Le regroupement, lui, fait son travail des qu'on
+    l'alimente.
+
+    DBNet est un detecteur appris, deja installe dans `venv` avec PaddleOCR.
+    Il rend des quadrilateres de mots fiables, y compris sur du texte
+    faiblement contraste et incline -- exactement ce qui manque ici.
+
+    NON TESTE au moment ou ces lignes sont ecrites : PaddleOCR n'existe pas
+    dans l'environnement ou ce code a ete redige. L'API `PaddleOCR(det=True,
+    rec=False)` est celle du projet, mais son retour peut avoir change de
+    forme selon la version -- d'ou le decorticage defensif ci-dessous, et le
+    message explicite s'il ne rend rien.
+    """
+    global _detecteur
+    if _detecteur is None:
+        try:
+            from paddleocr import PaddleOCR
+        except ImportError:
+            raise SystemExit(
+                "Le detecteur DBNet demande PaddleOCR, donc l'environnement "
+                "`venv` :\n    .\\venv\\Scripts\\activate\n"
+                "C'est le meme venv que pour eval_preprocess et les "
+                "evaluations.")
+        # Les trois desactivations sont INDISPENSABLES, pas de l'optimisation.
+        #
+        # Par defaut, PaddleOCR fait tourner en amont un classifieur
+        # d'orientation (PP-LCNet_doc_ori) et un dewarping (UVDoc). Il
+        # detecte donc le texte sur une image REDRESSEE, et rend des
+        # polygones dans le repere de cette image-la -- pas dans le notre.
+        # Les coordonnees sont alors inutilisables pour situer une feuille
+        # dans la photo d'origine, et rien ne le signale : on recupere des
+        # boites parfaitement valides, simplement au mauvais endroit.
+        #
+        # C'est exactement ce qui s'est produit au premier essai, et ca
+        # expliquait un plafond de 0,37 qu'on aurait pu prendre pour un
+        # echec de la methode.
+        _detecteur = PaddleOCR(use_doc_orientation_classify=False,
+                               use_doc_unwarping=False,
+                               use_textline_orientation=False,
+                               lang="en")
+
+    brut = _detecteur.predict(image)
+    boites = []
+    for page in (brut or []):
+        # Selon la version, le resultat est un dict-like ou un objet ; on
+        # cherche les polygones sous les deux noms connus.
+        for cle in ("dt_polys", "rec_polys", "boxes"):
+            valeur = None
+            if isinstance(page, dict) and cle in page:
+                valeur = page[cle]
+            elif hasattr(page, cle):
+                valeur = getattr(page, cle)
+            if valeur is not None and len(valeur):
+                boites = list(valeur)
+                break
+        if boites:
+            break
+
+    if not boites:
+        raise SystemExit(
+            "DBNet n'a rendu aucune boite. La forme du resultat de PaddleOCR "
+            "a probablement\nchange : afficher `type(brut)` et son contenu, "
+            "puis ajuster _mots_dbnet.")
+
+    mots = []
+    for boite in boites:
+        points = np.asarray(boite, dtype=np.float32).reshape(-1, 1, 2)
+        (cx, cy), (rw, rh), angle = cv2.minAreaRect(points)
+        if rw < rh:
+            angle += 90.0
+            rw, rh = rh, rw
+        mots.append({"centre": np.array([cx, cy]), "hauteur": float(max(rh, 1.0)),
+                     "angle": angle % 180.0, "points": points.astype(np.int32)})
+    return mots
+
+
+def candidats_texte(petit, image=None, echelle=1.0):
+    """Un document = un BLOC de texte coherent, pas une zone claire.
+
+    C'est le seul indice qui survit au blanc-sur-blanc. Quand la feuille et le
+    fond ont la meme couleur, la meme saturation et la meme texture, il reste
+    que le texte imprime est a haut contraste et qu'il est, par construction,
+    SUR la feuille.
+
+    `_text_hull_contour` de preprocess.py exploite deja cette idee, mais prend
+    l'enveloppe de TOUT le texte de l'image : sur un bureau encombre, elle
+    englobe les cinq feuilles a la fois. Ce qui manque, c'est de les separer.
+
+    Le critere de regroupement. Deux mots appartiennent au meme document s'ils
+    sont proches, de meme corps et de meme inclinaison. L'inclinaison est le
+    discriminant fort : chaque feuille posee sur le bureau a sa propre
+    rotation, alors que sa luminance est identique a celle des voisines. On
+    construit donc un graphe de voisinage sur ces trois criteres et on prend
+    ses composantes connexes -- une par bloc de texte, donc une par feuille.
+
+    LIMITE CONNUE, et elle est dans la detection des mots, pas dans le
+    regroupement. Le front-end morphologique (gradient + Otsu + fermeture)
+    ne trouve que 26 a 138 mots par page la ou une facture en contient plus
+    de trois cents, et sur une page il n'en trouve pas assez pour former le
+    moindre bloc. Le regroupement, lui, fait ce qu'on lui demande des qu'il a
+    de la matiere : 1 a 3 blocs par image, la ou les feuilles sont.
+    Autrement dit, l'idee n'est pas invalidee -- elle est mal alimentee.
+
+    La suite naturelle est de remplacer ce front-end par un vrai detecteur de
+    texte appris. On en a DEJA un installe : le module de detection de
+    PaddleOCR, dans `venv`. C'est un DBNet entraine, il rend des boites de
+    mots fiables, et le regroupement ci-dessous s'y branche sans changer une
+    ligne. C'est la mesure a faire avant de conclure quoi que ce soit sur
+    cette piste.
+    """
+    # On cherche le texte en haute resolution, on rend les contours a
+    # l'echelle de travail pour rester comparable aux autres generateurs.
+    source = petit if image is None else image
+    facteur = COTE_TEXTE / max(source.shape[:2])
+    if facteur < 1.0:
+        travail = cv2.resize(source, None, fx=facteur, fy=facteur,
+                             interpolation=cv2.INTER_AREA)
+    else:
+        travail, facteur = source, 1.0
+    vers_travail = (1.0 if image is None else echelle) / facteur
+
+    mots = _mots_dbnet(travail) if MOTS_APPRIS else _mots(travail)
+    if len(mots) < 6:
+        return []
+
+    # Union-find : O(n^2) sur quelques centaines de mots, c'est instantane et
+    # ca evite une dependance a scipy.
+    parent = list(range(len(mots)))
+
+    def racine(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i in range(len(mots)):
+        for j in range(i + 1, len(mots)):
+            a, b = mots[i], mots[j]
+            echelle_locale = max(a["hauteur"], b["hauteur"])
+            if np.hypot(*(a["centre"] - b["centre"])) > _DIST_MAX * echelle_locale:
+                continue
+            if max(a["hauteur"], b["hauteur"]) > _RAPPORT_TAILLE * min(
+                    a["hauteur"], b["hauteur"]):
+                continue
+            ecart = abs(a["angle"] - b["angle"])
+            if min(ecart, 180.0 - ecart) > _ANGLE_MAX:
+                continue
+            ra, rb = racine(i), racine(j)
+            if ra != rb:
+                parent[ra] = rb
+
+    blocs = {}
+    for i, mot in enumerate(mots):
+        blocs.setdefault(racine(i), []).append(mot)
+
+    contours = []
+    for bloc in blocs.values():
+        # Un bloc de moins de huit mots n'est pas un document : c'est du bruit
+        # de fond qui a passe les filtres de forme.
+        if len(bloc) < 8:
+            continue
+        points = np.vstack([m["points"] for m in bloc])
+        enveloppe = cv2.convexHull(points).reshape(-1, 2).astype(np.float32)
+        # La feuille deborde de son texte d'au moins une marge d'impression.
+        centre = enveloppe.mean(axis=0)
+        grossie = (centre + (enveloppe - centre) * 1.18) * vers_travail
+        grossie[:, 0] = np.clip(grossie[:, 0], 0, petit.shape[1] - 1)
+        grossie[:, 1] = np.clip(grossie[:, 1], 0, petit.shape[0] - 1)
+        contours.append(grossie.astype(np.int32).reshape(-1, 1, 2))
+    return contours
+
+
 _modele_sam = None
 
 
@@ -211,6 +442,33 @@ def diagnostiquer_sam(contours, petit, echelle, verite):
     }
 
 
+def candidats_oracle(petit, image=None, echelle=1.0, verite=None):
+    """Le contour EXACT de la feuille, pris dans la verite terrain.
+
+    Ce n'est pas un generateur utilisable : il triche, par construction. Il
+    sert de TEMOIN, et il repond a une question qu'on n'aurait jamais du
+    laisser sans reponse -- le seuil de 0,70 est-il seulement ATTEIGNABLE ?
+
+    Tous les generateurs rendent un rectangle tourne (`minAreaRect`). Une
+    feuille photographiee de biais et gondolee n'est pas un rectangle : le
+    meilleur rectangle qui l'englobe garde forcement du fond a l'interieur.
+    Ce temoin mesure ce plafond-la, celui de la REPRESENTATION, sans aucune
+    detection.
+
+    Sans lui on compare des scores a un seuil dont on ignore s'il est dans le
+    domaine du possible, et on conclut « la detection echoue » alors que
+    c'est peut-etre la FORME du candidat qui est en cause.
+    """
+    if verite is None:
+        return []
+    trouves, _ = cv2.findContours(verite.astype(np.uint8), cv2.RETR_EXTERNAL,
+                                  cv2.CHAIN_APPROX_SIMPLE)
+    if not trouves:
+        return []
+    contour = max(trouves, key=cv2.contourArea)
+    return [(contour.astype(np.float32) * echelle).astype(np.int32)]
+
+
 def mesurer(contours, petit, echelle, verite):
     """Rend (plafond, obtenu_actuel, obtenu_centralite)."""
     aire = petit.shape[0] * petit.shape[1]
@@ -239,6 +497,15 @@ def main():
     p.add_argument("--jeu", default="variants_encombre")
     p.add_argument("--sam", action="store_true",
                    help="Ajouter les générateurs SAM (environnement séparé).")
+    p.add_argument("--dbnet", action="store_true",
+                   help="Detecter les mots avec DBNet (PaddleOCR) au lieu "
+                        "de la morphologie. Demande le venv `venv`.")
+    p.add_argument("--oracle", action="store_true",
+                   help="Temoin : le seuil de 0,70 est-il atteignable "
+                        "avec un rectangle tourne sur cette verite ?")
+    p.add_argument("--texte", action="store_true",
+                   help="Ajouter le generateur par blocs de texte. Aucune "
+                        "dependance, tourne en une seconde par page.")
     p.add_argument("--diagnostic-sam", action="store_true",
                    help="SAM ne voit pas la feuille, ou la voit en morceaux ?")
     p.add_argument("--taille-sam", type=int, default=TAILLE_SAM,
@@ -252,7 +519,19 @@ def main():
     if not images:
         raise SystemExit(f"Aucune image dans {dossier_img}")
 
+    if args.dbnet:
+        globals()["MOTS_APPRIS"] = True
+        args.texte = True
+        print("Detection des mots par DBNet (PaddleOCR)")
+
     generateurs = {"actuel": candidats_actuels}
+    if args.oracle:
+        generateurs["ORACLE (temoin)"] = candidats_oracle
+    if args.texte:
+        generateurs["texte"] = candidats_texte
+        generateurs["actuel+texte"] = (
+            lambda pt, im=None, ec=1.0: candidats_actuels(pt, im, ec)
+                                        + candidats_texte(pt, im, ec))
     if args.sam:
         globals()["TAILLE_SAM"] = args.taille_sam
         print(f"SAM à {args.taille_sam} px (les seuillages restent à "
@@ -283,7 +562,9 @@ def main():
         n_pages += 1
 
         for nom, generer in generateurs.items():
-            contours = generer(petit, image, echelle)
+            contours = (candidats_oracle(petit, image, echelle, verite)
+                        if nom.startswith("ORACLE")
+                        else generer(petit, image, echelle))
             if nom == "sam" and args.diagnostic_sam:
                 diagnostics.append(diagnostiquer_sam(contours, petit,
                                                      echelle, verite))
@@ -345,6 +626,27 @@ def main():
     print("-" * len(entete))
 
     base = resultats["actuel"]
+    if_temoin = "ORACLE (temoin)"
+    if if_temoin in resultats:
+        plafond_forme = np.mean(resultats[if_temoin]["plafond"])
+        print(f"\nTEMOIN : avec le contour EXACT de la feuille, un "
+              f"rectangle tourne\nplafonne a {plafond_forme:.2f} d'IoU.")
+        if plafond_forme < SEUIL_EXPLOITABLE + 0.05:
+            print(f"  Le seuil de {SEUIL_EXPLOITABLE:.2f} est donc hors "
+                  "d'atteinte QUELLE QUE SOIT la detection :")
+            print("  ce n'est pas la localisation qui echoue, c'est la "
+                  "FORME du candidat.")
+            print("  Une feuille gondolee vue de biais n'est pas un "
+                  "rectangle, et le meilleur")
+            print("  rectangle qui l'englobe garde du fond. Il faudrait un "
+                  "quadrilatere libre,")
+            print("  voire la mise a plat par courbes que `curved_flatten` "
+                  "sait deja faire.")
+        else:
+            print(f"  Le seuil de {SEUIL_EXPLOITABLE:.2f} est atteignable. "
+                  "L'ecart au temoin mesure\n  donc ce que la detection "
+                  "perd reellement.")
+
     print("\nComment lire.")
     print("  plafond      dépend du GÉNÉRATEUR. S'il ne bouge pas d'une ligne")
     print("               à l'autre, les nouveaux candidats ne contiennent pas")
