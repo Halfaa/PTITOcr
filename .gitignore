@@ -44,3 +44,7 @@ Thumbs.db
 venv_sam/
 FastSAM-s.pt
 *.pt
+
+# Archive de l'etude de degradation : 252 Mo, au-dela de la limite GitHub.
+# Se regenere avec : python scripts/degrader.py --jeu variants_warped --zip
+kaggle/images_degradation.zip

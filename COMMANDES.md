@@ -294,6 +294,26 @@ affiche maintenant les numéros rendus et les absents ; `-Depuis` complète :
 .\render_variants.ps1 -FolderId variants_encombre -Parasites -1 -Depuis 20 -Nombre 5
 ```
 
+Étude de dégradation — jusqu'où la chaîne tient-elle ?
+
+```powershell
+python scripts\degrader.py --jeu variants_warped --calibrer   # contrôler les paliers
+python scripts\degrader.py --jeu variants_warped --zip        # 192 images + l'archive
+# ... run Kaggle ...
+python scripts\eval_degradation.py --figure
+```
+
+**Ne pas utiliser `Compress-Archive`** pour cette archive-là. PowerShell 5.1
+écrit les sous-dossiers avec des antislashs, alors que la spécification ZIP
+impose la barre oblique : Kaggle refuse l'import avec « contains a forbidden
+character in name ('\\') ». D'où l'option `--zip`, qui écrit l'archive
+correctement et vérifie qu'aucune entrée ne contient d'antislash. C'est le
+premier zip du projet à avoir des sous-dossiers, les précédents étaient plats.
+
+Toujours `--calibrer` d'abord, et regarder les images : la première grille de
+paliers était inutilisable (texte encore lisible au JPEG le plus dur), ce
+qu'aucun nombre ne disait. Détail dans [docs/degradation.md](docs/degradation.md).
+
 Sonde de plafond — le recadrage peut-il marcher sur fond encombré ?
 
 ```powershell

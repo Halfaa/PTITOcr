@@ -118,7 +118,7 @@ L'astuce est qu'on garde la vérité terrain exacte, ce qu'aucune photo de
 document réel ne permet. Et ça valide le pipeline doc3D en comparant
 déformation simulée et réelle sur le même contenu.
 
-### 2. L'étude de dégradation d'image  ⭐ le meilleur rapport valeur/effort
+### 2. L'étude de dégradation d'image  🔧 outillage prêt, run à lancer
 
 Livrable des semaines 9–10, entièrement faisable sans imprimante et en
 quelques heures : dégrader progressivement les mêmes pages (flou de bougé,
@@ -132,6 +132,19 @@ une spécification chiffrée au contrôle qualité à la capture, qui reste à
 
 C'est aussi le seul moyen, avant d'avoir des photos réelles, de savoir si
 0,97 est un chiffre robuste ou un chiffre de laboratoire.
+
+**État au 12 août : tout est prêt, il reste à lancer le run.**
+`scripts/degrader.py` génère 24 lots × 8 pages (flou, bruit, sous-exposition,
+résolution, JPEG), le notebook Kaggle est câblé, `scripts/eval_degradation.py`
+trace la courbe et sort les points de rupture. Compter ~4 h 20 de T4.
+Prédictions écrites avant mesure dans
+[docs/degradation.md](docs/degradation.md).
+
+La première grille de paliers a été jetée après contrôle visuel : le texte
+restait lisible au JPEG le plus dur. Vérification faite, la compression JPEG
+sature à 23,8 dB de PSNR sur ce type de page — d'où trois paliers seulement
+pour le JPEG, et une cinquième dégradation, la **résolution**, qui est ce qui
+tue réellement le petit texte.
 
 ### 3. GLM-OCR — le seul modèle SOTA qui tienne en 4 Go
 
