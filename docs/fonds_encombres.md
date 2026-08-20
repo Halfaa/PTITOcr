@@ -710,3 +710,129 @@ supérieure au brut. C'est un échec de *cohérence structurelle*, pas de
    transfère pas, pas qu'elle ne s'apprend pas — un modèle entraîné sur nos
    rendus apprendrait précisément ce que SAM n'a pas, la *définition de la
    cible* (la feuille centrée dominante). À décider avec l'encadrante.
+
+---
+
+## 10. PaddleOCR-VL sur fond encombré (18 août) — le meilleur résultat du jour
+
+Run `variants_encombre_paddleocr`, 25 pages, lecture brute, en local.
+
+| | Chandra OCR 2 | **PaddleOCR-VL** |
+|---|---|---|
+| TEDS (avec fusion) | 0,604 | **0,677** |
+| TEDS-Struct | 0,714 | **0,738** |
+| champs d'en-tête | 62 % | **77 %** |
+| fusion précision / rappel | 67 / 46 % | 100 / 31 % |
+
+**Le classement s'inverse.** Sur fonds propres Chandra domine partout ; sur
+fond encombré PaddleOCR-VL prend 0,073 de TEDS et 15 points de champs. C'est
+le premier jeu où l'ordre change, et la raison n'est pas la qualité de lecture.
+
+### Pourquoi : il segmente les feuilles, nativement
+
+Son détecteur de mise en page rend **2,5 tableaux par page en moyenne** — un
+par feuille lisible dans la scène, chacun proprement structuré. Sur la page 1,
+deux tableaux : la facture parasite (11 lignes) et la cible (18 lignes). Le
+`_res.json` confirme la mécanique : deux blocs `table` distincts, l'un à 3,3 %
+du cadre, l'autre à 19,4 %.
+
+Là où Chandra, à qui l'on donne la scène entière, produit un tableau confus ou
+part en boucle (2 470 colonnes sur la facture 3), PaddleOCR-VL **rend une
+lecture par feuille**. Notre chaîne prend ensuite le plus grand tableau, et sur
+ce jeu c'est le bon assez souvent pour valoir 0,677.
+
+C'est exactement ce que SAM ne savait pas faire. SAM découpe des objets du
+monde et ignore ce qu'est un document ; ce détecteur-ci est entraîné sur des
+mises en page et connaît les notions de tableau, de titre, de pied de page.
+
+### Ce que ça change pour la stratégie
+
+**La meilleure réponse au fond encombré trouvée à ce jour n'est pas un
+meilleur recadrage — c'est un modèle qui sépare les feuilles tout seul.** On a
+passé la journée à chercher à isoler la feuille *avant* la lecture ; il existe
+un lecteur qui fait les deux en un passage, et il était déjà installé.
+
+Deux suites, dans cet ordre.
+
+**Exploiter les boîtes de mise en page comme candidats de recadrage.**
+`scripts/sonde_plafond.py --layout <run>` les lit dans les `_res.json` déjà
+écrits, sans un appel GPU de plus. Si le plafond monte vers 0,85, le problème
+du recadrage est résolu sans rien entraîner.
+
+**Ne plus prendre bêtement le plus grand tableau.** Avec 2,5 tableaux par
+page, `max(tables, key=len(rows))` est un choix par défaut, pas une décision.
+La centralité de la boîte de mise en page, ou la concordance entre pages
+consécutives, ferait mieux — et le rappel de fusion à 31 % dit qu'il y a là de
+la marge (la précision est à 100 %, donc l'algorithme est seulement trop
+prudent).
+
+### Deux réserves
+
+Le run n'a pas de branche prétraitée, donc pas de politique adaptative : la
+comparaison à Chandra porte sur la lecture brute seule. Chandra brut fait
+0,604, et son adaptatif ne monte qu'à 0,257 sur ce jeu — la comparaison ne lui
+est donc pas défavorable.
+
+Et une page reste pathologique : la page 8 rend un tableau de **198 lignes**.
+Le garde-fou « hors d'échelle » de `src/teds.py` l'attrape à l'évaluation, mais
+rien ne l'attrape en production.
+
+### Question du TODO, tranchée
+
+`use_doc_preprocessor: False` dans le `_res.json`. **PaddleOCR-VL ne dewarpe
+pas par défaut**, contrairement à `PaddleOCR()` qui active UVDoc. Nos runs
+« PaddleOCR-VL brut » sont donc bien bruts, et le comparatif avec/sans
+prétraitement reste valide.
+
+---
+
+## 11. Synthèse : on mesurait la mauvaise chose
+
+Les boîtes de mise en page ont été testées comme candidats de recadrage
+(`--layout`) : plafond 0,49 seule, 0,55 en union contre 0,52. **Cinquième
+générateur, cinquième échec.** Elles cernent le contenu imprimé, pas la
+feuille, et aucune marge raisonnable ne comble l'écart.
+
+Le bilan complet, sur le jeu encombré :
+
+| générateur de candidats | plafond IoU |
+|---|---|
+| seuillages + GrabCut | 0,52 |
+| SAM / FastSAM | 0,46 – 0,56 |
+| blocs de texte, morphologie | 0,33 |
+| blocs de texte, DBNet appris | 0,43 |
+| boîtes de mise en page PaddleOCR-VL | 0,49 |
+| **toutes unions confondues** | **0,59** |
+| *témoin ORACLE* | *0,85* |
+
+### Et pourtant PaddleOCR-VL lit à 0,677
+
+C'est la contradiction apparente qui donne la réponse. Le même détecteur de
+mise en page **échoue comme recadreur** (0,49 d'IoU) et **réussit comme
+lecteur** (0,677 de TEDS, contre 0,604 pour Chandra et 0,313 pour la branche
+prétraitée). Ce ne sont pas deux mesures du même phénomène.
+
+Isoler la feuille et lire la bonne facture sont deux problèmes différents. On
+a passé la journée sur le premier en croyant qu'il commandait le second. Il ne
+le commande pas : **PaddleOCR-VL n'a besoin d'aucun recadrage** — il segmente
+en interne, rend un tableau par feuille, et la chaîne n'a plus qu'à choisir.
+
+### Ce qu'on retient, et ce qu'on arrête
+
+**On arrête de chercher un recadrage propre sur scène encombrée.** Cinq
+familles de méthodes, un plafond qui ne dépasse jamais 0,59 pour un
+atteignable à 0,85, et surtout : ce n'est pas nécessaire. Le prétraitement doit
+simplement **refuser de recadrer** quand la scène est encombrée — la lecture
+brute vaut 0,604 à 0,677 selon le modèle, contre 0,313 avec un recadrage faux.
+
+**On garde la voie du lecteur qui segmente.** C'est là que se joue la suite :
+mieux choisir parmi les 2,5 tableaux que PaddleOCR-VL rend par page. Aujourd'hui
+la chaîne prend le plus grand, ce qui est un défaut et non une décision. La
+centralité de la boîte de mise en page, la concordance entre pages
+consécutives, la cohérence arithmétique — trois signaux disponibles, aucun
+utilisé.
+
+**La segmentation apprise sur les masques UV redevient un choix, pas une
+nécessité.** Elle règlerait le recadrage, mais on vient de montrer que le
+recadrage n'est pas le chemin critique. À arbitrer avec l'encadrante, avec
+cette fois un vrai argument pour ne PAS la faire.

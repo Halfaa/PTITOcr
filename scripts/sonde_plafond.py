@@ -344,6 +344,85 @@ def candidats_texte(petit, image=None, echelle=1.0):
     return contours
 
 
+# Etiquettes de mise en page qui appartiennent au CORPS d'un document.
+# `image` est exclu : un logo ou un QR peut etre pose a cote de la feuille.
+_BLOCS_DOCUMENT = {"table", "text", "paragraph_title", "title", "header",
+                   "footer", "abstract", "content", "seal", "formula"}
+
+# Marge ajoutee autour du groupe de blocs. Une feuille deborde de son contenu
+# imprime d'au moins une marge, et le modele ne detecte que le contenu.
+_MARGE_LAYOUT = 1.15
+
+
+def candidats_layout(petit, image=None, echelle=1.0, dossier_json=None):
+    """Les blocs de mise en page de PaddleOCR-VL, groupes par feuille.
+
+    Decouvert sur un smoke test : le detecteur de mise en page de
+    PaddleOCR-VL **separe les feuilles**. Sur une page encombree il rend deux
+    tableaux distincts -- un a 3,3 % du cadre (une feuille parasite) et un a
+    19,4 % (la facture cible) -- la ou nos seuillages fondent tout en une
+    tache. C'est ce que SAM ne savait pas faire : SAM decoupe des objets,
+    lui connait la notion de document.
+
+    On ne relance pas le modele : les boites sont deja dans le `_res.json`
+    ecrit par `bench_deformed.py`. Cette sonde ne coute donc aucun GPU, elle
+    exploite un run existant.
+
+    Le regroupement est spatial : un tableau et les textes qui le touchent
+    appartiennent a la meme feuille. On part de chaque bloc `table` -- le
+    coeur d'une facture -- et on agrege les blocs qui le chevauchent ou le
+    jouxtent, puis on prend l'enveloppe, elargie d'une marge d'impression.
+    """
+    if dossier_json is None:
+        return []
+    fichiers = list(Path(dossier_json).glob("*_res.json"))
+    if not fichiers:
+        return []
+    import json
+    donnees = json.loads(fichiers[0].read_text(encoding="utf-8"))
+    boites = [(b["label"], b["coordinate"])
+              for b in donnees.get("layout_det_res", {}).get("boxes", [])
+              if b["label"] in _BLOCS_DOCUMENT]
+    if not boites:
+        return []
+
+    # Facteur image pleine -> echelle de travail. Le JSON est en coordonnees
+    # de l'image d'origine, comme celle passee au modele.
+    vers_travail = echelle if image is not None else 1.0
+
+    def touche(a, b, marge=20.0):
+        return not (a[2] + marge < b[0] or b[2] + marge < a[0]
+                    or a[3] + marge < b[1] or b[3] + marge < a[1])
+
+    contours = []
+    for etiquette, ancre in boites:
+        if etiquette != "table":
+            continue
+        groupe = [ancre]
+        change = True
+        while change:                     # fermeture transitive du voisinage
+            change = False
+            for _, autre in boites:
+                if any(autre is g for g in groupe):
+                    continue
+                if any(touche(autre, g) for g in groupe):
+                    groupe.append(autre)
+                    change = True
+
+        xs = [c for b in groupe for c in (b[0], b[2])]
+        ys = [c for b in groupe for c in (b[1], b[3])]
+        cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
+        demi_l = (max(xs) - min(xs)) / 2 * _MARGE_LAYOUT
+        demi_h = (max(ys) - min(ys)) / 2 * _MARGE_LAYOUT
+        boite = np.array([[cx - demi_l, cy - demi_h], [cx + demi_l, cy - demi_h],
+                          [cx + demi_l, cy + demi_h], [cx - demi_l, cy + demi_h]],
+                         dtype=np.float32) * vers_travail
+        boite[:, 0] = np.clip(boite[:, 0], 0, petit.shape[1] - 1)
+        boite[:, 1] = np.clip(boite[:, 1], 0, petit.shape[0] - 1)
+        contours.append(boite.astype(np.int32).reshape(-1, 1, 2))
+    return contours
+
+
 _modele_sam = None
 
 
@@ -500,6 +579,9 @@ def main():
     p.add_argument("--dbnet", action="store_true",
                    help="Detecter les mots avec DBNet (PaddleOCR) au lieu "
                         "de la morphologie. Demande le venv `venv`.")
+    p.add_argument("--layout", metavar="RUN",
+                   help="Ajouter les blocs de mise en page de PaddleOCR-VL, "
+                        "lus dans les _res.json d'un run existant. Aucun GPU.")
     p.add_argument("--oracle", action="store_true",
                    help="Temoin : le seuil de 0,70 est-il atteignable "
                         "avec un rectangle tourne sur cette verite ?")
@@ -525,6 +607,9 @@ def main():
         print("Detection des mots par DBNet (PaddleOCR)")
 
     generateurs = {"actuel": candidats_actuels}
+    if args.layout:
+        generateurs["layout"] = candidats_layout
+        generateurs["actuel+layout"] = None       # assemble dans la boucle
     if args.oracle:
         generateurs["ORACLE (temoin)"] = candidats_oracle
     if args.texte:
@@ -562,9 +647,21 @@ def main():
         n_pages += 1
 
         for nom, generer in generateurs.items():
-            contours = (candidats_oracle(petit, image, echelle, verite)
-                        if nom.startswith("ORACLE")
-                        else generer(petit, image, echelle))
+            dossier_json = None
+            if args.layout:
+                dossiers = list((RACINE / "results" / args.layout /
+                                 "pages").glob(f"{chemin.stem}*"))
+                dossier_json = dossiers[0] if dossiers else None
+            if nom.startswith("ORACLE"):
+                contours = candidats_oracle(petit, image, echelle, verite)
+            elif nom == "layout":
+                contours = candidats_layout(petit, image, echelle, dossier_json)
+            elif nom == "actuel+layout":
+                contours = (candidats_actuels(petit, image, echelle)
+                            + candidats_layout(petit, image, echelle,
+                                               dossier_json))
+            else:
+                contours = generer(petit, image, echelle)
             if nom == "sam" and args.diagnostic_sam:
                 diagnostics.append(diagnostiquer_sam(contours, petit,
                                                      echelle, verite))

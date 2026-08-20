@@ -104,6 +104,8 @@ MODELES = {
             "variants_flat": ("variants_paddleocr", None),
             "variants_warped": ("variants_warped_paddleocr",
                                 "variants_warped_preprocessed_paddleocrvl"),
+            "variants_encombre": ("variants_encombre_paddleocr",
+                                  "variants_encombre_preproc_paddleocr"),
         },
     },
     "ppstructure": {

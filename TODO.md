@@ -103,16 +103,25 @@ modèles (0,013) est plus petit que ce qu'apporte la Phase 1.
    déjà : [docs/avec_sans_pretraitement.md](docs/avec_sans_pretraitement.md).
 4. **Cloud** — évoqué, à cadrer plus tard.
 
-### ⚠ À vérifier : PaddleOCR-VL dewarpe-t-il tout seul ?
+### ✅ Tranché : PaddleOCR-VL ne dewarpe PAS
 
-Découvert en branchant DBNet. `PaddleOCR()` active par défaut un classifieur
-d'orientation **et un dewarping UVDoc** en amont. Si `PaddleOCRVL` fait de
-même — `bench_deformed.py` l'instancie avec les réglages par défaut — alors
-nos runs « PaddleOCR-VL brut » passaient déjà par un dewarping appris, et le
-comparatif avec/sans prétraitement sur ce modèle mesurait **notre**
-prétraitement par-dessus **le leur**. Ça n'invalide pas les chiffres de
-Chandra ni de Hunyuan, mais ça change la lecture de la ligne PaddleOCR-VL.
-Une inspection du pipeline suffit à trancher.
+`use_doc_preprocessor: False` dans les `_res.json`. Contrairement à
+`PaddleOCR()`, qui active UVDoc par défaut, `PaddleOCRVL` n'applique aucun
+redressement. Nos runs « brut » sont bien bruts, le comparatif avec/sans
+prétraitement reste valide.
+
+### 🔎 Nouveau : PaddleOCR-VL segmente les feuilles tout seul
+
+Mesuré le 18 août sur `variants_encombre` : **TEDS 0,677 contre 0,604 pour
+Chandra**, champs 77 % contre 62 %. Le classement s'inverse par rapport aux
+fonds propres, et la raison est structurelle — son détecteur de mise en page
+rend 2,5 tableaux par page, **un par feuille**, chacun proprement structuré.
+
+C'est la meilleure réponse au fond encombré trouvée à ce jour, et elle ne
+passe pas du tout par le recadrage. Suite immédiate, sans GPU :
+`python scripts\sonde_plafond.py --jeu variants_encombre --layout variants_encombre_paddleocr --oracle`
+— les boîtes de mise en page comme candidats de recadrage.
+Détail : [docs/fonds_encombres.md](docs/fonds_encombres.md) §10.
 
 ---
 
