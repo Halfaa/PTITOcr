@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Lê Văn Hòa",
+    "nam_sinh": 1965,
+    "gioi": "Nam",
+    "tuoi": 61,
+    "khoa": "Phục hồi chức năng",
+    "buong": "11",
+    "giuong": "4",
+    "chan_doan": "Chấn thương tủy sống ngực D10 liệt hai chi dưới",
+    "so_y_te": "Sở Y tế TP. Hồ Chí Minh"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "14h30 19/03",
+      "mo_ta": "Sức cơ tứ đầu đùi 3/5, tiếp tục bài tập chủ động có trợ giúp",
+      "ky_thuat": "Kỹ thuật tập ngồi/đứng dậy từ sàn nhà",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "14h00 20/03",
+      "mo_ta": "Còn co cứng cơ nhị đầu, tập kéo giãn thêm",
+      "ky_thuat": "Kỹ thuật tập ngồi/đứng dậy từ sàn nhà",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "14h00 21/03",
+      "mo_ta": "Còn co cứng cơ nhị đầu, tập kéo giãn thêm",
+      "ky_thuat": "Điều trị bằng laser công suất thấp chiếu ngoài",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Đỗ Thị Lan",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "14h00 21/03",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế, cần một người trợ giúp",
+      "ky_thuat": "Kỹ thuật tập mạnh cơ đáy chậu (cơ sàn chậu) bằng dụng cụ",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "14h00 22/03",
+      "mo_ta": "Còn co cứng cơ nhị đầu, tập kéo giãn thêm",
+      "ky_thuat": "Kỹ thuật tư vấn tâm lý cho người bệnh hoặc người nhà",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "14h15 23/03",
+      "mo_ta": "Thăng bằng đứng tĩnh tốt hơn, cần trợ giúp khi đi",
+      "ky_thuat": "Kỹ thuật tập sức bền có gắn theo dõi tim mạch",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "X"
+    }
+  ]
+}

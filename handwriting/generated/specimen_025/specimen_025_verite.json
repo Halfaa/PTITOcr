@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Đỗ Văn Kiên",
+    "nam_sinh": 1991,
+    "gioi": "Nam",
+    "tuoi": 35,
+    "khoa": "Phục hồi chức năng",
+    "buong": "5",
+    "giuong": "2",
+    "chan_doan": "Chấn thương tủy sống ngực D10 liệt hai chi dưới",
+    "so_y_te": "Sở Y tế Đà Nẵng"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "7h30 09/01",
+      "mo_ta": "Cơ lực chi dưới cải thiện, còn hạn chế duỗi gối",
+      "ky_thuat": "Điều trị bằng bồn tắm tương phản nóng - lạnh",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "7h30 09/01",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế, cần một người trợ giúp",
+      "ky_thuat": "Kỹ thuật tập đi trên máy chạy thảm lăn (Treadmill)",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "7h00 09/01",
+      "mo_ta": "Bệnh nhân hợp tác tốt, mức độ đau giảm rõ",
+      "ky_thuat": "Kỹ thuật tập đi trên máy chạy thảm lăn (Treadmill)",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Trần Thị Bích",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "7h00 09/01",
+      "mo_ta": "Khả năng tự xoay trở trên giường tốt hơn",
+      "ky_thuat": "Kỹ thuật điều trị bằng máy ép khí ngắt quãng",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS. Trần Thị Bích",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "7h15 10/01",
+      "mo_ta": "Thăng bằng đứng tĩnh tốt hơn, cần trợ giúp khi đi",
+      "ky_thuat": "Kỹ thuật xoa bóp dẫn lưu",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "7h45 10/01",
+      "mo_ta": "Cơ lực chi dưới cải thiện, còn hạn chế duỗi gối",
+      "ky_thuat": "Kỹ thuật tập đi trên máy chạy thảm lăn (Treadmill)",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đồng ý"
+    }
+  ]
+}

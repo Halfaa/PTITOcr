@@ -64,7 +64,19 @@ def en_data_uri(chemin: Path) -> str:
 
 
 def main():
-    source = ICI / "REPORT.md"
+    # Le nom du rapport est un argument : le projet en a plusieurs, et
+    # dupliquer ce script pour chacun garantirait qu'ils divergent.
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("source", nargs="?", default="REPORT.md",
+                    help="Le .md a convertir, dans demo/. Defaut : REPORT.md")
+    ap.add_argument("--titre", default="Advanced Information Extraction from "
+                                       "Smartphone-Captured Medical Documents")
+    args = ap.parse_args()
+
+    source = ICI / args.source
+    if not source.exists():
+        raise SystemExit(f"{source} introuvable.")
     texte = source.read_text(encoding="utf-8")
 
     corps = markdown.markdown(
@@ -92,7 +104,7 @@ def main():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Advanced Information Extraction from Smartphone-Captured Medical Documents</title>
+<title>{args.titre}</title>
 <style>{STYLE}</style>
 </head>
 <body>
@@ -101,7 +113,7 @@ def main():
 </html>
 """
 
-    sortie = ICI / "REPORT.html"
+    sortie = ICI / (source.stem + ".html")
     sortie.write_text(html, encoding="utf-8")
 
     print(f"{sortie.name} : {sortie.stat().st_size / 1e6:.1f} Mo, "

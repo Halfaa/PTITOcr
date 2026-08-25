@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Phạm Thị Sen",
+    "nam_sinh": 1980,
+    "gioi": "Nữ",
+    "tuoi": 46,
+    "khoa": "Phục hồi chức năng",
+    "buong": "5",
+    "giuong": "6",
+    "chan_doan": "Di chứng tai biến mạch máu não liệt nửa người trái",
+    "so_y_te": "Sở Y tế Hải Phòng"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "8h00 08/09",
+      "mo_ta": "Khả năng tự xoay trở trên giường tốt hơn",
+      "ky_thuat": "Kỹ thuật thư giãn",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "8h45 08/09",
+      "mo_ta": "Thăng bằng đứng tĩnh tốt hơn, cần trợ giúp khi đi",
+      "ky_thuat": "Điều trị bằng bồn xoa bóp thủy lực",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "8h30 09/09",
+      "mo_ta": "Cơ lực chi dưới cải thiện, còn hạn chế duỗi gối",
+      "ky_thuat": "Tập vận động cột sống",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "8h30 10/09",
+      "mo_ta": "Phù nề giảm, tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Tập đi với gậy",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Đỗ Thị Lan",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "8h15 11/09",
+      "mo_ta": "Tầm vận động khớp vai tăng nhẹ so với buổi trước",
+      "ky_thuat": "Kỹ thuật tư vấn tâm lý cho người bệnh hoặc người nhà",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "8h15 11/09",
+      "mo_ta": "Bệnh nhân mệt sau 15 phút tập, giảm cường độ buổi tới",
+      "ky_thuat": "Kỹ thuật tư vấn tâm lý cho người bệnh hoặc người nhà",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Trần Thị Bích",
+      "xac_nhan": "Đã ký"
+    }
+  ]
+}

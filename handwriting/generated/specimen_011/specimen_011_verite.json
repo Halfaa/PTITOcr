@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Lê Văn Hòa",
+    "nam_sinh": 1965,
+    "gioi": "Nam",
+    "tuoi": 61,
+    "khoa": "Phục hồi chức năng",
+    "buong": "10",
+    "giuong": "5",
+    "chan_doan": "Gãy cổ xương đùi phải đã phẫu thuật kết hợp xương",
+    "so_y_te": "Sở Y tế Hải Phòng"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "15h15 14/02",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế, cần một người trợ giúp",
+      "ky_thuat": "Thủy trị liệu có thuốc",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "15h00 15/02",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Kỹ thuật tập ngồi/đứng dậy từ sàn nhà",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "15h30 15/02",
+      "mo_ta": "Bệnh nhân hợp tác tốt, mức độ đau giảm rõ",
+      "ky_thuat": "Tập dưỡng sinh",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "15h30 16/02",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Kỹ thuật tư vấn tâm lý cho người bệnh hoặc người nhà",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "15h00 16/02",
+      "mo_ta": "Cơ lực chi dưới cải thiện, còn hạn chế duỗi gối",
+      "ky_thuat": "Kỹ thuật tư vấn tâm lý cho người bệnh hoặc người nhà",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "15h00 17/02",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Kỹ thuật tập mạnh cơ đáy chậu (cơ sàn chậu) bằng dụng cụ",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "Đồng ý"
+    }
+  ]
+}

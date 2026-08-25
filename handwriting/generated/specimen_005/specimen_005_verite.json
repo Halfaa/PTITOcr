@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Trần Thị Bảy",
+    "nam_sinh": 1972,
+    "gioi": "Nữ",
+    "tuoi": 54,
+    "khoa": "Phục hồi chức năng",
+    "buong": "6",
+    "giuong": "6",
+    "chan_doan": "Di chứng tai biến mạch máu não liệt nửa người trái",
+    "so_y_te": "Sở Y tế Hải Phòng"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "9h45 04/05",
+      "mo_ta": "Phù nề giảm, tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Điều trị bằng bồn xoa bóp thủy lực",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Trần Thị Bích",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "9h15 05/05",
+      "mo_ta": "Còn co cứng cơ nhị đầu, tập kéo giãn thêm",
+      "ky_thuat": "Kỹ thuật tập ngồi/đứng dậy từ sàn nhà",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "9h30 05/05",
+      "mo_ta": "Dáng đi cải thiện, giảm lệch trọng tâm sang bên lành",
+      "ky_thuat": "Thủy trị liệu có thuốc",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "9h15 05/05",
+      "mo_ta": "Bệnh nhân mệt sau 15 phút tập, giảm cường độ buổi tới",
+      "ky_thuat": "Kỹ thuật tư vấn tâm lý cho người bệnh hoặc người nhà",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "9h00 05/05",
+      "mo_ta": "Bệnh nhân hợp tác tốt, mức độ đau giảm rõ",
+      "ky_thuat": "Tập với máy tập thăng bằng",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "9h15 06/05",
+      "mo_ta": "Còn co cứng cơ nhị đầu, tập kéo giãn thêm",
+      "ky_thuat": "Tập vận động cột sống",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "Đồng ý"
+    }
+  ]
+}

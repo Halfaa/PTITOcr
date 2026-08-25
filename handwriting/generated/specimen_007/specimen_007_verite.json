@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Nguyễn Văn Thành",
+    "nam_sinh": 1958,
+    "gioi": "Nam",
+    "tuoi": 68,
+    "khoa": "Phục hồi chức năng",
+    "buong": "10",
+    "giuong": "5",
+    "chan_doan": "Chấn thương tủy sống ngực D10 liệt hai chi dưới",
+    "so_y_te": "Sở Y tế TP. Hồ Chí Minh"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "16h00 11/07",
+      "mo_ta": "Phù nề giảm, tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Tập vận động cột sống",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h30 11/07",
+      "mo_ta": "Phù nề giảm, tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Kỹ thuật tư vấn tâm lý cho người bệnh hoặc người nhà",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h00 12/07",
+      "mo_ta": "Cơ lực chi dưới cải thiện, còn hạn chế duỗi gối",
+      "ky_thuat": "Tập vận động cột sống",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h45 13/07",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Tập vận động cột sống",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h30 13/07",
+      "mo_ta": "Tầm vận động khớp vai tăng nhẹ so với buổi trước",
+      "ky_thuat": "Kỹ thuật kích thích điện chức năng (FES)",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h15 13/07",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Kỹ thuật kích thích điện chức năng (FES)",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "X"
+    }
+  ]
+}

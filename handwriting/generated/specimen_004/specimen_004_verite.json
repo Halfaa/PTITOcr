@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Phạm Thị Sen",
+    "nam_sinh": 1980,
+    "gioi": "Nữ",
+    "tuoi": 46,
+    "khoa": "Phục hồi chức năng",
+    "buong": "1",
+    "giuong": "3",
+    "chan_doan": "Chấn thương tủy sống ngực D10 liệt hai chi dưới",
+    "so_y_te": "Sở Y tế Hà Nội"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "16h00 03/05",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Kỹ thuật tập mạnh cơ với máy Isokinetic",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h30 04/05",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế, cần một người trợ giúp",
+      "ky_thuat": "Kỹ thuật tập mạnh cơ với máy Isokinetic",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "16h45 05/05",
+      "mo_ta": "Dáng đi cải thiện, giảm lệch trọng tâm sang bên lành",
+      "ky_thuat": "Kỹ thuật điều trị bằng máy ép khí ngắt quãng",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h00 06/05",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Kỹ thuật kích thích điện chức năng (FES)",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h45 07/05",
+      "mo_ta": "Còn co cứng cơ nhị đầu, tập kéo giãn thêm",
+      "ky_thuat": "Tập với máy tập thăng bằng",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Đỗ Thị Lan",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h00 08/05",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế, cần một người trợ giúp",
+      "ky_thuat": "Điều trị bằng bồn tắm tương phản nóng - lạnh",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "X"
+    }
+  ]
+}

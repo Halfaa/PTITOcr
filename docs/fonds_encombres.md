@@ -836,3 +836,486 @@ utilisé.
 nécessité.** Elle règlerait le recadrage, mais on vient de montrer que le
 recadrage n'est pas le chemin critique. À arbitrer avec l'encadrante, avec
 cette fois un vrai argument pour ne PAS la faire.
+
+---
+
+## 12. Deux tentatives de plus pour approcher l'oracle (18 août)
+
+Objectif : combler l'écart 0,59 → 0,85. Deux idées, toutes deux fondées sur ce
+que PaddleOCR-VL apporte de neuf.
+
+### GrabCut ensemencé par les parasites — 0,47
+
+L'idée était bonne et reste la meilleure qu'on ait eue. Toutes les tentatives
+précédentes cherchaient la feuille avec un indice **positif** ; ici, pour la
+première fois, on avait des marqueurs de **fond explicites** — les boîtes de
+mise en page des feuilles parasites. On dit à GrabCut « ceci est dedans, cela
+est dehors », il apprend les deux modèles et coupe au meilleur endroit.
+
+Elle échoue pour une raison qu'il fallait voir avant de coder : **GrabCut
+modélise des couleurs**, et la cible et les parasites ont exactement la même.
+Marquer un parasite comme fond apprend au modèle que « le blanc est du fond »,
+et il mange la cible. D'où des pages à 0,05 à côté de pages à 0,81.
+
+Ce qui sépare deux feuilles n'est pas une couleur, c'est une **arête** — l'ombre
+portée. Aucun segmenteur colorimétrique ne la verra.
+
+### Rectangle tourné autour du texte de la cible — 0,47
+
+Les boîtes de mise en page sont alignées sur les axes, ce qui déborde
+largement sur une feuille de travers. En croisant avec les mots orientés du
+détecteur morphologique, on obtient le rectangle **tourné** du contenu de la
+bonne feuille, puis on l'élargit d'une marge.
+
+Balayage de la marge, de 1,0 à 2,2 :
+
+| | IoU | exploitables |
+|---|---|---|
+| meilleure marge FIXE (1,3) | 0,47 | 7/25 |
+| meilleure marge **par page** (oracle) | 0,51 | 9/25 |
+
+**Même la marge parfaite plafonne à 0,51.** Ni la marge, ni la rotation ne sont
+donc en cause — le filtre d'orientation dominante, ajouté pour écarter les mots
+des feuilles voisines, ne gagne qu'une page. Ce qui manque est ailleurs.
+
+### Bilan : sept familles, un seul plafond
+
+![Plafond sur fonds encombrés](../demo/figures/13_plafond_fonds_encombres.png)
+
+| famille | plafond |
+|---|---|
+| seuillages + GrabCut (production) | 0,52 |
+| SAM / FastSAM | 0,56 |
+| blocs de texte, morphologie | 0,33 |
+| blocs de texte, DBNet appris | 0,43 |
+| mise en page PaddleOCR-VL | 0,49 |
+| GrabCut ensemencé par les parasites | 0,47 |
+| rectangle tourné autour du texte | 0,47 |
+| **toutes unions confondues** | **0,59** |
+| *témoin ORACLE* | *0,85* |
+
+Sept familles indépendantes — photométrie, segmentation générique d'objets,
+morphologie de texte, détection de texte apprise, détection de mise en page,
+segmentation ensemencée, ajustement géométrique — et pas une ne franchit 0,60
+quand 0,85 est démontré atteignable. **Ce n'est plus une série d'échecs, c'est
+une propriété du problème** : sans modèle entraîné à reconnaître *un document
+parmi des documents*, l'information n'est pas extractible de ces images.
+
+### Huitième tentative : chercher les arêtes — 0,34, mais un enseignement
+
+Les sept méthodes précédentes segmentent par la **couleur** (seuillages,
+GrabCut) ou par le **contenu** (blocs de texte, mise en page). Aucune ne
+cherchait le bord de la feuille — alors que c'est le seul contraste réel entre
+deux papiers blancs superposés.
+
+Méthode : on tourne l'image de −θ (θ donné par les mots) pour que les bords de
+la feuille deviennent horizontaux et verticaux, puis on cherche le pic de
+gradient intégré par ligne et par colonne, de part et d'autre du texte. Une
+arête droite devient alors un maximum très net, parce qu'il somme toute la
+longueur du bord.
+
+Résultat global : **0,34**, moins bon que tout le reste. Mais la moyenne cache
+l'essentiel :
+
+| page | texte × 1,3 | + recherche d'arêtes |
+|---|---|---|
+| 22 | 0,75 | **0,91** |
+| 11 | 0,69 | **0,81** |
+| 7 | 0,59 | **0,71** |
+| 12 | 0,71 | 0,48 |
+| 21 | 0,86 | 0,69 |
+
+**Le raffinement de frontière fonctionne — quand la graine est bonne.** Sur la
+page 22 il atteint 0,91, au-dessus même du témoin oracle moyen. Ce qui échoue
+n'est ni la représentation, ni la recherche du bord : c'est le fait de désigner
+*la bonne feuille* et *l'étendue de son texte*.
+
+C'est la même conclusion que les sept fois précédentes, atteinte par un
+huitième chemin. Le problème n'a jamais été de délimiter une feuille dont on
+sait qu'elle est là — il est de savoir **laquelle**.
+
+---
+
+## 13. État de l'art : le problème a un nom, et la littérature dit qu'on le formulait mal
+
+Recherche faite le 18 août. Le problème s'appelle **multi-document
+localization in unconstrained environments**, et il est reconnu comme
+peu traité : *« les images de documents prises au smartphone en scène
+naturelle contiennent inévitablement plusieurs documents, mais les méthodes
+antérieures s'intéressent rarement à la localisation multi-documents »*
+(Tan et al., PRCV 2025).
+
+### Deux travaux directement sur notre problème
+
+**Pan & Zhu, 2021** — *Multi-document detection via corner localization and
+association*, Neurocomputing 466, p. 37–48.
+
+**Tan, Xu, Jing, Cheng & Hu, PRCV 2025** — *Bottom-Up Multi-document
+Localization Method in Unconstrained Environments*. Code et **jeu de données
+de 24 738 images** publics.
+
+### Le point qui compte : ce n'est pas de la segmentation
+
+Les deux articles emploient la même formulation, et ce **n'est aucune des
+huit que nous avons essayées**. Ils ne segmentent pas de région : ils
+**détectent les coins** et les **regroupent en instances de document** par
+*associative embedding* — une technique empruntée à l'estimation de pose
+humaine bottom-up (HigherHRNet, Newell et al.), où il faut justement
+attribuer des articulations à des personnes différentes dans une foule.
+
+C'est exactement la reformulation à laquelle nos mesures avaient abouti :
+**le problème n'est pas de délimiter une feuille, il est de savoir laquelle**.
+La littérature le confirme, et lui donne un cadre — celui du regroupement
+d'instances, pas celui de la segmentation sémantique.
+
+Nos huit tentatives échouent donc pour une raison de fond : elles sont toutes
+des variantes de « trouver la région du document », alors que la bonne
+question est « à quelle feuille appartient ce coin ». C'est une information
+qu'aucune méthode non apprise ne peut produire, ce qui explique pourquoi le
+plafond ne bouge pas d'une famille à l'autre.
+
+### Pour le prototype mobile : LDRNet
+
+**LDRNet** (ECML PKDD 2022) localise **un** document en temps réel sur
+téléphone — 790 images/seconde, trois branches (coins, bords, classification),
+implémentations TensorFlow et PyTorch publiques. Ne traite pas le
+multi-documents, mais c'est la référence pour la partie capture de la PWA, et
+la structure « coins + bords » est celle que reprend le multi-documents.
+
+### Ce que ça change pour nous
+
+**On n'est pas passés à côté d'une astuce.** Le problème est ouvert, récent, et
+la seule voie publiée est apprise. Le résultat négatif des huit familles est
+donc conforme à l'état de l'art, pas un aveu d'inexpérience.
+
+**Le jeu de données de 24 738 images change l'arbitrage.** L'argument « la
+segmentation apprise coûte deux semaines » supposait qu'il fallait tout
+construire ; il existe un jeu public, du code, et une architecture éprouvée.
+Nos masques UV deviennent un complément — pour affiner sur nos factures — et
+non le point de départ.
+
+**Réserves.** Le dépôt PRCV est très frais : quatre commits, aucune étoile,
+README minimal, code dérivé de HigherHRNet. Ce n'est pas une brique
+prête à l'emploi. Et le jeu de données est distribué par un lien Google Drive,
+ce qui n'offre aucune garantie de pérennité — à récupérer tôt si on s'engage.
+
+### Sources
+
+- [Bottom-Up Multi-document Localization Method in Unconstrained Environments (PRCV 2025)](https://link.springer.com/chapter/10.1007/978-981-95-5676-2_7)
+- [Dépôt et jeu de données](https://github.com/TanQiuman/Bottom-Up-Multi-document-Localization)
+- [Multi-document detection via corner localization and association (Neurocomputing 2021)](https://www.sciencedirect.com/science/article/abs/pii/S0925231221013916)
+- [LDRNet: Enabling Real-time Document Localization on Mobile Devices](https://arxiv.org/abs/2206.02136)
+- [LDRNet, implémentation d'origine](https://github.com/niuwagege/LDRNet) · [portage PyTorch](https://github.com/pstwh/LDRNet-pytorch)
+
+---
+
+## 14. Neuvième tentative — et enfin l'explication du plafond
+
+Après la recherche bibliographique, une évidence : les huit tentatives
+cherchaient une **région**, les deux articles publiés cherchent des **coins**
+puis les associent. J'ai donc implémenté l'analogue non appris de leur
+méthode — segments de droite (Hough), deux familles perpendiculaires amorcées
+par l'inclinaison du texte, quadrilatères formés par les intersections, et
+association par les mots de la cible.
+
+**Résultat : 0,00 sur les 25 pages.** Pas un mauvais score — aucun candidat du
+tout.
+
+### Pourquoi : nos feuilles ne sont pas des quadrilatères
+
+Diagnostic sur une page : 8 segments détectés pour une longueur minimale de
+206 px. Les bords de la feuille ne sont pas vus comme des droites. Vérifié sur
+la **vérité terrain** — écart maximal du contour réel à son quadrilatère
+englobant, en pourcentage de la diagonale :
+
+| | écart max | écart médian |
+|---|---|---|
+| moyenne sur 12 pages | **7,6 %** | ~2 % |
+
+Sur une page de 900 px, 7,6 % font 110 px d'écart. Un détecteur de segments
+ne peut rien accrocher là-dessus. **Nos rendus doc3D sont si gondolés que la
+feuille n'est plus un quadrilatère**, ce qui invalide l'hypothèse de base de
+toute la famille « coins + association », publiée ou non.
+
+C'est aussi ce qui explique le témoin ORACLE à 0,85 et non 0,95 : un rectangle
+tourné ne peut pas épouser un bord courbe.
+
+### Deux façons mesurées dont notre jeu de test est plus dur que la réalité
+
+À dire en réunion, parce que ça change la portée du résultat négatif.
+
+**Pas de profondeur de champ.** Les feuilles parasites sont aussi nettes que
+la cible. Sur une vraie photo, prise à courte distance, elles seraient floues —
+un indice très discriminant qu'aucune des neuf méthodes n'a pu exploiter.
+
+**Courbure extrême.** 7,6 % de la diagonale. Les jeux des articles publiés
+(SmartDoc, et les 24 738 images de Tan et al.) sont des photographies de
+documents réels, largement plus plats. Notre jeu combine donc *encombrement*
+et *déformation forte*, alors que la littérature traite l'encombrement seul.
+
+**Conséquence.** Le plafond de 0,59 mesure la difficulté de **deux** problèmes
+superposés. Il serait honnête de les séparer — un jeu encombré à feuilles
+plates dirait lequel des deux domine, et c'est un rendu Blender de quelques
+heures (`-Parasites -1` sur `tex/multipage_variants` sans maillage courbe).
+Tant que ce n'est pas fait, on ne peut pas affirmer que l'encombrement seul
+est hors de portée des méthodes classiques.
+
+---
+
+## 15. Le seuil de 0,70 est-il justifié ? (mesuré, 18 août)
+
+`SEUIL_EXPLOITABLE = 0.70` traverse tous les scripts, et la phrase « 0 page
+sur 25 exploitables » en dépend entièrement. Ce nombre venait d'un
+raisonnement plausible — « en dessous, le recadrage mord sur l'en-tête » — et
+n'avait jamais été confronté à ce qui compte : **la lecture**.
+
+`scripts/eval_seuil_iou.py` le confronte. Pour chaque page des jeux déformé et
+encombré : l'IoU du recadrage d'un côté, et de l'autre le TEDS de la lecture
+prétraitée **contre la lecture de la même page à plat** (`variants_chandra`,
+0,981 contre la vérité terrain — à ce niveau, la lecture à plat *est* la
+vérité de la page). 48 pages.
+
+| tranche d'IoU | pages | TEDS moyen | TEDS médian |
+|---|---|---|---|
+| 0,2 – 0,4 | 3 | 0,15 | 0,00 |
+| 0,4 – 0,5 | 7 | 0,71 | 0,86 |
+| 0,5 – 0,6 | 6 | 0,30 | 0,00 |
+| 0,6 – 0,7 | 5 | 0,35 | 0,07 |
+| **0,7 – 0,8** | 3 | **0,99** | 1,00 |
+| **0,8 – 1,0** | 18 | **0,91** | 0,98 |
+
+Corrélation IoU / TEDS : **r = +0,53**.
+
+### Le seuil tient, mais il est conservateur
+
+En cherchant le seuil qui prédit le mieux « la lecture sera correcte »
+(TEDS ≥ 0,70), plusieurs valeurs sont à égalité à **77 % d'exactitude** —
+0,40 et l'intervalle 0,65–0,75. Ce qui les distingue est le type d'erreur :
+
+| seuil | vrais positifs | faux positifs | faux négatifs |
+|---|---|---|---|
+| 0,40 | 29 | **10** | 1 |
+| **0,70** | 20 | **1** | 10 |
+
+À 0,70 la chaîne ne laisse passer **qu'un seul** mauvais recadrage, au prix de
+10 recadrages rejetés qui auraient lu correctement. C'est le bon arbitrage
+pour ce qu'on en fait : un faux positif — déclarer exploitable un recadrage
+qui lira de travers — est exactement le mode d'échec silencieux qu'on traque
+depuis le début, alors qu'un faux négatif se solde par une lecture brute, qui
+vaut 0,604 de TEDS.
+
+**Le 0,70 est donc validé, avec une nuance à énoncer** : c'est un seuil
+prudent, pas un point de rupture. « 0 page sur 25 exploitables » veut dire
+« aucune ne franchit une barre volontairement exigeante », pas « aucune n'est
+lisible ».
+
+### Ce que la mesure révèle en plus
+
+**La relation est presque binaire.** Au-dessus de 0,7 le TEDS vaut 0,91 à
+0,99 ; en dessous, la médiane est à 0,00 dans trois tranches sur quatre. Ce
+n'est pas une dégradation progressive : soit le recadrage tient la bonne
+feuille et la lecture est excellente, soit il part ailleurs et il ne reste
+rien. Cohérent avec ce qu'on sait — l'échec n'est pas « un peu de contenu
+coupé », c'est « le mauvais document ».
+
+**Et la relation n'est pas monotone au milieu.** La tranche 0,4–0,5 lit mieux
+(0,71) que 0,5–0,6 (0,30) et 0,6–0,7 (0,35). Sur des effectifs de 5 à 7 pages
+c'est probablement du bruit, mais ça rappelle que l'IoU n'est qu'un
+intermédiaire : ce qui décide vraiment n'est pas la surface commune, c'est de
+savoir si l'en-tête et le tableau de la BONNE feuille sont dedans.
+
+---
+
+## 16. Le bord est-il seulement visible ? (mesuré, 25 août)
+
+Onze tentatives de recadrage, un plafond d'union à 0,59 contre 0,85 pour
+l'oracle. Avant d'en écrire une douzième, une question qu'aucune ne posait :
+**l'information cherchée existe-t-elle dans l'image ?**
+
+On peut y répondre exactement, parce qu'on possède le masque UV au pixel près.
+On sait *où* est le bord ; il suffit d'aller mesurer ce qu'on y trouve.
+
+    python scripts/mesure_arete.py --figure
+
+### D'abord : où meurt la détection de coins ?
+
+`essai_quadrilateres.py` rendait 0,00 sur 25 pages, mais `quadrilateres()` a
+cinq sorties anticipées, et un zéro global ne dit pas laquelle. Instrumenté :
+
+| étage | pages |
+|---|---|
+| pas assez de segments | 6 |
+| pas deux familles d'orientation | 15 |
+| le bord n'est pas au-delà du texte | 4 |
+| **association refusée** | **0** |
+
+L'association — le cœur de la méthode publiée, la partie qui répond à
+« laquelle des feuilles » — **n'est jamais atteinte**. Ça meurt bien avant, et
+avec un motif net : une famille d'orientation pleine, la perpendiculaire vide
+(u11/v0, u0/v21, u8/v1).
+
+### Le contraste : le bord ne ressort pas
+
+Une moyenne de gradient contre une autre ne suffirait pas — le « fond » mêle
+du papier lisse (gradient nul) et des arêtes parasites (gradient fort), et la
+moyenne cache cette bimodalité. On mesure donc ce qu'un détecteur subit
+vraiment : le seuil qui retient la moitié des pixels du vrai bord, puis la
+part des pixels retenus qui appartiennent effectivement au bord.
+
+| | valeur |
+|---|---|
+| précision à recall 50 % | **2,2 %** |
+| précision d'un tirage au hasard | 1,5 % |
+| gain | **×1,50** |
+
+Pour un point d'arête utile, un détecteur en encaisse 46 d'inutiles. Aucun
+réglage de Canny ou de Hough ne renverse un tel rapport.
+
+### La droiture : mon hypothèse était fausse
+
+J'avais écrit que Hough échouait parce que « nos feuilles ne sont pas des
+quadrilatères », écart mesuré 7,6 % de la diagonale. Vérification :
+
+| référence | % diag. image | % diag. feuille |
+|---|---|---|
+| quadrilatère **englobant** (`minAreaRect`) | 5,09 | **7,44** |
+| quadrilatère **ajusté** (`approxPolyDP`) | 2,87 | 4,17 |
+
+Le 7,6 % était exact — mais il mesurait l'écart à l'englobant, qui doit
+toucher les extrêmes et gonfle donc mécaniquement dès que la feuille gondole.
+Il ne dit rien sur la rectitude *locale* des bords, seule chose qui intéresse
+Hough. Mesurée directement, la plus longue portion droite à 2 px près fait
+**100 % du grand côté de la feuille**.
+
+Les bords sont droits. L'ancien chiffre était bon ; c'est son interprétation
+qui ne l'était pas.
+
+La géométrie s'explique : la feuille doc3D est enroulée **cylindriquement**,
+donc les deux bords parallèles à l'axe (les génératrices) restent rectilignes
+tandis que les deux autres s'arquent. C'est exactement le déséquilibre des
+familles d'orientation observé plus haut.
+
+### La mesure qui tranche
+
+Parmi les segments que Hough rend effectivement, combien tombent sur le vrai
+contour (extrémités à moins de 6 px) ?
+
+| `minLineLength` | segments | sur le bord |
+|---|---|---|
+| 0,35 × diag | 428 | 0 |
+| 0,20 × diag | 2 140 | 1 |
+| 0,10 × diag | 9 853 | 2 |
+| **total** | **12 421** | **3 (0,02 %)** |
+
+![Le bord invisible](../demo/figures/16_bord_invisible.png)
+
+La figure suffit : tout le rouge est sur les lignes de tableau et le texte,
+jamais sur le vert.
+
+### Conclusion, et ce qu'elle change
+
+Le bord de la feuille cible est **droit mais invisible** : blanc sur blanc,
+sans profondeur de champ ni ombre portée pour le détacher. Aucune méthode
+fondée sur les arêtes — Hough, Canny, détection de coins, ou un détecteur
+appris sur ces données — ne peut le localiser, quel que soit son réglage,
+parce que le signal n'est pas dans l'image.
+
+Ça referme la boucle avec le §14. Les méthodes publiées (Pan & Zhu 2021 ;
+Tan et al., PRCV 2025) opèrent sur des **photos**, où le flou d'arrière-plan et
+l'ombre portée donnent au contour un contraste réel. La profondeur de champ ne
+*module* donc pas le signal de bord : **elle le crée**. Un rendu doc3D sans
+ouverture simulée retire l'indice principal.
+
+Conséquence directe : notre plafond de 0,59 est pessimiste pour le monde réel,
+et la priorité n'est plus une douzième méthode de recadrage mais **un jeu de
+test rendu avec profondeur de champ**. Tant qu'on ne l'a pas, on ne peut pas
+dire si le recadrage sur fond encombré est un problème difficile ou un
+artefact de notre benchmark.
+
+---
+
+## 17. Flouter le fond — et ce qu'on a trouvé à la place (25 août)
+
+Idée de Halfaa : puisque la profondeur de champ crée le signal de bord (§16),
+fabriquons-la. Image de base → flouter le fond → recadrer → extraire.
+
+    python scripts/recadrage_par_contenu.py --flou
+
+### Le piège, et sa sortie
+
+Pour flouter le fond il faut déjà savoir où est la feuille : **circulaire**.
+L'essai qui donnait 0,40 → 0,64 floutait d'après le masque UV, c'est-à-dire
+d'après la réponse.
+
+On en sort en floutant d'après le **tableau** et non d'après le **bord** : les
+boîtes de mise en page de PaddleOCR-VL localisent le contenu sans rien savoir
+de la vérité terrain. Le contenu, on sait le trouver ; c'est le contour qu'on
+ne sait pas.
+
+### Ce que ça donne
+
+| variante | IoU | exploitables |
+|---|---|---|
+| production (aucun traitement) | 0,35 | 1/25 |
+| flou hors boîte ×1,6, puis détection | 0,55 | 4/25 |
+| flou hors boîte ×2,5, puis détection | 0,39 | 1/25 |
+| flou des seules boîtes rivales | 0,36 | 0/25 |
+| **boîte dilatée ×1,2, sans rien d'autre** | **0,578** | **12/25** |
+
+Le choix du tableau n'est pas le goulot : « le plus grand » prend le bon
+23 fois sur 25, et fait même mieux qu'une sélection ORACLE (0,55 contre 0,52).
+
+### Le contrôle de vacuité
+
+Resserrer la zone nette améliorait l'IoU — mais il y a une façon d'améliorer
+l'IoU qui n'apprend rien. Si le détecteur suit la frontière du flou, son
+quadrilatère *est* la boîte dilatée, et on a seulement reparamétré « boîte de
+texte × f ». On compare donc le quadrilatère détecté à la boîte seule :
+
+| facteur | détecté | boîte seule | écart |
+|---|---|---|---|
+| ×1,1 | 0,54 | 0,55 | −0,01 |
+| ×1,2 | 0,56 | 0,58 | −0,02 |
+| ×1,3 | 0,55 | 0,57 | −0,02 |
+| ×1,4 | 0,59 | 0,54 | **+0,04** |
+
+En dessous de 1,4 la détection est **creuse**. Le flou n'apporte réellement
+que +0,04, et à un seul réglage.
+
+### Surajustement
+
+Le facteur 1,2 a été choisi en regardant le jeu de test. Validation croisée à
+deux plis, 200 partitions :
+
+| | génie | croisée | surajustement |
+|---|---|---|---|
+| boîte dilatée seule | 0,578 | **0,576** | +0,002 |
+| détecté après flou | 0,586 | 0,558 | +0,028 |
+
+La boîte ne surajuste pas — entre 1,1 et 1,3 le facteur n'a presque pas
+d'importance (0,55 / 0,58 / 0,57). La variante avec flou, si.
+
+### Conclusion
+
+L'idée menait quelque part, mais **pas par le mécanisme attendu**. Ce n'est
+pas la profondeur de champ qui aide ici, c'est le fait d'**arrêter de chercher
+la feuille et de recadrer sur le contenu**. Un rectangle grossier autour du
+bon tableau bat les onze générateurs construits jusqu'ici (0,52 au mieux) et
+atteint à lui seul le plafond de leur union (0,59).
+
+Ça se relie au §16 sans le contredire : le bord est invisible, donc toute
+méthode qui le cherche échoue — y compris après floutage. Le contenu, lui,
+est parfaitement visible. La bonne réponse à « où est la feuille ? » n'est pas
+une meilleure détection de contour, c'est de ne plus poser la question.
+
+**Réserves.** Le gain porte sur le *recadrage*, dont le §2 a montré qu'il
+n'est pas le chemin critique — ne pas recadrer du tout donne 0,604 de TEDS
+avec Chandra et 0,677 avec PaddleOCR-VL. La règle vaut donc pour un lecteur
+qui exige une page propre, pas comme fin en soi. Et 0,578 reste loin de
+l'ORACLE à 0,85 : la boîte est alignée sur les axes, alors que les feuilles
+sont tournées.
+
+**Le pas suivant** est de mesurer cette règle en **TEDS de bout en bout** et
+non en IoU. 12 pages sur 25 au-dessus du seuil au lieu de 1 devrait se voir à
+la lecture ; le §15 a établi que la relation IoU / lecture est presque binaire
+autour de 0,70.

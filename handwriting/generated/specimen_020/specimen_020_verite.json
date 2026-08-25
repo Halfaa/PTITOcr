@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Lê Văn Hòa",
+    "nam_sinh": 1965,
+    "gioi": "Nam",
+    "tuoi": 61,
+    "khoa": "Phục hồi chức năng",
+    "buong": "6",
+    "giuong": "1",
+    "chan_doan": "Chấn thương tủy sống ngực D10 liệt hai chi dưới",
+    "so_y_te": "Sở Y tế Đà Nẵng"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "9h30 05/08",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế, cần một người trợ giúp",
+      "ky_thuat": "Tập vận động cột sống",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "9h30 06/08",
+      "mo_ta": "Sức cơ tứ đầu đùi 3/5, tiếp tục bài tập chủ động có trợ giúp",
+      "ky_thuat": "Kỹ thuật kiểm soát tư thế (ngồi, bò, đứng, đi)",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "9h45 07/08",
+      "mo_ta": "Dáng đi cải thiện, giảm lệch trọng tâm sang bên lành",
+      "ky_thuat": "Thủy trị liệu có thuốc",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Trần Thị Bích",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "9h30 08/08",
+      "mo_ta": "Thăng bằng đứng tĩnh tốt hơn, cần trợ giúp khi đi",
+      "ky_thuat": "Kỹ thuật tập mạnh cơ với máy Isokinetic",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "9h30 09/08",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế, cần một người trợ giúp",
+      "ky_thuat": "Điều trị chườm ngải cứu",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS. Trần Thị Bích",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "9h00 10/08",
+      "mo_ta": "Còn co cứng cơ nhị đầu, tập kéo giãn thêm",
+      "ky_thuat": "Tập vận động cột sống",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "X"
+    }
+  ]
+}

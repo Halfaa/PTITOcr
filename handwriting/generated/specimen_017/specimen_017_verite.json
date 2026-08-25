@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Hoàng Thị Yến",
+    "nam_sinh": 1969,
+    "gioi": "Nữ",
+    "tuoi": 57,
+    "khoa": "Phục hồi chức năng",
+    "buong": "12",
+    "giuong": "5",
+    "chan_doan": "Chấn thương tủy sống ngực D10 liệt hai chi dưới",
+    "so_y_te": "Bộ Y tế"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "8h30 15/06",
+      "mo_ta": "Phù nề giảm, tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Kỹ thuật xoa bóp bằng máy",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "8h00 15/06",
+      "mo_ta": "Còn co cứng cơ nhị đầu, tập kéo giãn thêm",
+      "ky_thuat": "Kỹ thuật tập ngồi/đứng dậy từ sàn nhà",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "8h15 16/06",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Tập đi với gậy",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Đỗ Thị Lan",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "8h15 17/06",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Kỹ thuật tập vận động trên máy chức năng",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "8h30 18/06",
+      "mo_ta": "Bệnh nhân hợp tác tốt, mức độ đau giảm rõ",
+      "ky_thuat": "Kỹ thuật tập sức bền có gắn theo dõi tim mạch",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "8h45 19/06",
+      "mo_ta": "Bệnh nhân hợp tác tốt, mức độ đau giảm rõ",
+      "ky_thuat": "Điều trị bằng điện vi dòng",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "X"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Hoàng Thị Yến",
+    "nam_sinh": 1969,
+    "gioi": "Nữ",
+    "tuoi": 57,
+    "khoa": "Phục hồi chức năng",
+    "buong": "2",
+    "giuong": "2",
+    "chan_doan": "Thoái hóa cột sống thắt lưng, đau thần kinh tọa",
+    "so_y_te": "Sở Y tế Đà Nẵng"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "16h15 02/08",
+      "mo_ta": "Dáng đi cải thiện, giảm lệch trọng tâm sang bên lành",
+      "ky_thuat": "Kỹ thuật điều trị bằng máy ép khí ngắt quãng",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Đỗ Thị Lan",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h00 03/08",
+      "mo_ta": "Khả năng tự xoay trở trên giường tốt hơn",
+      "ky_thuat": "Kỹ thuật kiểm soát tư thế (ngồi, bò, đứng, đi)",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "16h45 04/08",
+      "mo_ta": "Sức cơ tứ đầu đùi 3/5, tiếp tục bài tập chủ động có trợ giúp",
+      "ky_thuat": "Kỹ thuật tập sức bền có gắn theo dõi tim mạch",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Phạm Thị Dung",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h30 04/08",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế, cần một người trợ giúp",
+      "ky_thuat": "Điều trị chườm ngải cứu",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h00 05/08",
+      "mo_ta": "Còn co cứng cơ nhị đầu, tập kéo giãn thêm",
+      "ky_thuat": "Kỹ thuật tập thở với dụng cụ",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "16h45 05/08",
+      "mo_ta": "Bệnh nhân hợp tác tốt, mức độ đau giảm rõ",
+      "ky_thuat": "Kỹ thuật tập vận động trên máy chức năng",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "X"
+    }
+  ]
+}

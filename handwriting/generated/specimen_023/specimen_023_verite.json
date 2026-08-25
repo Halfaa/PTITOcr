@@ -1,0 +1,69 @@
+{
+  "patient": {
+    "ten": "Lê Văn Hòa",
+    "nam_sinh": 1965,
+    "gioi": "Nam",
+    "tuoi": 61,
+    "khoa": "Phục hồi chức năng",
+    "buong": "6",
+    "giuong": "6",
+    "chan_doan": "Viêm quanh khớp vai phải",
+    "so_y_te": "Sở Y tế TP. Hồ Chí Minh"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "16h15 15/10",
+      "mo_ta": "Khả năng tự xoay trở trên giường tốt hơn",
+      "ky_thuat": "Kỹ thuật xoa bóp bằng máy",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h15 15/10",
+      "mo_ta": "Dáng đi cải thiện, giảm lệch trọng tâm sang bên lành",
+      "ky_thuat": "Thủy trị liệu có thuốc",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Nguyễn Văn An",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h45 15/10",
+      "mo_ta": "Sức cơ tứ đầu đùi 3/5, tiếp tục bài tập chủ động có trợ giúp",
+      "ky_thuat": "Kỹ thuật tập mạnh cơ đáy chậu (cơ sàn chậu) bằng dụng cụ",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS. Hoàng Văn Đức",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h15 15/10",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Kỹ thuật tập thở với dụng cụ",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Trần Thị Bích",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h45 15/10",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện, chưa đau khi vận động",
+      "ky_thuat": "Tập đi với gậy",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS. Trần Thị Bích",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h30 15/10",
+      "mo_ta": "Dáng đi cải thiện, giảm lệch trọng tâm sang bên lành",
+      "ky_thuat": "Kỹ thuật xoa bóp bằng máy",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS. Lê Văn Cường",
+      "xac_nhan": "Đã ký"
+    }
+  ]
+}
