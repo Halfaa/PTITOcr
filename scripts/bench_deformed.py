@@ -141,6 +141,17 @@ def _hunyuan_predict(processor, model, image_path: Path,
 
 GLM_MODEL_ID = "zai-org/GLM-OCR"
 
+# Trouvé le 25 août sur le banc manuscrit : sans redimensionnement, une image
+# de 1654x2339 (nos specimens, ~200 dpi) fait tenter au processeur une
+# allocation de 23,43 GiB -- OOM systématique, 30/30 sur les deux jeux
+# manuscrits VN et EN, jamais aléatoire. Les runs GLM précédents qui
+# marchaient (jeu factures) lisaient des images de 900x1200, 3,6x moins de
+# pixels : GLM-OCR n'a ni tuilage ni sous-échantillonnage intégré côté
+# encodeur visuel, contrairement à Hunyuan et Chandra qui encaissent nos
+# images sans y toucher. 1200 px de grand côté reprend exactement l'échelle
+# du jeu où GLM a déjà tourné sans erreur.
+GLM_MAX_LONG_SIDE = 1200
+
 # GLM-OCR n'accepte que trois amorces, et pas de consigne libre : sa doc parle
 # de "prompt limited". « Text Recognition: » rend la page entière en Markdown,
 # tableaux compris -- c'est ce qu'il nous faut, puisque `invoice_fields` lit
@@ -188,22 +199,46 @@ def _load_glm():
 
 def _glm_predict(processor, model, image_path: Path,
                  prompt_key: str = "document") -> str:
-    import torch
+    import tempfile
 
-    messages = [{"role": "user", "content": [
-        {"type": "image", "url": str(image_path)},
-        {"type": "text", "text": GLM_PROMPTS[prompt_key]},
-    ]}]
-    inputs = processor.apply_chat_template(
-        messages, tokenize=True, add_generation_prompt=True,
-        return_dict=True, return_tensors="pt").to(model.device)
-    # token_type_ids : accepté par le processeur, refusé par generate(). C'est
-    # le seul écart entre l'exemple de la carte modèle et un appel standard.
-    inputs.pop("token_type_ids", None)
-    with torch.no_grad():
-        generated = model.generate(**inputs, max_new_tokens=8192, do_sample=False)
-    trimmed = generated[0][inputs["input_ids"].shape[1]:]
-    return processor.decode(trimmed, skip_special_tokens=True)
+    import torch
+    from PIL import Image
+
+    # Voir GLM_MAX_LONG_SIDE : sans ce redimensionnement, une image de notre
+    # résolution fait échouer l'allocation à coup sûr, pas seulement parfois.
+    # Le processeur ne prend qu'un chemin/URL dans le message ("url": ...),
+    # pas un objet PIL -- on passe donc par une copie temporaire redimensionnée
+    # plutôt que par le fichier source, qui reste inchangé sur le disque.
+    with Image.open(image_path) as img:
+        img = img.convert("RGB")
+        long_side = max(img.size)
+        if long_side > GLM_MAX_LONG_SIDE:
+            echelle = GLM_MAX_LONG_SIDE / long_side
+            img = img.resize((max(1, round(img.width * echelle)),
+                              max(1, round(img.height * echelle))),
+                             Image.LANCZOS)
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
+            img.save(tmp.name)
+            tmp_path = tmp.name
+
+    try:
+        messages = [{"role": "user", "content": [
+            {"type": "image", "url": tmp_path},
+            {"type": "text", "text": GLM_PROMPTS[prompt_key]},
+        ]}]
+        inputs = processor.apply_chat_template(
+            messages, tokenize=True, add_generation_prompt=True,
+            return_dict=True, return_tensors="pt").to(model.device)
+        # token_type_ids : accepté par le processeur, refusé par generate().
+        # C'est le seul écart entre l'exemple de la carte modèle et un appel
+        # standard.
+        inputs.pop("token_type_ids", None)
+        with torch.no_grad():
+            generated = model.generate(**inputs, max_new_tokens=8192, do_sample=False)
+        trimmed = generated[0][inputs["input_ids"].shape[1]:]
+        return processor.decode(trimmed, skip_special_tokens=True)
+    finally:
+        Path(tmp_path).unlink(missing_ok=True)
 
 
 CHANDRA_MODEL_ID = "datalab-to/chandra-ocr-2"

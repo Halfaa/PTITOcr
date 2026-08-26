@@ -1319,3 +1319,41 @@ sont tournées.
 non en IoU. 12 pages sur 25 au-dessus du seuil au lieu de 1 devrait se voir à
 la lecture ; le §15 a établi que la relation IoU / lecture est presque binaire
 autour de 0,70.
+
+---
+
+## 18. Pourquoi ce pas suivant n'a pas été fait (25 août)
+
+`scripts/recadrage_par_contenu_extraire.py` applique la règle en pixels
+(image pleine résolution, pas la copie de mesure) : testé sur les 25 pages,
+100 % recadrées, aucune boîte manquante. Mais avant de lancer le moindre
+benchmark, l'inspection visuelle d'une seule page suffit à trancher.
+
+**Ce que perd le recadrage.** Sur les 25 pages : 15 gardent un en-tête
+détecté dans la boîte dilatée ×1,2, 5 en ont un mais hors de la boîte, et 5
+n'en ont aucun — même sur la scène entière. Élargir la boîte pour rattraper
+les 5 manquantes serait dangereux, pas seulement insuffisant : sur la page 8,
+le bloc de texte juste au-dessus de la table cible ne recouvre que 68 px sur
+456 en largeur avec elle — ce n'est vraisemblablement pas l'en-tête de la
+bonne feuille, mais celui d'une feuille parasite voisine. L'attacher
+referait, à l'échelle d'un seul champ, exactement l'erreur de provenance que
+`adaptive.concordance()` existe pour empêcher au §9.
+
+**La cause de fond, vue depuis l'en-tête plutôt que depuis le bord.** Le §16
+avait montré que le BORD de la feuille cible est invisible (blanc sur blanc,
+sans profondeur de champ). Ceci en est le symptôme jumeau côté CONTENU : les
+en-têtes des feuilles parasites sont, par construction du jeu de test (§2),
+du même gabarit, la même police et la même mise en page que la cible — rien
+dans le texte ne dit à quelle feuille il appartient. Un jeu de bureau réel,
+avec des documents réellement différents, poserait sans doute moins ce
+problème ; celui-ci a été conçu pour être un pire cas.
+
+**Conclusion.** Le recadrage par contenu reste valable pour ce qu'il a été
+mesuré à faire — isoler le tableau pour le TEDS — mais ne peut structurellement
+pas répondre aux champs d'en-tête sur ce jeu, quel que soit le réglage de la
+boîte. Enregistré dans `scripts/eval_all.py` comme candidat "prétraité" de la
+lecture brute existante (`variants_encombre_recadre_contenu`), pour que
+`adaptive.choose()` combine les deux sans jamais faire porter les champs par
+le recadrage — mais le TEDS de bout en bout annoncé au §17 n'a pas été
+mesuré : l'inspection visuelle a suffi à conclure que la perte d'information
+sur les champs rendait la piste inutile à creuser plus loin pour l'usage visé.

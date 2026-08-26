@@ -62,6 +62,15 @@ JEUX = {
         "pdf": GEN / "invoices_variants.pdf",
         "gt": GEN / "ground_truth_labels_variants",
     },
+    "variants_encombre_recadre_contenu": {
+        "titre": "variants_encombre, brut vs recadrage par contenu (plus "
+                 "grande boîte table PaddleOCR-VL, dilatée ×1,2 -- "
+                 "docs/fonds_encombres.md §17) -- la ligne 'adaptatif' est la "
+                 "réponse : TEDS du meilleur des deux (garde de provenance "
+                 "compris), champs d'en-tête toujours pris sur le brut",
+        "pdf": GEN / "invoices_variants.pdf",
+        "gt": GEN / "ground_truth_labels_variants",
+    },
 }
 
 # --------------------------------------------------------------------------
@@ -80,6 +89,19 @@ MODELES = {
                                 "variants_warped_preprocessed_chandra"),
             "variants_encombre": ("variants_encombre_chandra",
                                   "variants_encombre_preproc_chandra"),
+            # Le recadrage par contenu (docs/fonds_encombres.md §17) coupe
+            # l'en-tête sur 5 pages/25 -- enregistré comme candidat
+            # "prétraité" de la lecture BRUTE existante (inchangée, mêmes
+            # chiffres que sous "variants_encombre"), pas comme un jeu
+            # autonome : `choose()` prend alors le tableau chez celui des
+            # deux qui a le mieux réussi (avec le garde de provenance de
+            # `adaptive.concordance`, qui écarte un recadrage parti sur une
+            # feuille voisine) ET les champs d'en-tête TOUJOURS chez la
+            # lecture brute en priorité (`field_order`) -- exactement les
+            # « deux lectures séparées » demandées, sans code neuf.
+            "variants_encombre_recadre_contenu":
+                ("variants_encombre_chandra",
+                 "variants_encombre_recadre_contenu_chandra"),
         },
     },
     "glm": {
@@ -106,6 +128,12 @@ MODELES = {
                                 "variants_warped_preprocessed_paddleocrvl"),
             "variants_encombre": ("variants_encombre_paddleocr",
                                   "variants_encombre_preproc_paddleocr"),
+            # Même montage que pour Chandra ci-dessus : brut inchangé +
+            # recadrage par contenu comme candidat "prétraité", évalué par
+            # `adaptive.choose()` plutôt que comme un jeu isolé.
+            "variants_encombre_recadre_contenu":
+                ("variants_encombre_paddleocr",
+                 "variants_encombre_recadre_contenu_paddleocr"),
         },
     },
     "ppstructure": {
