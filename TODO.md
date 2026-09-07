@@ -1,5 +1,22 @@
 # TODO
 
+> **Ce document date du 5 août et n'a pas été repris depuis.** Cinq choses
+> ont changé, et il faut les lire avant le reste :
+>
+> - **L'étude de dégradation est faite** (§2 ci-dessous la donne « à
+>   lancer ») — 24 paliers mesurés, résultats dans `docs/degradation.md`.
+> - **Un banc HTR manuscrit existe**, VN et EN, absent de ce document :
+>   deux générateurs, 60 specimens, Chandra à 95,5 % / 99,1 % contre
+>   PaddleOCR-VL à 78,2 % / 90,3 % (`docs/resultats_handwriting.md`).
+> - **HunyuanOCR est écarté** (licence Tencent, exclut l'UE).
+> - **GLM-OCR** (§3) reste à mesurer, mais le premier essai a échoué en OOM
+>   sur nos images manuscrites ; correctif appliqué, relance en attente.
+> - **Le recadrage sur fond encombré est une piste close** — onze méthodes,
+>   plafond 0,59 pour un atteignable à 0,85 (`docs/fonds_encombres.md` §18).
+>
+> Index à jour de tous les documents : [`docs/README.md`](docs/README.md).
+> Inventaire des jeux d'images : [`dataset/README.md`](dataset/README.md).
+
 État au 5 août 2026, semaine 3 du stage.
 
 Rapporté à la timeline officielle, le travail est en avance : les semaines

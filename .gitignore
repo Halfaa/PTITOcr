@@ -9,6 +9,21 @@ __pycache__/
 # ~2,2 Go, retelechargeables : hf download tencent/HunyuanOCR
 HunyuanOCR/
 
+# --- Archive -----------------------------------------------------------
+# Ce qui n'est plus utilise mais qu'on ne jette pas : scripts remplaces,
+# premiers tests, poids du modele HunyuanOCR (ecarte pour sa licence, qui
+# exclut l'UE). Rien la-dedans n'est necessaire pour rejouer le protocole ;
+# voir archive/README.md pour le detail et la commande de suppression.
+archive/
+
+# --- Corpus exporte ----------------------------------------------------
+# dataset/manifest.json EST versionne (227 Ko, c'est l'index utile).
+# La copie materialisee des images, elle, se regenere :
+#     python dataset/build_manifest.py --export corpus --zip
+dataset/corpus/
+dataset/corpus.zip
+handwriting_specimens_vi_en.zip
+
 # --- Datasets volumineux -----------------------------------------------
 TabRecSet/
 data/TabRecSet/

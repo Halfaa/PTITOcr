@@ -67,6 +67,21 @@ def _normalise(s) -> str:
     return re.sub(r"\s+", " ", str(s)).strip().lower()
 
 
+# Chandra (et probablement d'autres) rendent les tableaux en HTML brut dans
+# le Markdown, avec un <br/> entre deux lignes d'UNE MÊME cellule -- typique
+# de "ngay_gio" ("15h00<br/>12/07"), où la vérité terrain attend un espace
+# ("15h00 12/07"). Sans ce nettoyage, un champ correctement lu comptait comme
+# manqué : trouvé en inspectant à la main le pire score VN de Chandra, où
+# PRESQUE TOUS les "ngay_gio" de chaque specimen ressortaient comme ratés
+# alors que la transcription était juste. Toute balise est retirée -- pas
+# seulement <br/> -- parce que PaddleOCR-VL encadre chaque cellule de <td
+# style='...'> et Chandra ajoute parfois <i>...</i>, qui ne cassent rien
+# aujourd'hui mais pourraient sur un futur champ ; autant traiter la classe
+# du problème plutôt que le seul symptôme trouvé.
+def _sans_html(s) -> str:
+    return re.sub(r"<[^>]+>", " ", str(s))
+
+
 # "đ"/"Đ" do not decompose into "d" + diacritic under NFD/NFKD -- they are
 # distinct Vietnamese letters, not accented ones -- so a plain
 # decompose-and-drop-combining-marks pass leaves them untouched and every
@@ -226,6 +241,7 @@ def evaluer_run(run_dir: Path, lang: str, verite_dir: VeriteDir, detail: bool):
             continue
 
         n_specimens += 1
+        texte = _sans_html(texte)
         texte_norm = _normalise(texte)
         texte_squash = _squash(texte)
 
