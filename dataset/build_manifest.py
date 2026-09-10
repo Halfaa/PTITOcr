@@ -485,9 +485,18 @@ def echantillonner(manifeste, n_factures=1, n_specimens=3, n_reel=3,
 
 
 def exporter(manifeste, destination: Path):
-    """Materialise a unified copy: <dest>/<family>/<set>/<image>."""
+    """Materialise a unified copy: <dest>/<family>/<set>/<image>.
+
+    The manifest is REWRITTEN on the way out, so that every path in it
+    resolves inside the archive. Shipping the source paths would hand
+    someone a manifest pointing at `doc3D-renderer/img/...` and
+    `ground_truth_labels_variants/`, neither of which exists in what they
+    just unzipped.
+    """
     destination.mkdir(parents=True, exist_ok=True)
-    n = 0
+    groupes_par_gt, n = {}, 0
+    images_exportees = []
+
     for entree in manifeste["images"]:
         source = RACINE.parent / entree["chemin"]
         if not source.exists():
@@ -497,14 +506,54 @@ def exporter(manifeste, destination: Path):
             sous = sous / entree["palier"]
         sous.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, sous / source.name)
-        # Per-page truth travels WITH its image: kept apart, the two come
-        # unpaired the first time a folder is moved.
-        v = entree.get("verite") or {}
+
+        sortie = dict(entree)
+        sortie["chemin"] = (sous.relative_to(destination) / source.name).as_posix()
+
+        v = dict(entree.get("verite") or {})
         if v.get("type") == "par_page":
+            # Per-page truth travels WITH its image: kept apart, the two come
+            # unpaired the first time a folder is moved.
             src_v = RACINE.parent / v["chemin"]
             if src_v.exists():
                 shutil.copy2(src_v, sous / src_v.name)
+                v["chemin"] = (sous.relative_to(destination) / src_v.name).as_posix()
+        elif v.get("type") == "par_facture":
+            nom_amont = v["gt_dir"].split("/")[-1]
+            v["gt_dir"] = f"annotations/{NOMS_ANNOTATIONS.get(nom_amont, nom_amont)}"
+            if v.get("pdf_decoupage"):
+                v["pdf_decoupage"] = f"annotations/{Path(v['pdf_decoupage']).name}"
+            # Which invoice this page belongs to. Without it, going from
+            # `invoice_1.json` to its images means re-opening the source PDF
+            # -- which the archive's recipient does not necessarily have.
+            pdf_amont = (entree.get("verite") or {}).get("pdf_decoupage")
+            if pdf_amont:
+                if pdf_amont not in groupes_par_gt:
+                    groupes_par_gt[pdf_amont] = _groupes_factures(RACINE.parent / pdf_amont)
+                groupes = groupes_par_gt[pdf_amont]
+                page = _numero_page(entree["chemin"])
+                if groupes and page is not None:
+                    for k, groupe in enumerate(groupes, start=1):
+                        if page in groupe:
+                            v["facture"] = f"invoice_{k}.json"
+                            sortie["page"] = page
+                            break
+        elif v.get("type") == "tabrecset":
+            v["td"] = f"reel/{entree['jeu']}/td_annotation"
+            v["tsr_tcr"] = f"reel/{entree['jeu']}/tsr_tcr_annotation"
+        sortie["verite"] = v
+        images_exportees.append(sortie)
         n += 1
+
+    # TabRecSet keeps its own annotation folders, next to its images.
+    for jeu in {e["jeu"] for e in manifeste["images"] if e["famille"] == "reel"}:
+        base = RACINE / "data" / jeu
+        for nom in ("td_annotation", "tsr_tcr_annotation"):
+            if (base / nom).is_dir() and not (destination / "reel" / jeu / nom).exists():
+                shutil.copytree(base / nom, destination / "reel" / jeu / nom)
+
+    manifeste = {**manifeste, "images": images_exportees}
+    manifeste["racine"] = "paths are relative to the root of this archive"
 
     # Per-invoice truth is shared by a whole set: one copy per truth folder
     # is enough, at the root of the export.
@@ -528,6 +577,21 @@ def exporter(manifeste, destination: Path):
         json.dumps(manifeste, ensure_ascii=False, indent=1), encoding="utf-8")
     (destination / "README.md").write_text(_lisezmoi(manifeste), encoding="utf-8")
     return n
+
+
+def _correspondance(manifeste):
+    """annotation folder -> the image sets it scores.
+
+    Built from the manifest rather than hard-coded, so it cannot drift away
+    from what the archive actually contains.
+    """
+    par_gt = {}
+    for e in manifeste["images"]:
+        v = e.get("verite") or {}
+        if v.get("type") != "par_facture":
+            continue
+        par_gt.setdefault(v["gt_dir"].split("/")[-1], set()).add(e["jeu"])
+    return par_gt
 
 
 def _lisezmoi(manifeste) -> str:
@@ -569,11 +633,41 @@ def _lisezmoi(manifeste) -> str:
         "manifest.json                one entry per image",
         "```",
         "",
+        "## Where are the images for a given annotation?",
+        "",
+        "`annotations/` holds only JSON, and that surprises people. The "
+        "reason: **the same invoices were rendered several times, under "
+        "different conditions**. One annotation folder therefore serves "
+        "several image folders — `invoices_variants/` describes the same 12 "
+        "invoices whether you look at them flat, warped, on a cluttered "
+        "background, cropped, or degraded.",
+        "",
+        "| annotation folder | image folders it scores |",
+        "|---|---|",
+    ] + [
+        f"| `annotations/{gt}/` | {', '.join('`facture/' + j + '/`' for j in sorted(jeux))} |"
+        for gt, jeux in sorted(_correspondance(manifeste).items())
+    ] + [
+        "",
+        "To go from `invoice_1.json` to its pages, use `manifest.json`: every "
+        "invoice-page entry carries `verite.facture` (the JSON that scores "
+        "it) and `page` (its number in the source PDF). No need to reopen "
+        "the PDF, though it is included under `annotations/` as well.",
+        "",
+        "```python",
+        "import json",
+        "m = json.load(open('manifest.json', encoding='utf-8'))",
+        "pages = [e for e in m['images']",
+        "         if (e.get('verite') or {}).get('facture') == 'invoice_1.json'",
+        "         and e['jeu'] == 'variants_warped']",
+        "for e in sorted(pages, key=lambda e: e['page']):",
+        "    print(e['page'], e['chemin'])",
+        "```",
+        "",
         "## Ground truth: three regimes",
         "",
         "**Invoices** — one JSON per INVOICE, in `annotations/`, covering "
-        "several pages. The page-to-invoice split comes from the source PDF, "
-        "also included. Invoices are sampled whole, so every page of a "
+        "several pages. Invoices are sampled whole, so every page of a "
         "sampled invoice is here.",
         "",
         "**Handwriting** — one `*_verite.json` per image, right next to it, "
