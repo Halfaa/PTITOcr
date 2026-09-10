@@ -96,6 +96,17 @@ FACTURES_SIMPLES = {
     "pdf": None,
 }
 
+# Names used in the EXPORT only. Upstream these folders are called
+# `ground_truth_labels_variants` and so on -- long, and redundant once they
+# live under `annotations/`. The source tree keeps its own names: renaming
+# there would break the `--gt-dir` paths that the eval scripts, the docs and
+# the Kaggle notebooks all pass around.
+NOMS_ANNOTATIONS = {
+    "ground_truth_labels": "invoices_single_page",
+    "ground_truth_labels_multipage": "invoices_multipage",
+    "ground_truth_labels_variants": "invoices_variants",
+}
+
 JEUX = {
     # -- Invoices, Blender renders -----------------------------------------
     "multipage_test": {
@@ -497,14 +508,21 @@ def exporter(manifeste, destination: Path):
 
     # Per-invoice truth is shared by a whole set: one copy per truth folder
     # is enough, at the root of the export.
+    #
+    # Folder names are rewritten on the way out. Upstream they are called
+    # `ground_truth_labels_variants` and friends, which is both a mouthful
+    # and redundant once they sit under `annotations/`. `annotations/` is
+    # also the name public datasets use (COCO and the rest), so anyone
+    # opening the archive already knows what is inside.
+    annotations = destination / "annotations"
     for spec in (FACTURES_MULTIPAGE, FACTURES_VARIANTS, FACTURES_SIMPLES):
         if spec["gt"].is_dir():
-            cible = destination / "verite_terrain" / spec["gt"].name
+            cible = annotations / NOMS_ANNOTATIONS.get(spec["gt"].name, spec["gt"].name)
             if not cible.exists():
                 shutil.copytree(spec["gt"], cible)
         if spec.get("pdf") and spec["pdf"].exists():
-            (destination / "verite_terrain").mkdir(parents=True, exist_ok=True)
-            shutil.copy2(spec["pdf"], destination / "verite_terrain" / spec["pdf"].name)
+            annotations.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(spec["pdf"], annotations / spec["pdf"].name)
 
     (destination / "manifest.json").write_text(
         json.dumps(manifeste, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -547,13 +565,13 @@ def _lisezmoi(manifeste) -> str:
         "facture/     <set>/          invoice pages, synthetic (LaTeX + Blender)",
         "manuscrit/   <set>/          handwritten forms, VN and EN",
         "reel/        <set>/          real photographs (TabRecSet sample)",
-        "verite_terrain/              per-invoice ground truth + source PDFs",
+        "annotations/                 per-invoice labels + source PDFs",
         "manifest.json                one entry per image",
         "```",
         "",
         "## Ground truth: three regimes",
         "",
-        "**Invoices** — one JSON per INVOICE, in `verite_terrain/`, covering "
+        "**Invoices** — one JSON per INVOICE, in `annotations/`, covering "
         "several pages. The page-to-invoice split comes from the source PDF, "
         "also included. Invoices are sampled whole, so every page of a "
         "sampled invoice is here.",
