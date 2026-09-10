@@ -208,6 +208,31 @@ NIVEAUX = {
     "jpeg":       [25, 10, 3],                   # facteur qualité
 }
 
+# Largeur pour laquelle les paliers de FLOU ont été calibrés.
+#
+# Le flou est le seul palier exprimé en pixels absolus : un bougé de 9 px sur
+# une page large de 900 px étale un trait sur quatre fois son épaisseur, mais
+# sur une page de 1654 px il ne l'étale plus que de deux. Les quatre autres
+# dégradations sont sans échelle -- une fraction du côté long, un nombre de
+# photons, un facteur de qualité, un nombre de diaphragmes -- et se
+# transposent telles quelles.
+#
+# Sans cette correction, appliquer la grille aux specimens manuscrits
+# (1654x2339) produirait une courbe qui sous-estime la fragilité, et le
+# manuscrit paraîtrait plus robuste que les factures alors qu'on l'aurait
+# simplement moins abîmé.
+LARGEUR_CALIBRAGE = 900
+
+
+def niveaux_pour(largeur: int):
+    """Les paliers, le flou remis à l'échelle de la largeur réelle."""
+    if largeur == LARGEUR_CALIBRAGE:
+        return NIVEAUX
+    facteur = largeur / LARGEUR_CALIBRAGE
+    ajustes = dict(NIVEAUX)
+    ajustes["flou"] = [max(1, round(v * facteur)) for v in NIVEAUX["flou"]]
+    return ajustes
+
 
 def appliquer(image, degradation, valeur, graine=0):
     if degradation == "flou":
@@ -265,7 +290,11 @@ def niveaux_distincts(image):
     return int(np.count_nonzero(np.bincount(gris.ravel(), minlength=256)))
 
 
-def calibrer(image):
+def calibrer(image, niveaux=None):
+    # Les paliers passés en argument, pas ceux du module : sur un jeu d'une
+    # autre résolution le flou est remis à l'échelle, et afficher la grille
+    # d'origine décrirait des images qu'on ne produira jamais.
+    niveaux = niveaux or NIVEAUX
     print(f"{'dégradation':<12}{'niveau':<10}{'netteté':>10}{'PSNR dB':>10}"
           f"{'gris':>7}{'poids ko':>10}{'taille':>12}")
     print("-" * 71)
@@ -273,7 +302,7 @@ def calibrer(image):
     print(f"{'(aucune)':<12}{'—':<10}{nettete(image):>10.0f}{'∞':>10}"
           f"{niveaux_distincts(image):>7}{base_poids:>10.0f}"
           f"{f'{image.shape[1]}x{image.shape[0]}':>12}")
-    for degradation, valeurs in NIVEAUX.items():
+    for degradation, valeurs in niveaux.items():
         for i, v in enumerate(valeurs, 1):
             abime = appliquer(image, degradation, v)
             poids = len(cv2.imencode(".png", abime)[1]) / 1024
@@ -327,6 +356,13 @@ def ecrire_zip(dossiers, racine_sortie, archive):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--jeu", default="variants_warped")
+    p.add_argument("--images-dir", default=None,
+                   help="Dossier source quelconque, au lieu de "
+                        "doc3D-renderer/img/<jeu>. Accepte les images à plat "
+                        "ou dans un sous-dossier par specimen.")
+    p.add_argument("--n", type=int, default=None,
+                   help="Nombre d'images à retenir quand elles ne sont pas "
+                        "numérotées par page (jeux manuscrits).")
     p.add_argument("--pages", default=None,
                    help="Numéros séparés par des virgules. Défaut : "
                         + ",".join(map(str, PAGES_DEFAUT)))
@@ -337,25 +373,50 @@ def main():
                    help="Mesurer les paliers sur une page, sans rien écrire.")
     args = p.parse_args()
 
-    source = DOC3D / "img" / args.jeu
+    source = Path(args.images_dir) if args.images_dir else DOC3D / "img" / args.jeu
+
+    # Deux conventions de nommage cohabitent : les factures rendues par
+    # Blender sont des `page_N-....png` à plat dans un dossier, le manuscrit
+    # est un `specimen_NNN.png` par sous-dossier. On accepte les deux plutôt
+    # que d'imposer une réorganisation des jeux existants.
     fichiers = sorted(source.glob("page_*.png"))
+    numerote = bool(fichiers)
+    if not fichiers:
+        fichiers = sorted(source.glob("*.png")) or sorted(source.glob("*/*.png"))
     if not fichiers:
         raise SystemExit(f"Aucune image dans {source}")
 
-    voulues = ([int(x) for x in args.pages.split(",")] if args.pages
-               else PAGES_DEFAUT)
-    def numero(f):
-        return int(f.name.split("-")[0].replace("page_", ""))
-    retenues = [f for f in fichiers if numero(f) in voulues]
-    manquantes = set(voulues) - {numero(f) for f in retenues}
-    if manquantes:
-        raise SystemExit(f"Pages absentes de {args.jeu} : {sorted(manquantes)}")
+    if numerote:
+        voulues = ([int(x) for x in args.pages.split(",")] if args.pages
+                   else PAGES_DEFAUT)
+        def numero(f):
+            return int(f.name.split("-")[0].replace("page_", ""))
+        retenues = [f for f in fichiers if numero(f) in voulues]
+        manquantes = set(voulues) - {numero(f) for f in retenues}
+        if manquantes:
+            raise SystemExit(f"Pages absentes de {source.name} : {sorted(manquantes)}")
+    else:
+        # Pas de numérotation de page : --pages n'a plus de sens, on prend les
+        # N premières images. Le dire, plutôt que d'ignorer l'option en
+        # silence.
+        if args.pages:
+            print(f"(--pages ignoré : {source.name} n'a pas de numérotation "
+                  "de page, on prend les premières images)")
+        retenues = fichiers[:args.n] if args.n else fichiers
+
+    # Les paliers de flou suivent la résolution réelle du jeu.
+    largeur = cv2.imread(str(retenues[0])).shape[1]
+    niveaux = niveaux_pour(largeur)
+    if niveaux is not NIVEAUX:
+        print(f"Images en {largeur} px de large (calibrage : "
+              f"{LARGEUR_CALIBRAGE} px) -> flou remis à l'échelle : "
+              f"{NIVEAUX['flou']} -> {niveaux['flou']}\n")
 
     if args.calibrer:
         image = cv2.imread(str(retenues[0]))
         print(f"Calibration sur {retenues[0].name}  "
               f"({image.shape[1]}x{image.shape[0]})\n")
-        calibrer(image)
+        calibrer(image, niveaux)
         return
 
     racine_sortie = Path(args.out) if args.out else (DOC3D / "img" / "degradation")
@@ -366,7 +427,7 @@ def main():
     # un chiffre mesuré ailleurs, et le moindre écart de pipeline se lirait
     # comme un effet de la dégradation.
     dossiers = {"niveau0": [(f, cv2.imread(str(f))) for f in retenues]}
-    for degradation, valeurs in NIVEAUX.items():
+    for degradation, valeurs in niveaux.items():
         for i, valeur in enumerate(valeurs, 1):
             lot = []
             for f in retenues:

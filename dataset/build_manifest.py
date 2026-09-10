@@ -228,16 +228,39 @@ JEUX = {
     },
 }
 
-# The degradation study: one set, 24 sub-batches of 8 pages, drawn from
-# variants_warped. Handled separately because its structure differs -- each
-# batch is one step of a curve, not a set in its own right.
-DEGRADATION = {
-    "famille": "facture", "langue": "vi",
-    "titre": "24 degradation steps x 8 pages (blur, noise, jpeg, exposure, resolution)",
-    "role": "robustness curve against photo quality -- docs/degradation.md",
-    "dossier": DOC3D / "img" / "degradation",
-    "verite": FACTURES_VARIANTS,
-    "generateur": "scripts/degrader.py --jeu variants_warped",
+# The degradation studies: one entry each, 24 sub-batches per set. Handled
+# separately from JEUX because their structure differs -- each batch is one
+# step of a curve, not a set in its own right.
+#
+# The handwriting ones apply the same five degradations to the handwritten
+# specimens. Their blur steps are NOT the same numbers: blur is expressed in
+# absolute pixels, and the specimens are 1654 px wide against 900 for the
+# invoices, so degrader.py rescales them (see niveaux_pour()).
+DEGRADATIONS = {
+    "degradation": {
+        "famille": "facture", "langue": "vi",
+        "titre": "24 degradation steps x 8 pages (blur, noise, jpeg, exposure, resolution)",
+        "role": "robustness curve against photo quality -- docs/degradation.md",
+        "dossier": DOC3D / "img" / "degradation",
+        "verite": FACTURES_VARIANTS,
+        "generateur": "scripts/degrader.py --jeu variants_warped",
+    },
+    "handwriting_vi_degradation": {
+        "famille": "manuscrit", "langue": "vi",
+        "titre": "24 degradation steps x 3 handwritten VN specimens",
+        "role": "does handwriting break earlier than printed invoices?",
+        "dossier": DOC3D / "img" / "handwriting_vi_degradation",
+        "verite": "par_specimen",
+        "generateur": "scripts/degrader.py --images-dir handwriting/generated --n 3",
+    },
+    "handwriting_en_degradation": {
+        "famille": "manuscrit", "langue": "en",
+        "titre": "24 degradation steps x 3 handwritten EN specimens",
+        "role": "same question in English, where the baseline is 99.1%",
+        "dossier": DOC3D / "img" / "handwriting_en_degradation",
+        "verite": "par_specimen",
+        "generateur": "scripts/degrader.py --images-dir handwriting_en/generated --n 3",
+    },
 }
 
 
@@ -269,6 +292,17 @@ def _verite_pour(cle_jeu, spec, image: Path):
     """
     if spec == "par_specimen":
         candidat = image.parent / f"{image.stem}_verite.json"
+        if not candidat.exists():
+            # Degraded specimens live in a step folder, away from their
+            # truth: the degradation only touches pixels, so the truth of
+            # the SOURCE specimen still describes them exactly. Looked up by
+            # stem in the generator's output.
+            for source in (RACINE / "handwriting" / "generated",
+                           RACINE / "handwriting_en" / "generated"):
+                repli = source / image.stem / f"{image.stem}_verite.json"
+                if repli.exists():
+                    candidat = repli
+                    break
         return {"type": "par_page", "chemin": _chemin_relatif(candidat)} if candidat.exists() else None
     if spec == "tabrecset":
         base = image.parent.parent
@@ -322,33 +356,34 @@ def construire():
                 "verite": _verite_pour(cle, spec["verite"], img),
             })
 
-    # Degradation: one record per step, but a single "set".
-    lots = sorted(p for p in DEGRADATION["dossier"].glob("*") if p.is_dir()) \
-        if DEGRADATION["dossier"].is_dir() else []
-    if lots:
+    # Degradation: one record per step, but a single "set" each.
+    for cle, spec in DEGRADATIONS.items():
+        lots = sorted(p for p in spec["dossier"].glob("*") if p.is_dir()) \
+            if spec["dossier"].is_dir() else []
+        if not lots:
+            manquants.append(cle)
+            continue
         n_total = 0
         for lot in lots:
             for img in sorted(lot.glob("*.png")):
                 n_total += 1
                 images_sortie.append({
-                    "id": f"degradation/{lot.name}/{img.stem}",
-                    "jeu": "degradation", "palier": lot.name,
-                    "famille": DEGRADATION["famille"], "langue": DEGRADATION["langue"],
+                    "id": f"{cle}/{lot.name}/{img.stem}",
+                    "jeu": cle, "palier": lot.name,
+                    "famille": spec["famille"], "langue": spec["langue"],
                     "chemin": _chemin_relatif(img),
                     "taille": _taille(img),
-                    "verite": _verite_pour("degradation", DEGRADATION["verite"], img),
+                    "verite": _verite_pour(cle, spec["verite"], img),
                 })
-        jeux_sortie["degradation"] = {
-            "famille": DEGRADATION["famille"], "langue": DEGRADATION["langue"],
-            "titre": DEGRADATION["titre"], "role": DEGRADATION["role"],
-            "dossier": _chemin_relatif(DEGRADATION["dossier"]),
-            "generateur": DEGRADATION["generateur"],
+        jeux_sortie[cle] = {
+            "famille": spec["famille"], "langue": spec["langue"],
+            "titre": spec["titre"], "role": spec["role"],
+            "dossier": _chemin_relatif(spec["dossier"]),
+            "generateur": spec["generateur"],
             "n_images": n_total, "n_paliers": len(lots),
             "paliers": [p.name for p in lots],
             "masque_uv": False,
         }
-    else:
-        manquants.append("degradation")
 
     return {
         "genere_le": date.today().isoformat(),
@@ -429,12 +464,13 @@ def echantillonner(manifeste, n_factures=1, n_specimens=3, n_reel=3,
     for jeu, entrees in par_jeu.items():
         famille = entrees[0]["famille"]
 
-        if jeu == "degradation":
-            pages = sorted({_numero_page(e["chemin"]) for e in entrees
-                            if _numero_page(e["chemin"]) is not None})
-            gardees = set(pages[:n_pages_degradation])
-            choisis = [e for e in entrees if _numero_page(e["chemin"]) in gardees]
-            resume[jeu] = (f"{len(choisis)} images = {len(gardees)} page(s) "
+        if jeu in DEGRADATIONS:
+            # One image kept across ALL steps, whatever the naming: invoice
+            # steps are numbered pages, handwriting steps are specimens.
+            noms = sorted({Path(e["chemin"]).name for e in entrees})
+            gardes = set(noms[:n_pages_degradation])
+            choisis = [e for e in entrees if Path(e["chemin"]).name in gardes]
+            resume[jeu] = (f"{len(choisis)} images = {len(gardes)} page(s) "
                            f"x {len({e['palier'] for e in choisis})} steps")
 
         elif famille == "facture":

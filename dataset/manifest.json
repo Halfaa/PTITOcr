@@ -22,8 +22,8 @@
    "tabrecset_sample"
   ]
  },
- "n_jeux": 14,
- "n_images": 547,
+ "n_jeux": 16,
+ "n_images": 691,
  "jeux_absents": [],
  "jeux": {
   "multipage_test": {
@@ -164,6 +164,80 @@
    "dossier": "doc3D-renderer/img/degradation",
    "generateur": "scripts/degrader.py --jeu variants_warped",
    "n_images": 192,
+   "n_paliers": 24,
+   "paliers": [
+    "bruit1",
+    "bruit2",
+    "bruit3",
+    "bruit4",
+    "bruit5",
+    "exposition1",
+    "exposition2",
+    "exposition3",
+    "exposition4",
+    "exposition5",
+    "flou1",
+    "flou2",
+    "flou3",
+    "flou4",
+    "flou5",
+    "jpeg1",
+    "jpeg2",
+    "jpeg3",
+    "niveau0",
+    "resolution1",
+    "resolution2",
+    "resolution3",
+    "resolution4",
+    "resolution5"
+   ],
+   "masque_uv": false
+  },
+  "handwriting_vi_degradation": {
+   "famille": "manuscrit",
+   "langue": "vi",
+   "titre": "24 degradation steps x 3 handwritten VN specimens",
+   "role": "does handwriting break earlier than printed invoices?",
+   "dossier": "doc3D-renderer/img/handwriting_vi_degradation",
+   "generateur": "scripts/degrader.py --images-dir handwriting/generated --n 3",
+   "n_images": 72,
+   "n_paliers": 24,
+   "paliers": [
+    "bruit1",
+    "bruit2",
+    "bruit3",
+    "bruit4",
+    "bruit5",
+    "exposition1",
+    "exposition2",
+    "exposition3",
+    "exposition4",
+    "exposition5",
+    "flou1",
+    "flou2",
+    "flou3",
+    "flou4",
+    "flou5",
+    "jpeg1",
+    "jpeg2",
+    "jpeg3",
+    "niveau0",
+    "resolution1",
+    "resolution2",
+    "resolution3",
+    "resolution4",
+    "resolution5"
+   ],
+   "masque_uv": false
+  },
+  "handwriting_en_degradation": {
+   "famille": "manuscrit",
+   "langue": "en",
+   "titre": "24 degradation steps x 3 handwritten EN specimens",
+   "role": "same question in English, where the baseline is 99.1%",
+   "dossier": "doc3D-renderer/img/handwriting_en_degradation",
+   "generateur": "scripts/degrader.py --images-dir handwriting_en/generated --n 3",
+   "n_images": 72,
    "n_paliers": 24,
    "paliers": [
     "bruit1",
@@ -8977,6 +9051,2310 @@
     "type": "par_facture",
     "gt_dir": "synthetic_invoice_generator/hospital_pharmacy/ground_truth_labels_variants",
     "pdf_decoupage": "synthetic_invoice_generator/hospital_pharmacy/invoices_variants.pdf"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit1/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit1/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit1/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit1/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit1/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit1/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit2/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit2/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit2/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit2/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit2/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit2/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit3/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit3/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit3/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit3/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit3/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit3/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit4/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit4/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit4/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit4/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit4/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit4/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit5/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit5/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit5/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit5/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/bruit5/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "bruit5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/bruit5/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition1/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition1/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition1/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition1/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition1/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition1/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition2/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition2/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition2/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition2/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition2/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition2/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition3/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition3/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition3/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition3/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition3/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition3/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition4/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition4/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition4/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition4/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition4/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition4/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition5/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition5/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition5/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition5/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/exposition5/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "exposition5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/exposition5/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou1/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou1/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou1/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou1/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou1/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou1/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou2/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou2/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou2/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou2/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou2/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou2/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou3/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou3/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou3/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou3/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou3/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou3/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou4/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou4/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou4/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou4/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou4/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou4/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou5/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou5/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou5/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou5/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/flou5/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "flou5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/flou5/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/jpeg1/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "jpeg1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/jpeg1/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/jpeg1/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "jpeg1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/jpeg1/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/jpeg1/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "jpeg1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/jpeg1/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/jpeg2/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "jpeg2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/jpeg2/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/jpeg2/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "jpeg2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/jpeg2/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/jpeg2/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "jpeg2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/jpeg2/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/jpeg3/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "jpeg3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/jpeg3/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/jpeg3/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "jpeg3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/jpeg3/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/jpeg3/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "jpeg3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/jpeg3/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/niveau0/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "niveau0",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/niveau0/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/niveau0/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "niveau0",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/niveau0/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/niveau0/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "niveau0",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/niveau0/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution1/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution1/specimen_000.png",
+   "taille": [
+    1240,
+    1754
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution1/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution1/specimen_001.png",
+   "taille": [
+    1240,
+    1754
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution1/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution1",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution1/specimen_002.png",
+   "taille": [
+    1240,
+    1754
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution2/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution2/specimen_000.png",
+   "taille": [
+    909,
+    1286
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution2/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution2/specimen_001.png",
+   "taille": [
+    909,
+    1286
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution2/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution2",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution2/specimen_002.png",
+   "taille": [
+    909,
+    1286
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution3/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution3/specimen_000.png",
+   "taille": [
+    661,
+    935
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution3/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution3/specimen_001.png",
+   "taille": [
+    661,
+    935
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution3/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution3",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution3/specimen_002.png",
+   "taille": [
+    661,
+    935
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution4/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution4/specimen_000.png",
+   "taille": [
+    496,
+    701
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution4/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution4/specimen_001.png",
+   "taille": [
+    496,
+    701
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution4/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution4",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution4/specimen_002.png",
+   "taille": [
+    496,
+    701
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution5/specimen_000",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution5/specimen_000.png",
+   "taille": [
+    363,
+    514
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution5/specimen_001",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution5/specimen_001.png",
+   "taille": [
+    363,
+    514
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_vi_degradation/resolution5/specimen_002",
+   "jeu": "handwriting_vi_degradation",
+   "palier": "resolution5",
+   "famille": "manuscrit",
+   "langue": "vi",
+   "chemin": "doc3D-renderer/img/handwriting_vi_degradation/resolution5/specimen_002.png",
+   "taille": [
+    363,
+    514
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit1/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit1/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit1/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit1/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit1/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit1/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit2/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit2/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit2/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit2/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit2/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit2/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit3/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit3/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit3/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit3/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit3/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit3/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit4/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit4/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit4/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit4/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit4/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit4/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit5/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit5/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit5/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit5/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/bruit5/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "bruit5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/bruit5/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition1/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition1/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition1/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition1/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition1/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition1/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition2/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition2/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition2/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition2/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition2/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition2/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition3/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition3/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition3/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition3/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition3/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition3/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition4/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition4/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition4/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition4/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition4/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition4/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition5/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition5/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition5/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition5/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/exposition5/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "exposition5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/exposition5/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou1/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou1/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou1/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou1/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou1/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou1/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou2/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou2/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou2/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou2/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou2/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou2/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou3/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou3/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou3/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou3/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou3/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou3/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou4/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou4/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou4/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou4/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou4/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou4/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou5/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou5/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou5/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou5/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/flou5/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "flou5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/flou5/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/jpeg1/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "jpeg1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/jpeg1/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/jpeg1/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "jpeg1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/jpeg1/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/jpeg1/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "jpeg1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/jpeg1/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/jpeg2/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "jpeg2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/jpeg2/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/jpeg2/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "jpeg2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/jpeg2/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/jpeg2/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "jpeg2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/jpeg2/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/jpeg3/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "jpeg3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/jpeg3/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/jpeg3/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "jpeg3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/jpeg3/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/jpeg3/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "jpeg3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/jpeg3/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/niveau0/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "niveau0",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/niveau0/specimen_000.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/niveau0/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "niveau0",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/niveau0/specimen_001.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/niveau0/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "niveau0",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/niveau0/specimen_002.png",
+   "taille": [
+    1654,
+    2339
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution1/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution1/specimen_000.png",
+   "taille": [
+    1240,
+    1754
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution1/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution1/specimen_001.png",
+   "taille": [
+    1240,
+    1754
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution1/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution1",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution1/specimen_002.png",
+   "taille": [
+    1240,
+    1754
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution2/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution2/specimen_000.png",
+   "taille": [
+    909,
+    1286
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution2/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution2/specimen_001.png",
+   "taille": [
+    909,
+    1286
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution2/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution2",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution2/specimen_002.png",
+   "taille": [
+    909,
+    1286
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution3/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution3/specimen_000.png",
+   "taille": [
+    661,
+    935
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution3/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution3/specimen_001.png",
+   "taille": [
+    661,
+    935
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution3/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution3",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution3/specimen_002.png",
+   "taille": [
+    661,
+    935
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution4/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution4/specimen_000.png",
+   "taille": [
+    496,
+    701
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution4/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution4/specimen_001.png",
+   "taille": [
+    496,
+    701
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution4/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution4",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution4/specimen_002.png",
+   "taille": [
+    496,
+    701
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution5/specimen_000",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution5/specimen_000.png",
+   "taille": [
+    363,
+    514
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_000/specimen_000_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution5/specimen_001",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution5/specimen_001.png",
+   "taille": [
+    363,
+    514
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_001/specimen_001_verite.json"
+   }
+  },
+  {
+   "id": "handwriting_en_degradation/resolution5/specimen_002",
+   "jeu": "handwriting_en_degradation",
+   "palier": "resolution5",
+   "famille": "manuscrit",
+   "langue": "en",
+   "chemin": "doc3D-renderer/img/handwriting_en_degradation/resolution5/specimen_002.png",
+   "taille": [
+    363,
+    514
+   ],
+   "verite": {
+    "type": "par_page",
+    "chemin": "MedicalRecord/handwriting/generated/specimen_002/specimen_002_verite.json"
    }
   }
  ]
