@@ -205,6 +205,15 @@ class VeriteDir:
 
     def get(self, stem: str):
         p = self.par_stem.get(stem)
+        if p is None:
+            # Rendu Blender : `render_mesh_multipage.py` nomme ses sorties
+            # `<texture>-<maillage>`, donc un specimen projete sur un
+            # maillage courbe s'appelle `specimen_000-concave_mesh_10001`.
+            # La verite, elle, reste indexee sur `specimen_000`. Sans ce
+            # repli, un run sur le manuscrit DEFORME ne trouverait aucune
+            # verite et sortirait « aucun specimen » -- un zero qu'on
+            # lirait comme un echec du modele.
+            p = self.par_stem.get(stem.split("-")[0])
         return json.loads(p.read_text(encoding="utf-8")) if p else None
 
 
