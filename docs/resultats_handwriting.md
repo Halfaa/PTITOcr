@@ -1,163 +1,158 @@
-# Benchmark HTR manuscrit — VN / EN (26 août)
+# Handwriting HTR benchmark — VN / EN (26 August)
 
-Suite naturelle du pipeline factures : peut-on lire de l'écriture manuscrite
-sur les mêmes formulaires médicaux, dans les deux langues du stage ? Deux
-générateurs synthétiques (`handwriting/` pour la page 9 PHCN vietnamienne,
-`handwriting_en/` pour les pages 1-2 du dossier anglais), 30 specimens par
-langue, vérité terrain exacte au champ près (`*_verite.json`).
+The natural follow-up to the invoice pipeline: can handwriting be read on
+the same medical forms, in both languages of the internship? Two synthetic
+generators (`handwriting/` for the Vietnamese PHCN page 9, `handwriting_en/`
+for pages 1-2 of the English record), 30 specimens per language, exact
+field-level ground truth (`*_verite.json`).
 
 ---
 
-## 1. Modèles testés, et pourquoi ceux-là
+## 1. Models tested, and why these
 
-Recherche faite avant de lancer quoi que ce soit : trois candidats,
-choisis pour couvrir l'éventail taille/licence déjà établi sur les factures.
+Research done before running anything: three candidates, chosen to span the
+size/licence range already established on the invoice benchmark.
 
-| modèle | taille | licence | statut |
+| model | size | licence | status |
 |---|---|---|---|
-| Chandra OCR 2 | 5 B | Apache 2.0 (code) / OpenRAIL-M modifiée (poids) | mesuré |
-| PaddleOCR-VL | 0,9 B | Apache 2.0 | mesuré |
-| GLM-OCR | 0,9 B | MIT | en attente (voir §4) |
-| HunyuanOCR-1.5 | 1 B | Tencent (exclut UE/UK/Corée du Sud) | **écarté** |
+| Chandra OCR 2 | 5 B | Apache 2.0 (code) / modified OpenRAIL-M (weights) | measured |
+| PaddleOCR-VL | 0.9 B | Apache 2.0 | measured |
+| GLM-OCR | 0.9 B | MIT | pending (see §4) |
+| HunyuanOCR-1.5 | 1 B | Tencent (excludes EU/UK/South Korea) | **dropped** |
 
-GLM et HunyuanOCR partagent le même environnement (`transformers` récent),
-donc le même notebook Kaggle. **HunyuanOCR est écarté** : sa licence exclut
-l'UE et Kaggle ne permet pas de choisir la région de la machine — décidé
-sans même le lancer, l'écart déjà large entre Chandra et PaddleOCR-VL sur ce
-jeu ne justifie pas de composer avec cette contrainte.
-
----
-
-## 2. Protocole de mesure
-
-Contrairement aux factures, il n'existe pas d'extracteur de champs
-structuré par modèle — chaque modèle rend une transcription libre de toute
-la page, avec ses propres conventions de mise en page. `src/eval_handwriting.py`
-pose donc une question plus modeste : **le texte attendu apparaît-il quelque
-part dans la transcription**, exactement ou approximativement ? Trois
-signaux (exact / lenient / score de similarité locale), détail dans le
-docstring du script.
-
-Champs numériques ou très courts (`"5"`, `"X"`) : recherche sur frontière de
-mot, pour éviter qu'un chiffre isolé ne « matche » par hasard dans une page
-dense en dates et téléphones.
+GLM and HunyuanOCR share the same environment (recent `transformers`), so
+the same Kaggle notebook. **HunyuanOCR is dropped**: its licence excludes
+the EU and Kaggle does not let you choose the machine's region — decided
+without even running it, since the gap already measured between Chandra and
+PaddleOCR-VL on this set does not justify working around that constraint.
 
 ---
 
-## 3. Résultats (26 août)
+## 2. Measurement protocol
 
-30 specimens par jeu, champs manuscrits uniquement (le champ `khoa` du VN
-est imprimé, pas manuscrit ; `sex` de l'EN est une case à cocher, pas du
-texte — exclus de ce tableau, comptés à part dans le script).
+Unlike the invoice pipeline, there is no per-model structured field
+extractor — each model returns a free-form transcription of the whole page,
+with its own layout conventions. `src/eval_handwriting.py` therefore asks a
+more modest question: **does the expected text appear somewhere in the
+transcription**, exactly or approximately? Three signals (exact / lenient /
+local similarity score), detailed in the script's docstring.
 
-| jeu | Chandra OCR 2 (5 B) | PaddleOCR-VL (0,9 B) |
+Numeric or very short fields (`"5"`, `"X"`): matched on a word boundary, to
+avoid a lone digit "matching" by chance on a page dense with dates and phone
+numbers.
+
+---
+
+## 3. Results (26 August)
+
+30 specimens per set, handwritten fields only (the VN `khoa` field is
+printed, not handwritten; the EN `sex` field is a checkbox, not text — both
+excluded from this table, counted separately by the script).
+
+| set | Chandra OCR 2 (5 B) | PaddleOCR-VL (0.9 B) |
 |---|---|---|
-| VN | **95,5 %** (score 97,2) | 78,2 % (score 84,8) |
-| EN | **99,1 %** (score 99,7) | 90,3 % (score 97,5) |
+| VN | **95.5%** (score 97.2) | 78.2% (score 84.8) |
+| EN | **99.1%** (score 99.7) | 90.3% (score 97.5) |
 
-Chandra domine nettement les deux langues, cohérent avec son avantage déjà
-mesuré sur les factures à fond propre (§ `resultats_teds.md`). L'écart est
-plus marqué en vietnamien : les diacritiques restent le point dur, pour les
-deux modèles, mais PaddleOCR-VL en souffre visiblement plus.
+Chandra clearly leads on both languages, consistent with the edge it already
+showed on clean-background invoices (see `resultats_teds.md`). The gap is
+wider in Vietnamese: diacritics remain the hard part for both models, but
+PaddleOCR-VL suffers visibly more from them.
 
-### Ce qui reste manqué chez Chandra (VN, 4,5 %)
+### What Chandra still misses (VN, 4.5%)
 
-Inspection du détail : des quasi-échecs réels, pas un artefact de mesure —
-scores 66 à 79, sur des descriptions longues partiellement mal lues (`mo_ta`,
-`ky_thuat`) et quelques noms propres ou noms de département (`so_y_te`).
-Rien à corriger côté script ici.
-
----
-
-## 4. Deux bugs trouvés en traitant ces résultats
-
-### GLM-OCR : OOM systématique, 30/30 sur les deux langues
-
-Erreur CUDA identique sur chaque specimen : tentative d'allocation de
-23,43 GiB. Cause : nos specimens font 1654×2339 px (~200 dpi), alors que
-GLM n'avait tourné jusqu'ici que sur les images factures, 900×1200 — 3,6×
-moins de pixels. `_glm_predict` (dans `scripts/bench_deformed.py`) passait
-le chemin de l'image brute au processeur sans redimensionnement ; GLM-OCR
-n'a ni tuilage ni sous-échantillonnage intégré côté encodeur visuel,
-contrairement à Chandra et Hunyuan qui encaissent nos images sans y
-toucher.
-
-**Corrigé** : redimensionnement à 1200 px de grand côté avant l'appel
-(`GLM_MAX_LONG_SIDE`), via une copie temporaire puisque le processeur ne
-prend qu'un chemin de fichier dans le message, pas un objet image. Le
-notebook Kaggle est à relancer (tâche #31) — les runs précédents n'ayant
-produit aucun `.md`, la reprise se fait à zéro sans rien nettoyer.
-
-### `eval_handwriting.py` : les balises HTML de Chandra cassaient le score
-
-Chandra rend les tableaux en HTML brut dans le Markdown, avec un `<br/>`
-entre deux lignes d'une même cellule — typiquement le champ `ngay_gio`
-(« 15h00<br/>12/07 »), alors que la vérité terrain attend un espace
-(« 15h00 12/07 »). Le normaliseur ne retirait aucune balise : un champ
-correctement lu comptait comme manqué. Trouvé en inspectant à la main le
-premier score VN de Chandra (77,7 %), où *presque tous* les `ngay_gio` de
-chaque specimen ressortaient comme ratés — un motif trop régulier pour être
-une vraie erreur de lecture.
-
-**Corrigé** par `_sans_html()`, qui retire toute balise (pas seulement
-`<br/>` : PaddleOCR-VL encadre chaque cellule de `<td style='...'>`, Chandra
-ajoute parfois `<i>...</i>` — inoffensifs aujourd'hui mais potentiellement
-pas demain). Effet mesuré : Chandra VN passe de **77,7 % à 95,5 %**.
-PaddleOCR-VL ne bouge quasiment pas (78,2 % → 78,2 %), il n'utilisait pas de
-`<br/>` dans ses cellules — c'était bien un artefact du rendu Chandra, pas
-un problème général de méthode.
+Checked in detail: genuine near-misses, not a measurement artifact — scores
+66 to 79, on long descriptions partially misread (`mo_ta`, `ky_thuat`) and a
+few proper names or department names (`so_y_te`). Nothing to fix on the
+scoring side here.
 
 ---
 
-## 5. Deux observations qualitatives, sur les pires specimens de chaque langue
+## 4. Two bugs found while processing these results
 
-Inspection visuelle du rapport HTML de PaddleOCR-VL (images + transcription
-côte à côte), sur le pire score de chaque jeu.
+### GLM-OCR: systematic OOM, 30/30 on both languages
 
-### VN — hallucinations CJK, pas un problème de lisibilité
+The exact same CUDA error on every specimen: an attempt to allocate
+23.43 GiB. Cause: our specimens are 1654x2339 px (~200 dpi), while GLM had
+so far only run on the invoice images, 900x1200 — 3.6x fewer pixels.
+`_glm_predict` (in `scripts/bench_deformed.py`) passed the raw image path to
+the processor with no resizing; GLM-OCR has no built-in tiling or
+downsampling on the vision-encoder side, unlike Chandra and Hunyuan, which
+handle our images unchanged.
 
-`specimen_005` (police unique, Playwrite VN) : l'écriture est parfaitement
-lisible à l'œil, ce qui écarte une explication par la forme des lettres.
-Pourtant PaddleOCR-VL insère par endroits des caractères **chinois et
-coréens** au lieu du texte attendu : « liệt nửa người trái » devient
-« liết n**其一** người trái », « Đồng ý » devient « Đông **너** ». Quand le
-modèle est incertain sur un diacritique vietnamien, il semble retomber sur
-un token CJK plutôt que sur une lettre latine fausse — cohérent avec la
-réserve déjà notée pour GLM-OCR (le vietnamien hors de ses langues
-officielles), mais observé ici sur PaddleOCR-VL.
+**Fixed**: resize to a 1200 px long side before the call
+(`GLM_MAX_LONG_SIDE`), through a temporary copy, since the processor only
+accepts a file path in the message, not an image object. The Kaggle notebook
+still needs re-running (task #31) — since the previous runs produced no `.md`
+at all, resuming starts from zero with nothing to clean up.
 
-### EN — l'effet de police est net et mesurable
+### `eval_handwriting.py`: Chandra's HTML tags were breaking the score
 
-Score par police, sur les 30 specimens EN (PaddleOCR-VL) :
+Chandra renders tables as raw HTML inside the Markdown, with a `<br/>`
+between two lines of the same cell — typically the `ngay_gio` field
+("15h00<br/>12/07"), while the ground truth expects a space
+("15h00 12/07"). The normaliser stripped no tags at all: a correctly read
+field counted as missed. Found by manually inspecting Chandra's first VN
+score (77.7%), where *almost every* `ngay_gio` field in every specimen came
+out as missed — too regular a pattern to be a genuine reading error.
 
-| police | n | moyenne |
+**Fixed** with `_sans_html()`, which strips every tag (not just `<br/>`:
+PaddleOCR-VL wraps each cell in `<td style='...'>`, Chandra sometimes adds
+`<i>...</i>` — harmless today but potentially not tomorrow). Measured
+effect: Chandra VN goes from **77.7% to 95.5%**. PaddleOCR-VL barely moves
+(78.2% → 78.2%), since it did not use `<br/>` inside its cells — this was a
+genuine artifact of Chandra's rendering, not a general flaw in the method.
+
+---
+
+## 5. Two qualitative observations, on the worst specimen of each language
+
+Visual inspection of PaddleOCR-VL's HTML report (image and transcription
+side by side), on the worst-scoring specimen of each set.
+
+### VN — CJK hallucinations, not a legibility problem
+
+`specimen_005` (single font, Playwrite VN): the handwriting is perfectly
+legible to the eye, which rules out an explanation based on letter shape.
+Yet PaddleOCR-VL inserts **Chinese and Korean characters** in places,
+instead of the expected text: "liệt nửa người trái" becomes
+"liết n**其一** người trái", "Đồng ý" becomes "Đông **너**". When the model
+is unsure about a Vietnamese diacritic, it appears to fall back on a CJK
+token rather than a wrong Latin letter — consistent with the reservation
+already noted for GLM-OCR (Vietnamese is outside its official languages),
+but observed here on PaddleOCR-VL.
+
+### EN — a clear, measurable font effect
+
+Score by font, across the 30 EN specimens (PaddleOCR-VL):
+
+| font | n | average |
 |---|---|---|
-| homemade_apple | 3 | **79,6 %** |
-| reenie_beanie | 6 | 88,9 % |
-| patrick_hand | 7 | 91,4 % |
-| shadows_into_light | 6 | 91,5 % |
-| caveat | 3 | 91,7 % |
-| sacramento | 4 | 92,4 % |
-| alex_brush | 1 | 92,6 % |
+| homemade_apple | 3 | **79.6%** |
+| reenie_beanie | 6 | 88.9% |
+| patrick_hand | 7 | 91.4% |
+| shadows_into_light | 6 | 91.5% |
+| caveat | 3 | 91.7% |
+| sacramento | 4 | 92.4% |
+| alex_brush | 1 | 92.6% |
 
-Homemade Apple (« irrégulier, très réaliste » selon sa propre description
-dans `handwriting_en/README.md`) décroche nettement des six autres, de façon
-cohérente sur ses trois occurrences (71 %, 83 %, 85 %). Sur le pire cas
-(`specimen_019`), le **T majuscule cursif** de cette police est visiblement
-ambigu : « Thang » → « Zhang », « Tran » (adresse) → « Iran », « Tran »
-(signature) → « Jan » — trois lectures différentes de la même lettre sur la
-même page. Une vraie ambiguïté visuelle du glyphe, pas une confusion
-systématique à sens unique.
+Homemade Apple ("irregular, very realistic" by its own description in
+`handwriting_en/README.md`) clearly trails the other six, consistently
+across all three of its occurrences (71%, 83%, 85%). On the worst case
+(`specimen_019`), this font's **cursive capital T** is visibly ambiguous:
+"Thang" → "Zhang", "Tran" (address) → "Iran", "Tran" (signature) → "Jan" —
+three different readings of the same letter on the same page. A genuine
+visual ambiguity in the glyph, not a one-directional systematic confusion.
 
-À vérifier une fois Chandra et GLM disponibles sur ces mêmes specimens : si
-Homemade Apple reste le point faible sur les trois modèles, c'est un signal
-sur la police plutôt que sur un modèle en particulier.
+Worth checking once Chandra and GLM are available on these same specimens:
+if Homemade Apple remains the weak point across all three models, that
+points to the font rather than to any one model.
 
 ---
 
-## 6. Reste à faire
+## 6. Remaining work
 
-- Relancer GLM-OCR (tâche #31) après le correctif de redimensionnement.
-- Compléter le tableau à trois modèles, VN et EN.
-- Vérifier si l'effet Homemade Apple et les hallucinations CJK se
-  reproduisent sur Chandra et GLM, ou sont spécifiques à PaddleOCR-VL.
+- Re-run GLM-OCR (task #31) after the resizing fix.
+- Complete the three-model table, VN and EN.
+- Check whether the Homemade Apple effect and the CJK hallucinations
+  reproduce on Chandra and GLM, or are specific to PaddleOCR-VL.

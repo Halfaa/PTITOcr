@@ -1,17 +1,17 @@
-# Résultats — factures multi-pages déformées
+# Results — warped multi-page invoices
 
-Trois modèles, 8 factures, 17 pages, jeu de test identique.
-Images produites par `synthetic_invoice_generator` puis déformées en 3D par
-`doc3D-renderer` (Blender), pour simuler des photos de documents.
+Three models, 8 invoices, 17 pages, identical test set.
+Images produced by `synthetic_invoice_generator` then warped in 3D by
+`doc3D-renderer` (Blender), to simulate photographs of documents.
 
-Métrique : **TEDS** (Tree-Edit-Distance-based Similarity, Zhong et al. 2020,
-PubTabNet) — la métrique standard de reconnaissance de tableaux, donc des
-chiffres comparables à la littérature.
+Metric: **TEDS** (Tree-Edit-Distance-based Similarity, Zhong et al. 2020,
+PubTabNet) — the standard table-recognition metric, so the figures are
+comparable to the literature.
 
-- **TEDS** : structure + contenu textuel
-- **TEDS-Struct** : structure seule, texte des cellules ignoré
+- **TEDS**: structure + textual content
+- **TEDS-Struct**: structure alone, cell text ignored
 
-Reproduire :
+To reproduce:
 
 ```powershell
 python src\eval_teds.py           --run multipage_hunyuan
@@ -20,58 +20,58 @@ python src\eval_multipage_merge.py --run multipage_hunyuan
 
 ---
 
-## 1. Comparaison des quatre modèles
+## 1. Comparison of the four models
 
-Chiffres re-mesurés le 5 août sous le protocole unifié
-(`scripts/eval_all.py`), après les améliorations de l'évaluation (parsing
-des tableaux Markdown, corrections de vérité terrain). Les valeurs
-antérieures de ce document (0.928 pour Hunyuan) venaient d'un état
-intermédiaire du code d'évaluation.
+Figures re-measured on 5 August under the unified protocol
+(`scripts/eval_all.py`), after improvements to the evaluation (Markdown
+table parsing, ground-truth corrections). The earlier values in this
+document (0.928 for Hunyuan) came from an intermediate state of the
+evaluation code.
 
-| Modèle | Taille | TEDS | TEDS-Struct | Écart | Temps / page |
+| Model | Size | TEDS | TEDS-Struct | Gap | Time / page |
 |---|---|---|---|---|---|
-| **HunyuanOCR-1.5** | 1 B | **0.950** | **0.973** | 0.023 | ~87 s (GPU portable) |
-| Chandra OCR 2 | 5 B | 0.916 | 0.943 | 0.027 | ~81 s (T4 Kaggle) |
+| **HunyuanOCR-1.5** | 1 B | **0.950** | **0.973** | 0.023 | ~87 s (laptop GPU) |
+| Chandra OCR 2 | 5 B | 0.916 | 0.943 | 0.027 | ~81 s (Kaggle T4) |
 | PaddleOCR-VL | 0.9 B | 0.909 | 0.933 | 0.024 | ~230 s (CPU) |
 | PP-StructureV3 | — | 0.557 | 0.857 | **0.300** | ~60 s (CPU) |
 
-En lecture brute. Avec prétraitement puis politique adaptative, le
-classement s'inverse : Chandra 0.967 (= plafond), Hunyuan 0.953,
-PaddleOCR-VL 0.951 — voir [chandra_ocr2.md](chandra_ocr2.md) pour le
-détail et les réserves de comparabilité sur le run prétraité de Hunyuan.
+Raw reading. With pre-processing and then the adaptive policy, the ranking
+flips: Chandra 0.967 (= ceiling), Hunyuan 0.953, PaddleOCR-VL 0.951 — see
+[chandra_ocr2.md](chandra_ocr2.md) for the detail and the comparability
+caveats on Hunyuan's pre-processed run.
 
-**HunyuanOCR et PaddleOCR-VL sont au coude à coude** (0.928 contre 0.909).
-L'écart est réel mais modeste, et sur 8 factures il faut se garder de le
-surinterpréter.
+**HunyuanOCR and PaddleOCR-VL are neck and neck** (0.928 against 0.909). The
+gap is real but modest, and over 8 invoices it should not be
+over-interpreted.
 
-**PP-StructureV3 décroche nettement**, et son profil d'erreur est différent :
-un écart TEDS / TEDS-Struct de 0.300, contre 0.020 et 0.024 pour les deux
-autres. Autrement dit il reconstruit correctement la grille (0.857) mais lit
-très mal les caractères vietnamiens. C'est exactement la distinction que
-TEDS-Struct sert à faire, et elle oriente le diagnostic : chez lui le
-problème est l'OCR, pas la détection de tableau.
+**PP-StructureV3 falls clearly behind**, and its error profile is different:
+a TEDS / TEDS-Struct gap of 0.300, against 0.020 and 0.024 for the other
+two. In other words it rebuilds the grid correctly (0.857) but reads
+Vietnamese characters very badly. That is exactly the distinction
+TEDS-Struct exists to draw, and it steers the diagnosis: for this model the
+problem is the OCR, not table detection.
 
 ---
 
-## 2. Ce qu'apporte la fusion multi-pages
+## 2. What multi-page merging brings
 
-Chaque facture est notée **deux fois contre la même vérité terrain** (la
-facture complète) : une fois avec le seul tableau de la 1re page — ce que
-produirait un pipeline qui ignore le problème — et une fois avec le tableau
-reconstitué par `table_merge`.
+Each invoice is scored **twice against the same ground truth** (the complete
+invoice): once with the first page's table alone — what a pipeline ignoring
+the problem would produce — and once with the table reassembled by
+`table_merge`.
 
-| Modèle | TEDS sans fusion | TEDS avec fusion | Gain |
+| Model | TEDS without merging | TEDS with merging | Gain |
 |---|---|---|---|
 | HunyuanOCR-1.5 | 0.668 | 0.928 | **+0.260** |
 | PaddleOCR-VL | 0.658 | 0.909 | **+0.251** |
 | PP-StructureV3 | 0.424 | 0.557 | +0.132 |
 
-Le gain est **du même ordre pour les trois modèles**, ce qui est rassurant :
-l'algorithme de fusion n'est pas calibré sur un modèle particulier.
+The gain is **of the same order for all three models**, which is
+reassuring: the merging algorithm is not calibrated on one particular model.
 
-### Détail par facture (HunyuanOCR-1.5)
+### Per-invoice detail (HunyuanOCR-1.5)
 
-| Facture | Pages | TEDS sans | TEDS avec | Gain | Struct avec |
+| Invoice | Pages | TEDS without | TEDS with | Gain | Struct with |
 |---|---|---|---|---|---|
 | 1 | 1–2 | 0.510 | 0.902 | +0.392 | 0.983 |
 | 2 | 3–4 | 0.810 | 0.945 | +0.135 | 0.965 |
@@ -81,71 +81,69 @@ l'algorithme de fusion n'est pas calibré sur un modèle particulier.
 | 6 | 12–13 | 0.862 | 0.947 | +0.086 | 0.969 |
 | 7 | 14–15 | 0.572 | 0.972 | +0.400 | 0.976 |
 | 8 | 16–17 | 0.759 | 0.759 | 0.000 | 0.783 |
-| **Moyenne** | | **0.668** | **0.928** | **+0.260** | **0.949** |
+| **Mean** | | **0.668** | **0.928** | **+0.260** | **0.949** |
 
-La facture 5 est le cas le plus parlant : elle s'étale sur trois pages, et la
-fusion la fait passer de 0.482 à 0.968.
+Invoice 5 is the most telling case: it spans three pages, and merging takes
+it from 0.482 to 0.968.
 
-La facture 8 est le seul échec : l'OCR n'a extrait **aucun tableau** de la
-page 17, il n'y a donc rien à fusionner. C'est un échec de détection en
-amont, hors de portée de l'algorithme.
+Invoice 8 is the only failure: the OCR extracted **no table at all** from
+page 17, so there is nothing to merge. That is an upstream detection
+failure, out of the algorithm's reach.
 
 ---
 
-## 3. Qualité de la détection de continuation
+## 3. Quality of continuation detection
 
-Évaluée paire de pages par paire de pages, contre une vérité terrain lue
-directement dans le PDF source (marqueurs `Tiếp trang trước`) — et non dans
-les sorties OCR, qui ont inspiré l'algorithme.
+Evaluated page-pair by page-pair, against a ground truth read directly from
+the source PDF (`Tiếp trang trước` markers) — and not from the OCR outputs,
+which inspired the algorithm.
 
-| Modèle | VP | FP | Ratés | Précision | Rappel | F1 |
+| Model | TP | FP | Misses | Precision | Recall | F1 |
 |---|---|---|---|---|---|---|
-| HunyuanOCR-1.5 | 7 | 0 | 0 | 100 % | 100 % | **100 %** |
-| PP-StructureV3 | 7 | 0 | 0 | 100 % | 100 % | **100 %** |
-| PaddleOCR-VL | 7 | 0 | 1 | 100 % | 88 % | 93 % |
+| HunyuanOCR-1.5 | 7 | 0 | 0 | 100% | 100% | **100%** |
+| PP-StructureV3 | 7 | 0 | 0 | 100% | 100% | **100%** |
+| PaddleOCR-VL | 7 | 0 | 1 | 100% | 88% | 93% |
 
-**Zéro faux positif dans les trois cas.** C'est le point le plus important :
-une fusion à tort fabrique un tableau qui mélange deux factures, une erreur
-bien plus grave qu'une fusion manquée, et bien plus difficile à repérer en
-aval.
-
----
-
-## Limites à assumer
-
-**Échantillon.** 8 factures, 17 pages, un seul générateur, une seule mise en
-page. Les chiffres établissent que la chaîne fonctionne sur du bruit OCR
-réel — pas qu'elle généralise à d'autres formats de facture.
-
-**Hypothèse métier.** L'algorithme suppose que la colonne STT redémarre à 1 à
-chaque facture. C'est le signal le plus discriminant, et celui qui rattrape
-les cas où l'OCR a massacré la fin du tableau précédent. À revalider sur des
-factures d'un autre format.
-
-**Vérité terrain = tableau *logique*.** En-tête, lignes de médicaments, ligne
-Total — pas les artefacts de mise en page (bannière, marqueurs de
-continuation, en-têtes répétés). Ces artefacts sont précisément ce que la
-fusion doit faire disparaître.
-
-**Séparateurs de milliers neutralisés.** Le générateur choisit au hasard
-entre `2900`, `2 900`, `2.900` et `2,900` : variable parasite du générateur,
-pas difficulté de lecture. `--strict-numbers` désactive la normalisation.
-
-**Temps non comparables.** HunyuanOCR tourne sur GPU, les deux autres sur
-CPU. Les ~87 s contre ~230 s ne mesurent pas l'efficacité relative des
-modèles.
+**Zero false positives in all three cases.** That is the most important
+point: merging wrongly manufactures a table that mixes two invoices, an
+error far more serious than a missed merge, and far harder to spot
+downstream.
 
 ---
 
-## Un incident à retenir
+## Limitations to own
 
-Lors de la mise en route de HunyuanOCR, le modèle a produit **6842 caractères
-de charabia** (syllabes de pinyin, tirets à répétition) sans lever la moindre
-erreur, en 315 s. La cause : le processeur d'images utilisait le backend
-torchvision, qui remplace le rééchantillonnage LANCZOS par BICUBIC et écarte
-le prétraitement de celui du modèle original. Corrigé en forçant
-`backend="pil"` (codé en dur dans `scripts/bench_deformed.py`).
+**Sample.** 8 invoices, 17 pages, a single generator, a single layout. The
+figures establish that the chain works on real OCR noise — not that it
+generalises to other invoice formats.
 
-Sans comparaison à une vérité terrain, ce run aurait produit un score TEDS
-parfaitement calculé sur des données absurdes. C'est l'argument le plus
-concret en faveur de tout le dispositif d'évaluation.
+**Domain assumption.** The algorithm assumes the STT column restarts at 1 on
+each invoice. That is the most discriminating signal, and the one that
+rescues cases where the OCR mangled the end of the previous table. To be
+re-validated on invoices in another format.
+
+**Ground truth = the *logical* table.** Header, drug lines, Total line — not
+the layout artifacts (banner, continuation markers, repeated headers). Those
+artifacts are precisely what merging has to make disappear.
+
+**Thousands separators neutralised.** The generator picks at random between
+`2900`, `2 900`, `2.900` and `2,900`: a nuisance variable of the generator,
+not a reading difficulty. `--strict-numbers` disables the normalisation.
+
+**Times are not comparable.** HunyuanOCR runs on GPU, the other two on CPU.
+The ~87 s against ~230 s do not measure the models' relative efficiency.
+
+---
+
+## One incident worth remembering
+
+While bringing up HunyuanOCR, the model produced **6842 characters of
+gibberish** (pinyin syllables, repeated dashes) without raising a single
+error, in 315 s. The cause: the image processor used the torchvision
+backend, which replaces LANCZOS resampling with BICUBIC and departs from the
+original model's pre-processing. Fixed by forcing `backend="pil"`
+(hard-coded in `scripts/bench_deformed.py`).
+
+Without comparison against ground truth, that run would have produced a
+perfectly computed TEDS score over absurd data. It is the most concrete
+argument in favour of the whole evaluation apparatus.

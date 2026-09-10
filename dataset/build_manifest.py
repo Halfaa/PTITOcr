@@ -1,33 +1,38 @@
 """
-Recenser TOUS les jeux d'images du projet dans un seul manifeste.
+Index EVERY image set in the project in a single manifest.
 
-Pourquoi ce script existe. Neuf mois de travail ont produit une quinzaine de
-jeux, éparpillés sur trois arborescences : les rendus Blender
-(`../doc3D-renderer/img/`), le manuscrit synthétique (`handwriting/` et
-`handwriting_en/`), et l'échantillon TabRecSet (`data/`). La vérité terrain,
-elle, vit encore ailleurs (`../synthetic_invoice_generator/`). Savoir « quel
-jeu contient quoi, et contre quoi le noter » supposait jusqu'ici de lire
-quatre README et d'ouvrir trois dossiers.
+Why this script exists. Nine months of work produced some fifteen sets,
+scattered across three trees: the Blender renders (`../doc3D-renderer/img/`),
+the synthetic handwriting (`handwriting/` and `handwriting_en/`), and the
+TabRecSet sample (`data/`). The ground truth lives somewhere else again
+(`../synthetic_invoice_generator/`). Answering "which set holds what, and
+what do I score it against" meant reading four READMEs and opening three
+folders.
 
-Le manifeste répond à ça en une fois : une entrée par image, avec sa
-famille, son jeu, sa résolution, sa langue, et le chemin de la vérité
-terrain qui lui correspond. C'est un INDEX, pas une copie -- les images ne
-sont pas dupliquées, ce qui éviterait 400 Mo de redondance dans un dépôt qui
-sait déjà les régénérer.
+The manifest answers that once: one entry per image, with its family, its
+set, its resolution, its language, and the path to the matching ground
+truth. It is an INDEX, not a copy -- the images are not duplicated, which
+would add 400 MB of redundancy to a repository that already knows how to
+regenerate them.
 
-    python dataset/build_manifest.py                 # écrit dataset/manifest.json
-    python dataset/build_manifest.py --resume        # juste le résumé, sans écrire
-    python dataset/build_manifest.py --export corpus # matérialise une copie unifiée
+    python dataset/build_manifest.py                 # writes dataset/manifest.json
+    python dataset/build_manifest.py --resume        # summary only, writes nothing
+    python dataset/build_manifest.py --export corpus # materialise a unified copy
     python dataset/build_manifest.py --export corpus --zip
 
-`--export` sert quand il faut vraiment un dossier unique à envoyer ou à
-téléverser (Kaggle, Hugging Face) : il copie les images ET la vérité terrain
-sous `<export>/<famille>/<jeu>/`, en gardant les noms d'origine pour que les
-runs déjà produits restent appariables par `stem`.
+`--export` is for when a single folder really is needed, to send or to
+upload (Kaggle, Hugging Face): it copies the images AND the ground truth
+under `<export>/<family>/<set>/`, keeping the original names so that runs
+already produced stay matchable by `stem`.
 
-Un jeu absent n'est pas une erreur : les rendus Blender ne sont pas dans le
-dépôt (ils se régénèrent), donc le manifeste se construit avec ce qui est
-présent et signale explicitement ce qui manque, plutôt que d'échouer.
+A missing set is not an error: the Blender renders are not in the repository
+(they are regenerated), so the manifest is built from whatever is present
+and reports explicitly what is missing rather than failing.
+
+Note on naming: identifiers, dictionary keys and CLI flags stay in French
+throughout the project. They are the schema and the interface -- runs on
+disk, notebooks and documented commands all depend on them, so only the
+prose was translated.
 """
 
 import argparse
@@ -39,20 +44,20 @@ from pathlib import Path
 
 RACINE = Path(__file__).resolve().parent.parent
 
-# Les deux dépôts VOISINS dont dépendent onze jeux sur quatorze.
+# The two NEIGHBOURING repositories that eleven sets out of fourteen depend on.
 #
-# Ce dépôt-ci (PTITOcr) ne couvre que MedicalRecord/. Les rendus Blender et
-# la vérité terrain des factures vivent dans deux autres dépôts, et --
-# c'est le point important -- NI L'UN NI L'AUTRE ne versionne ses images ou
-# ses JSON : les deux ne contiennent que le code qui les produit. Un clone
-# frais de PTITOcr ne peut donc reconstruire que les trois jeux dont la
-# source est ici (handwriting_vi, handwriting_en, tabrecset_sample).
+# This repository (PTITOcr) only covers MedicalRecord/. The Blender renders
+# and the invoice ground truth live in two other repositories, and -- this is
+# the point that matters -- NEITHER ONE versions its images or its JSON: both
+# hold only the code that produces them. A fresh clone of PTITOcr can
+# therefore rebuild just the three sets whose source is here
+# (handwriting_vi, handwriting_en, tabrecset_sample).
 #
-# Les chemins se surchargent par variable d'environnement, pour une
-# arborescence différente de la nôtre (les deux dépôts ailleurs, un disque
-# séparé pour les rendus) :
-#     $env:DOC3D_ROOT = "D:/rendus"
-#     $env:INVOICE_GEN_ROOT = "D:/factures"
+# The paths are overridable through environment variables, for a tree that
+# differs from ours (the two repositories elsewhere, a separate disk for the
+# renders):
+#     $env:DOC3D_ROOT = "D:/renders"
+#     $env:INVOICE_GEN_ROOT = "D:/invoices"
 DEPOTS_VOISINS = {
     "doc3D-renderer": "https://github.com/anhdungdo0906/doc3D-renderer.git",
     "synthetic_invoice_generator":
@@ -66,16 +71,15 @@ GEN = Path(os.environ.get("INVOICE_GEN_ROOT")
 try:
     from PIL import Image
 except ImportError:
-    raise SystemExit("Il faut Pillow :\n    pip install pillow")
+    raise SystemExit("Pillow is required:\n    pip install pillow")
 
 
 # --------------------------------------------------------------------------
-# Les jeux, décrits UNE fois. Tout le reste du script en découle.
+# The sets, described ONCE. Everything else in this script follows from it.
 #
-# `gt` désigne le dossier de vérité terrain au niveau FACTURE (un JSON par
-# facture, plusieurs pages par facture) ; `pdf` sert au découpage en factures.
-# Les deux sont distincts et c'est délibéré -- voir l'en-tête de
-# scripts/eval_all.py.
+# `gt` points at the ground truth at INVOICE level (one JSON per invoice,
+# several pages per invoice); `pdf` drives the page-to-invoice split. The two
+# are distinct, deliberately -- see the header of scripts/eval_all.py.
 
 FACTURES_MULTIPAGE = {
     "gt": GEN / "ground_truth_labels_multipage",
@@ -91,122 +95,122 @@ FACTURES_SIMPLES = {
 }
 
 JEUX = {
-    # -- Factures, rendus Blender ------------------------------------------
+    # -- Invoices, Blender renders -----------------------------------------
     "multipage_test": {
         "famille": "facture", "langue": "vi",
-        "titre": "8 factures, 17 pages déformées, un seul gabarit",
-        "role": "jeu de référence historique, celui de tous les premiers chiffres",
+        "titre": "8 invoices, 17 warped pages, a single template",
+        "role": "historical reference set, the source of all the early figures",
         "dossier": DOC3D / "img" / "multipage_test",
         "verite": FACTURES_MULTIPAGE,
         "generateur": "doc3D-renderer/render_mesh_multipage.py",
     },
     "multipage_flat_1800": {
         "famille": "facture", "langue": "vi",
-        "titre": "les mêmes 17 pages, à plat, 1800 px",
-        "role": "témoin haute résolution : le plafond de lecture sans déformation",
+        "titre": "the same 17 pages, flat, 1800 px",
+        "role": "high-resolution control: the reading ceiling without warping",
         "dossier": DOC3D / "img" / "multipage_flat_1800",
         "verite": FACTURES_MULTIPAGE,
         "generateur": "scripts/rendre_haute_resolution.py",
     },
     "multipage_test_noillum": {
         "famille": "facture", "langue": "vi",
-        "titre": "17 pages rendues sans éclairage",
-        "role": "isole l'effet de l'éclairage de celui de la déformation",
+        "titre": "17 pages rendered without lighting",
+        "role": "separates the effect of lighting from the effect of warping",
         "dossier": DOC3D / "img" / "multipage_test_noillum",
         "verite": FACTURES_MULTIPAGE,
-        "generateur": "doc3D-renderer, passe sans HDR",
+        "generateur": "doc3D-renderer, pass without HDR",
     },
     "multipage_test_unwarped": {
         "famille": "facture", "langue": "vi",
-        "titre": "17 pages remises à plat par la vérité terrain UV",
-        "role": "oracle de dewarping : le plafond atteignable si le dépliage était parfait",
+        "titre": "17 pages flattened using the UV ground truth",
+        "role": "dewarping oracle: the ceiling if unwarping were perfect",
         "dossier": DOC3D / "img" / "multipage_test_unwarped",
         "verite": FACTURES_MULTIPAGE,
         "generateur": "scripts/dewarp_oracle.py",
     },
     "multipage_test_preprocessed_v3": {
         "famille": "facture", "langue": "vi",
-        "titre": "17 pages passées par le prétraitement (version courante)",
-        "role": "branche « prétraitée » du comparatif avec/sans",
+        "titre": "17 pages through the pre-processing module (current version)",
+        "role": "the 'pre-processed' branch of the with/without comparison",
         "dossier": DOC3D / "img" / "multipage_test_preprocessed_v3",
         "verite": FACTURES_MULTIPAGE,
         "generateur": "src/preprocess.py",
     },
     "variants_flat": {
         "famille": "facture", "langue": "vi",
-        "titre": "12 factures, 25 pages à plat, 6 gabarits",
-        "role": "jeu diversifié : mesure la dépendance au gabarit",
+        "titre": "12 invoices, 25 flat pages, 6 templates",
+        "role": "diversified set: measures how much the chain depends on the template",
         "dossier": DOC3D / "img" / "variants_flat",
         "verite": FACTURES_VARIANTS,
         "generateur": "synthetic_invoice_generator/create_latex_variants.py",
     },
     "variants_warped": {
         "famille": "facture", "langue": "vi",
-        "titre": "les mêmes 12 factures, déformées",
-        "role": "le couple à plat / déformé isole l'effet de la déformation seule",
+        "titre": "the same 12 invoices, warped",
+        "role": "the flat/warped pair isolates the effect of warping alone",
         "dossier": DOC3D / "img" / "variants_warped",
         "verite": FACTURES_VARIANTS,
         "generateur": "doc3D-renderer/render_variants.ps1",
     },
     "variants_encombre": {
         "famille": "facture", "langue": "vi",
-        "titre": "les mêmes pages, sur fond encombré (3 à 6 feuilles parasites)",
-        "role": "casse la localisation de feuille -- voir docs/fonds_encombres.md",
+        "titre": "the same pages, on a cluttered background (3 to 6 distractor sheets)",
+        "role": "breaks sheet localisation -- see docs/fonds_encombres.md",
         "dossier": DOC3D / "img" / "variants_encombre",
         "verite": FACTURES_VARIANTS,
         "generateur": "doc3D-renderer/render_variants.ps1 -Parasites -1",
     },
     "variants_encombre_recadre_contenu": {
         "famille": "facture", "langue": "vi",
-        "titre": "jeu encombré recadré sur la plus grande boîte table (×1,2)",
-        "role": "piste close : isole le tableau mais coupe l'en-tête (§18 fonds_encombres)",
+        "titre": "cluttered set cropped to the largest table box (x1.2)",
+        "role": "closed avenue: isolates the table but cuts the header (fonds_encombres section 18)",
         "dossier": DOC3D / "img" / "variants_encombre_recadre_contenu",
         "verite": FACTURES_VARIANTS,
         "generateur": "scripts/recadrage_par_contenu_extraire.py",
     },
     "batch1": {
         "famille": "facture", "langue": "vi",
-        "titre": "100 factures d'une page, premier lot",
-        "role": "jeu de volume des tout premiers essais, une page par facture",
+        "titre": "100 single-page invoices, first batch",
+        "role": "volume set from the earliest trials, one page per invoice",
         "dossier": DOC3D / "img" / "batch1",
         "verite": FACTURES_SIMPLES,
-        "generateur": "doc3D-renderer, lot initial",
+        "generateur": "doc3D-renderer, initial batch",
     },
-    # -- Manuscrit synthétique ---------------------------------------------
+    # -- Synthetic handwriting ---------------------------------------------
     "handwriting_vi": {
         "famille": "manuscrit", "langue": "vi",
-        "titre": "30 fiches PHCN page 9, manuscrites (Playwrite VN)",
-        "role": "banc HTR vietnamien -- voir docs/resultats_handwriting.md",
+        "titre": "30 PHCN page-9 forms, handwritten (Playwrite VN)",
+        "role": "Vietnamese HTR benchmark -- see docs/resultats_handwriting.md",
         "dossier": RACINE / "handwriting" / "generated",
         "verite": "par_specimen",
         "generateur": "handwriting/generate.py",
     },
     "handwriting_en": {
         "famille": "manuscrit", "langue": "en",
-        "titre": "30 dossiers de santé (pages 1-2), manuscrits, 7 polices",
-        "role": "banc HTR anglais, avec variation de police mesurable",
+        "titre": "30 health records (pages 1-2), handwritten, 7 fonts",
+        "role": "English HTR benchmark, with measurable font variation",
         "dossier": RACINE / "handwriting_en" / "generated",
         "verite": "par_specimen",
         "generateur": "handwriting_en/generate_en.py",
     },
-    # -- Données réelles ---------------------------------------------------
+    # -- Real data ---------------------------------------------------------
     "tabrecset_sample": {
         "famille": "reel", "langue": "zh/en",
-        "titre": "échantillon TabRecSet (10 images annotées)",
-        "role": "seul jeu de photos RÉELLES du projet, sert de garde-fou",
+        "titre": "TabRecSet sample (10 annotated images)",
+        "role": "the project's only REAL photographs, used as a sanity check",
         "dossier": RACINE / "data" / "tabrecset_sample" / "images",
         "verite": "tabrecset",
-        "generateur": "jeu public, non généré",
+        "generateur": "public dataset, not generated",
     },
 }
 
-# L'étude de dégradation : un jeu, 24 sous-lots de 8 pages, tirés de
-# variants_warped. Traité à part parce que sa structure est différente --
-# chaque lot est un palier d'une courbe, pas un jeu autonome.
+# The degradation study: one set, 24 sub-batches of 8 pages, drawn from
+# variants_warped. Handled separately because its structure differs -- each
+# batch is one step of a curve, not a set in its own right.
 DEGRADATION = {
     "famille": "facture", "langue": "vi",
-    "titre": "24 paliers de dégradation × 8 pages (flou, bruit, jpeg, exposition, résolution)",
-    "role": "courbe de robustesse à la qualité de photo -- docs/degradation.md",
+    "titre": "24 degradation steps x 8 pages (blur, noise, jpeg, exposure, resolution)",
+    "role": "robustness curve against photo quality -- docs/degradation.md",
     "dossier": DOC3D / "img" / "degradation",
     "verite": FACTURES_VARIANTS,
     "generateur": "scripts/degrader.py --jeu variants_warped",
@@ -216,7 +220,7 @@ DEGRADATION = {
 # --------------------------------------------------------------------------
 
 def _chemin_relatif(p: Path) -> str:
-    """Chemin lisible depuis la racine du projet, séparateurs POSIX."""
+    """Readable path from the project root, POSIX separators."""
     try:
         return p.resolve().relative_to(RACINE.parent).as_posix()
     except ValueError:
@@ -232,12 +236,12 @@ def _taille(p: Path):
 
 
 def _verite_pour(cle_jeu, spec, image: Path):
-    """Où trouver la vérité terrain de CETTE image.
+    """Where to find the ground truth for THIS image.
 
-    Trois régimes distincts, et les confondre est exactement l'erreur que
-    eval_all.py existe pour empêcher : les factures ont une vérité par
-    FACTURE (plusieurs pages), le manuscrit une vérité par PAGE, TabRecSet
-    ses propres annotations.
+    Three distinct regimes, and confusing them is exactly the mistake
+    eval_all.py exists to prevent: invoices have one truth per INVOICE
+    (several pages), handwriting one truth per PAGE, TabRecSet its own
+    annotations.
     """
     if spec == "par_specimen":
         candidat = image.parent / f"{image.stem}_verite.json"
@@ -256,7 +260,7 @@ def _verite_pour(cle_jeu, spec, image: Path):
 
 
 def _images_de(dossier: Path):
-    """Les PNG d'un jeu, à plat ou dans un sous-dossier par specimen."""
+    """A set's PNGs, either flat or inside one sub-folder per specimen."""
     if not dossier.is_dir():
         return []
     plat = sorted(dossier.glob("*.png")) + sorted(dossier.glob("*.jpg"))
@@ -294,7 +298,7 @@ def construire():
                 "verite": _verite_pour(cle, spec["verite"], img),
             })
 
-    # Dégradation : un enregistrement par palier, mais un seul « jeu ».
+    # Degradation: one record per step, but a single "set".
     lots = sorted(p for p in DEGRADATION["dossier"].glob("*") if p.is_dir()) \
         if DEGRADATION["dossier"].is_dir() else []
     if lots:
@@ -324,21 +328,21 @@ def construire():
 
     return {
         "genere_le": date.today().isoformat(),
-        "racine": "les chemins sont relatifs au dossier PARENT de MedicalRecord "
-                  "(il contient MedicalRecord/, doc3D-renderer/ et "
+        "racine": "paths are relative to the PARENT folder of MedicalRecord "
+                  "(it contains MedicalRecord/, doc3D-renderer/ and "
                   "synthetic_invoice_generator/)",
-        # Le manifeste indexe un corpus LOCAL : les images n'étant versionnées
-        # dans aucun des trois dépôts, ces chemins ne se résolvent que sur une
-        # machine où le corpus a été généré. Pour transmettre le corpus à
-        # quelqu'un, c'est `--export corpus --zip` qu'il faut, pas ce fichier.
+        # The manifest indexes a LOCAL corpus: since the images are versioned
+        # in none of the three repositories, these paths only resolve on a
+        # machine where the corpus was generated. To hand the corpus to
+        # someone, use `--export corpus --zip`, not this file.
         "prerequis": {
-            "note": "11 jeux sur 14 viennent de deux dépôts voisins, qui ne "
-                    "versionnent NI leurs images NI la vérité terrain : seul "
-                    "le code s'y trouve. Reconstruire ces jeux suppose de "
-                    "rejouer la génération (LaTeX puis Blender).",
+            "note": "11 of the 14 sets come from two neighbouring repositories, "
+                    "which version NEITHER their images NOR the ground truth: "
+                    "only the code is there. Rebuilding those sets means "
+                    "replaying the generation (LaTeX, then Blender).",
             "depots_voisins": DEPOTS_VOISINS,
             "arborescence_attendue": [
-                "<parent>/MedicalRecord/   (ce dépôt)",
+                "<parent>/MedicalRecord/   (this repository)",
                 "<parent>/doc3D-renderer/",
                 "<parent>/synthetic_invoice_generator/",
             ],
@@ -354,7 +358,7 @@ def construire():
 
 
 def exporter(manifeste, destination: Path):
-    """Matérialise une copie unifiée : <dest>/<famille>/<jeu>/<image>."""
+    """Materialise a unified copy: <dest>/<family>/<set>/<image>."""
     destination.mkdir(parents=True, exist_ok=True)
     n = 0
     for entree in manifeste["images"]:
@@ -366,8 +370,8 @@ def exporter(manifeste, destination: Path):
             sous = sous / entree["palier"]
         sous.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, sous / source.name)
-        # La vérité par page voyage AVEC son image : séparées, elles se
-        # désapparient au premier déplacement de dossier.
+        # Per-page truth travels WITH its image: kept apart, the two come
+        # unpaired the first time a folder is moved.
         v = entree.get("verite") or {}
         if v.get("type") == "par_page":
             src_v = RACINE.parent / v["chemin"]
@@ -375,8 +379,8 @@ def exporter(manifeste, destination: Path):
                 shutil.copy2(src_v, sous / src_v.name)
         n += 1
 
-    # Les vérités par facture sont partagées par tout un jeu : une copie par
-    # dossier de vérité suffit, à la racine de l'export.
+    # Per-invoice truth is shared by a whole set: one copy per truth folder
+    # is enough, at the root of the export.
     for spec in (FACTURES_MULTIPAGE, FACTURES_VARIANTS, FACTURES_SIMPLES):
         if spec["gt"].is_dir():
             cible = destination / "verite_terrain" / spec["gt"].name
@@ -392,12 +396,12 @@ def exporter(manifeste, destination: Path):
 
 
 def diagnostiquer_racines():
-    """Dire tout de suite ce qui manque, et comment y remédier.
+    """Say straight away what is missing, and how to fix it.
 
-    Sans ça, un clone frais de PTITOcr affiche « 3 jeux, 70 images » et une
-    liste de onze absents, sans que rien n'explique pourquoi -- alors que la
-    cause est structurelle : les images ne sont versionnées dans AUCUN des
-    trois dépôts, ni ici, ni chez les deux voisins.
+    Without this, a fresh clone of PTITOcr prints "3 sets, 70 images" and a
+    list of eleven missing ones, with nothing explaining why -- when the
+    cause is structural: the images are versioned in NONE of the three
+    repositories, neither here nor in the two neighbours.
     """
     absents = [(nom, chemin) for nom, chemin in
                (("doc3D-renderer", DOC3D),
@@ -405,41 +409,41 @@ def diagnostiquer_racines():
                if not chemin.is_dir()]
     if not absents:
         return
-    print("Dépôt(s) voisin(s) introuvable(s) :")
+    print("Neighbouring repository/repositories not found:")
     for nom, chemin in absents:
-        print(f"  {nom:<30} attendu à {chemin}")
-    print("\nLes jeux qui en dépendent seront simplement absents du manifeste.")
-    print("Pour les récupérer, à côté de MedicalRecord :")
+        print(f"  {nom:<30} expected at {chemin}")
+    print("\nThe sets that depend on them will simply be absent from the manifest.")
+    print("To fetch them, next to MedicalRecord:")
     for nom, url in DEPOTS_VOISINS.items():
         if any(nom == a for a, _ in absents):
             print(f"    git clone {url}")
-    print("\nAttention : ces dépôts ne contiennent que le CODE de génération,")
-    print("pas les images ni la vérité terrain. Les cloner ne suffit pas --")
-    print("il faut rejouer la génération (LaTeX puis Blender). Voir")
-    print("dataset/README.md, section « Reconstituer le corpus ».")
-    print("Si tes dossiers sont ailleurs : $env:DOC3D_ROOT / $env:INVOICE_GEN_ROOT\n")
+    print("\nCareful: those repositories hold only the generation CODE, not")
+    print("the images nor the ground truth. Cloning them is not enough --")
+    print("the generation has to be replayed (LaTeX, then Blender). See")
+    print("dataset/README.md, section 'This repository is not enough'.")
+    print("If your folders live elsewhere: $env:DOC3D_ROOT / $env:INVOICE_GEN_ROOT\n")
 
 
 def resumer(m):
-    print(f"{m['n_jeux']} jeux, {m['n_images']} images\n")
-    print(f"{'jeu':<36}{'famille':<11}{'langue':<8}{'images':>7}  {'UV':<4}titre")
+    print(f"{m['n_jeux']} sets, {m['n_images']} images\n")
+    print(f"{'set':<36}{'family':<11}{'lang':<8}{'images':>7}  {'UV':<4}title")
     print("-" * 110)
     for cle, j in sorted(m["jeux"].items(), key=lambda kv: (kv[1]["famille"], kv[0])):
-        uv = "oui" if j["masque_uv"] else "--"
+        uv = "yes" if j["masque_uv"] else "--"
         print(f"{cle:<36}{j['famille']:<11}{j['langue']:<8}{j['n_images']:>7}  {uv:<4}{j['titre'][:52]}")
     if m["jeux_absents"]:
-        print(f"\nAbsents du disque (régénérables) : {', '.join(m['jeux_absents'])}")
+        print(f"\nMissing from disk (regenerable): {', '.join(m['jeux_absents'])}")
 
 
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--sortie", default=str(Path(__file__).resolve().parent / "manifest.json"))
     p.add_argument("--resume", action="store_true",
-                   help="Afficher le résumé sans écrire le manifeste.")
+                   help="Print the summary without writing the manifest.")
     p.add_argument("--export", default=None,
-                   help="Matérialiser une copie unifiée dans ce dossier.")
+                   help="Materialise a unified copy in this folder.")
     p.add_argument("--zip", action="store_true",
-                   help="Zipper l'export (implique --export).")
+                   help="Zip the export (implies --export).")
     args = p.parse_args()
 
     diagnostiquer_racines()
@@ -454,10 +458,10 @@ def main():
     if args.export or args.zip:
         dest = Path(args.export or (Path(__file__).resolve().parent / "corpus"))
         n = exporter(manifeste, dest)
-        print(f"-> {n} images copiées dans {dest}")
+        print(f"-> {n} images copied into {dest}")
         if args.zip:
             archive = shutil.make_archive(str(dest), "zip", dest.parent, dest.name)
-            print(f"-> {archive} ({Path(archive).stat().st_size / 1e6:.0f} Mo)")
+            print(f"-> {archive} ({Path(archive).stat().st_size / 1e6:.0f} MB)")
 
 
 if __name__ == "__main__":

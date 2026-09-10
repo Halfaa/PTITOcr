@@ -1,19 +1,18 @@
-# Validation arithmétique — résultats
+# Arithmetic validation — results
 
-Une facture est massivement redondante, et cette redondance est exploitable
-**sans vérité terrain** :
+An invoice is massively redundant, and that redundancy is exploitable
+**without ground truth**:
 
 ```
-quantité × prix_unitaire = total_ligne      (une contrainte par ligne)
-somme des totaux de ligne = Tổng tiền       (une contrainte globale)
+quantity x unit_price = line_total      (one constraint per line)
+sum of line totals = Tổng tiền          (one global constraint)
 ```
 
-C'est ce qui distingue cette mesure du TEDS : le TEDS dit *à quel point*
-l'extraction est bonne, mais suppose qu'on connaisse la réponse. La
-validation arithmétique, elle, fonctionne en production, sur des factures
-dont personne ne connaît le contenu.
+That is what sets this measurement apart from TEDS: TEDS says *how good* the
+extraction is, but assumes the answer is known. Arithmetic validation works
+in production, on invoices whose contents nobody knows.
 
-Reproduire :
+To reproduce:
 
 ```powershell
 python src\eval_validation.py --run multipage_hunyuan
@@ -21,100 +20,97 @@ python src\eval_validation.py --run multipage_hunyuan
 
 ---
 
-## 1. Détection des erreurs numériques
+## 1. Detecting numeric errors
 
-Sur 8 factures. « Signalée » = ligne remise à un relecteur humain.
+Over 8 invoices. "Flagged" = line handed back to a human reviewer.
 
-| Modèle | Lignes | Fausses | Détectées | Rappel | Fausses alertes |
+| Model | Lines | Wrong | Detected | Recall | False alarms |
 |---|---|---|---|---|---|
-| **HunyuanOCR-1.5** | 215 | 12 | 12 | **100 %** | **0** |
-| PaddleOCR-VL | 215 | 4 | 2 | 50 % | 0 |
-| PP-StructureV3 | 185 | 127 | 95 | 75 % | 0 |
+| **HunyuanOCR-1.5** | 215 | 12 | 12 | **100%** | **0** |
+| PaddleOCR-VL | 215 | 4 | 2 | 50% | 0 |
+| PP-StructureV3 | 185 | 127 | 95 | 75% | 0 |
 
-**Aucune fausse alerte, avec les trois modèles.** Chaque ligne signalée était
-réellement fausse. C'est ce qui rend le dispositif utilisable : le relecteur
-ne perd pas son temps sur des lignes correctes, donc il continuera à faire
-confiance au signal.
+**No false alarms, with any of the three models.** Every flagged line was
+genuinely wrong. That is what makes the mechanism usable: the reviewer does
+not waste time on correct lines, so they will keep trusting the signal.
 
-**Le résultat exploitable** : avec HunyuanOCR, sur 215 lignes, **12 sont à
-relire — soit 6 % — et elles contiennent 100 % des erreurs numériques**. On
-passe d'un « TEDS 0,928, donc à peu près 7 % de cellules fausses quelque
-part » à « voici les douze lignes à vérifier ».
+**The actionable result**: with HunyuanOCR, out of 215 lines, **12 need
+review — 6% — and they contain 100% of the numeric errors**. We move from
+"TEDS 0.928, so roughly 7% of cells are wrong somewhere" to "here are the
+twelve lines to check".
 
 ---
 
-## 2. Correction automatique
+## 2. Automatic correction
 
-Quand une seule des trois valeurs manque, elle se déduit des deux autres.
+When only one of the three values is missing, it can be deduced from the
+other two.
 
-| Modèle | Corrections | Exactes | Taux |
+| Model | Corrections | Exact | Rate |
 |---|---|---|---|
-| PaddleOCR-VL | 68 | 66 | **97 %** |
-| PP-StructureV3 | 35 | 3 | **9 %** |
+| PaddleOCR-VL | 68 | 66 | **97%** |
+| PP-StructureV3 | 35 | 3 | **9%** |
 | HunyuanOCR-1.5 | 0 | — | — |
 
-Ce tableau porte l'enseignement le plus important, et il est contre-intuitif.
+This table carries the most important lesson, and it is counter-intuitive.
 
-**PaddleOCR-VL perd fréquemment la colonne prix unitaire**, mais garde
-quantité et total justes : la déduction retrouve la valeur dans 97 % des cas.
-Ses 70 lignes fausses tombent ainsi à 4. La correction automatique est ici un
-gain considérable, presque gratuit.
+**PaddleOCR-VL frequently loses the unit-price column**, but keeps quantity
+and total right: deduction recovers the value in 97% of cases. Its 70 wrong
+lines drop to 4 that way. Automatic correction is a considerable gain here,
+almost free.
 
-**Avec PP-StructureV3, la même mécanique est un piège** : ses sorties sont
-tellement dégradées que les deux valeurs restantes sont souvent fausses
-elles aussi. On déduit alors une troisième valeur fausse — et, pire, la ligne
-devient arithmétiquement cohérente, donc **elle cesse d'être signalée**. La
-correction transforme une erreur visible en erreur invisible.
+**With PP-StructureV3, the same mechanism is a trap**: its outputs are so
+degraded that the two remaining values are often wrong too. A third wrong
+value then gets deduced — and, worse, the line becomes arithmetically
+consistent, so **it stops being flagged**. Correction turns a visible error
+into an invisible one.
 
-**Conséquence de conception** : ne jamais corriger automatiquement sans
-conditionner la correction à la qualité globale du document. Un seuil sur le
-taux de lignes cohérentes de la facture suffirait à désactiver la correction
-quand le modèle décroche.
+**Design consequence**: never correct automatically without conditioning the
+correction on the document's overall quality. A threshold on the invoice's
+share of consistent lines would be enough to disable correction when the
+model falls apart.
 
 ---
 
-## 3. Ce que l'arithmétique ne peut pas voir
+## 3. What arithmetic cannot see
 
-| Modèle | Lignes au nom mal lu |
+| Model | Lines with a misread name |
 |---|---|
-| HunyuanOCR-1.5 | 12 / 215 (6 %) |
-| PaddleOCR-VL | 15 / 215 (7 %) |
-| PP-StructureV3 | 76 / 185 (41 %) |
+| HunyuanOCR-1.5 | 12 / 215 (6%) |
+| PaddleOCR-VL | 15 / 215 (7%) |
+| PP-StructureV3 | 76 / 185 (41%) |
 
-Exemples : « Xetoprofen 250mg » pour *Ketoprofen*, « Anoxicillin 500mg » pour
-*Amoxicillin*, « Effectivitan 500mg » pour *Efferalgan*.
+Examples: "Xetoprofen 250mg" for *Ketoprofen*, "Anoxicillin 500mg" for
+*Amoxicillin*, "Effectivitan 500mg" for *Efferalgan*.
 
-Ces erreurs sont hors de portée de l'arithmétique **par construction**, et
-non par défaut d'implémentation : rien dans la facture ne permet de savoir
-que « Xetoprofen » aurait dû se lire « Ketoprofen ». Les trois nombres de la
-ligne peuvent être parfaitement justes.
+These errors are out of arithmetic's reach **by construction**, not through
+some implementation gap: nothing in the invoice reveals that "Xetoprofen"
+should have read "Ketoprofen". All three numbers on the line can be
+perfectly correct.
 
-Les détecter demanderait une source d'information extérieure — un
-**dictionnaire de médicaments**, avec appariement flou sur les noms. C'est
-une piste distincte et complémentaire : l'arithmétique couvre les nombres, un
-dictionnaire couvrirait les libellés. Ensemble, ils couvriraient l'essentiel
-du contenu d'une facture.
+Catching them would require an outside source of information — a **drug
+dictionary**, with fuzzy matching on names. That is a distinct and
+complementary avenue: arithmetic covers the numbers, a dictionary would
+cover the labels. Together they would cover most of an invoice's content.
 
 ---
 
-## Ce que ça change pour la conclusion
+## What this changes for the conclusion
 
-Avant, on pouvait dire : « l'extraction atteint 0,928 de TEDS ». C'est un bon
-score, mais il ne dit pas si les 7 % d'erreurs restantes sont repérables — et
-sur des factures médicales, c'est précisément la question qui décide de
-l'utilisabilité.
+Before, we could say: "extraction reaches 0.928 TEDS". That is a good score,
+but it does not say whether the remaining 7% of errors are findable — and on
+medical invoices, that is precisely the question that decides usability.
 
-Maintenant on peut dire : **les erreurs numériques sont intégralement
-détectables sans vérité terrain, au prix de 6 % des lignes à relire, et sans
-aucune fausse alerte.** Restent les erreurs de libellé, qui appellent un
-dictionnaire.
+Now we can say: **numeric errors are entirely detectable without ground
+truth, at the cost of reviewing 6% of the lines, and with no false alarms at
+all.** What remains are label errors, which call for a dictionary.
 
-## Limites
+## Limitations
 
-Même échantillon que le reste : 8 factures, un seul gabarit. La validation
-suppose en outre que la facture contient bien les trois colonnes quantité /
-prix unitaire / total — vrai pour ce format, à vérifier ailleurs.
+Same sample as the rest: 8 invoices, a single template. Validation also
+assumes the invoice really does have the three columns quantity / unit price
+/ total — true for this format, to be checked elsewhere.
 
-Le taux de correction exacte de 97 % chez PaddleOCR-VL tient à un mode de
-défaillance particulier (perte d'une colonne entière). Rien ne garantit qu'il
-se reproduise sur d'autres documents.
+PaddleOCR-VL's 97% exact-correction rate rests on one particular failure
+mode (losing a whole column). Nothing guarantees it recurs on other
+documents.

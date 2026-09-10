@@ -1,13 +1,13 @@
-# Avec ou sans prétraitement — ce que disent les mesures
+# With or without pre-processing — what the measurements say
 
-Demande de l'encadrante en réunion du 6 août : *essayer sans prétraitement,
-pour comparer*.
+Asked for by the supervisor in the 6 August meeting: *try it without
+pre-processing, for comparison*.
 
-La réponse existe déjà. Chaque modèle a été mesuré sur les **mêmes pages**,
-lues deux fois : image brute et image prétraitée. Ce document rassemble les
-chiffres, et surtout ce qu'ils impliquent.
+The answer already existed. Each model was measured on the **same pages**,
+read twice: raw image and pre-processed image. This document gathers the
+figures, and above all what they imply.
 
-Reproduire :
+To reproduce:
 
 ```powershell
 python scripts\eval_all.py --modele chandra --modele hunyuan --modele paddleocr
@@ -15,118 +15,118 @@ python scripts\eval_all.py --modele chandra --modele hunyuan --modele paddleocr
 
 ---
 
-## 1. Le résultat en une ligne
+## 1. The result in one line
 
-**Le prétraitement n'est bon ni à garder ni à retirer. Il faut le choisir
-page par page.**
+**Pre-processing is neither good to keep nor good to remove. It has to be
+chosen page by page.**
 
-| modèle | sans prétraitement | avec | adaptatif |
+| model | without pre-processing | with | adaptive |
 |---|---|---|---|
-| HunyuanOCR-1.5 | **0,950** | 0,879 | 0,953 |
-| PaddleOCR-VL | 0,909 | 0,951 | 0,951 |
-| Chandra OCR 2 | 0,916 | **0,966** | 0,967 |
+| HunyuanOCR-1.5 | **0.950** | 0.879 | 0.953 |
+| PaddleOCR-VL | 0.909 | 0.951 | 0.951 |
+| Chandra OCR 2 | 0.916 | **0.966** | 0.967 |
 
-![Avec et sans prétraitement](../demo/figures/08-with-without-preprocessing.png)
+![With and without pre-processing](../demo/figures/08-with-without-preprocessing.png)
 
-Il aide PaddleOCR-VL (+0,042) et Chandra (+0,050). Il **dégrade** HunyuanOCR
-(−0,071). Un même traitement, trois effets différents : il n'existe donc pas
-de bonne réponse globale à la question « faut-il prétraiter ? ».
+It helps PaddleOCR-VL (+0.042) and Chandra (+0.050). It **degrades**
+HunyuanOCR (−0.071). One and the same treatment, three different effects: so
+there is no global right answer to "should we pre-process?".
 
-*Réserve à mentionner :* le run prétraité de HunyuanOCR date d'une version
-antérieure du module (IoU 0,79 contre 0,90 aujourd'hui). Son chiffre est un
-plancher, pas un verdict. Le rejouer avec le code actuel est une mesure à
-faire.
+*Caveat worth stating:* HunyuanOCR's pre-processed run dates from an earlier
+version of the module (IoU 0.79 against 0.90 today). Its figure is a floor,
+not a verdict. Replaying it with the current code is a measurement still to
+be made.
 
 ---
 
-## 2. Pourquoi ça se compense — et ce que la moyenne cache
+## 2. Why the effects cancel out — and what the average hides
 
-Le prétraitement fait deux choses en même temps, et elles ne vont pas dans
-le même sens.
+Pre-processing does two things at once, and they do not pull in the same
+direction.
 
-**Il aplanit la page**, ce qui aide la lecture du tableau : sur les factures
-déformées, la grille se reconstruit mieux.
+**It flattens the page**, which helps table reading: on warped invoices the
+grid reconstructs better.
 
-**Il recadre**, et le recadrage mord parfois sur l'en-tête. Les champs
-d'en-tête le paient :
+**It crops**, and the crop sometimes bites into the header. The header
+fields pay for it:
 
-| | sans | avec |
+| | without | with |
 |---|---|---|
-| Chandra, jeu diversifié déformé | **72/84** | 62/84 |
-| PaddleOCR-VL, multi-pages | **43/56** | 30/56 |
+| Chandra, warped diversified set | **72/84** | 62/84 |
+| PaddleOCR-VL, multi-page | **43/56** | 30/56 |
 
-C'est le même geste qui produit les deux effets. Aucun réglage n'a fait
-disparaître le compromis — `--pad`, `--min-score` et le seuil de confiance
-ont tous été balayés, sans exception mesurée.
+It is the same operation that produces both effects. No setting made the
+trade-off go away — `--pad`, `--min-score` and the confidence threshold were
+all swept, with no measured exception.
 
-**Et l'effet est binaire, pas graduel.** Sur les douze factures du jeu
-diversifié déformé, le prétraitement fait :
+**And the effect is binary, not gradual.** Across the twelve invoices of the
+warped diversified set, pre-processing:
 
-- gagner franchement sur la facture 1 (0,829 → 0,965) : la page brute avait
-  décroché, il la récupère ;
-- s'effondrer sur les factures 9 et 12 (0,905 → 0,509 et 0,960 → 0,580) : le
-  recadrage y a mordu.
+- gains clearly on invoice 1 (0.829 → 0.965): the raw page had fallen apart,
+  it recovers it;
+- collapses on invoices 9 and 12 (0.905 → 0.509 and 0.960 → 0.580): the crop
+  bit into them.
 
-Une moyenne de ces deux comportements ne décrit **aucune** page réelle. C'est
-précisément ce qu'une comparaison « avec ou sans » ne peut pas montrer, et
-c'est l'argument central en faveur de la politique adaptative.
+An average of those two behaviours describes **no** real page. That is
+precisely what a "with or without" comparison cannot show, and it is the
+central argument in favour of the adaptive policy.
 
 ---
 
-## 3. Pourquoi l'adaptatif n'est pas un compromis mou
+## 3. Why the adaptive policy is not a soft compromise
 
-`src/adaptive.py` lit chaque page dans les deux variantes, note les deux
-lectures **sans vérité terrain** — par la redondance arithmétique de la
-facture — et garde la meilleure.
+`src/adaptive.py` reads each page in both variants, scores both readings
+**without ground truth** — through the invoice's arithmetic redundancy — and
+keeps the better one.
 
-Sur les douze factures du jeu diversifié, que la politique n'avait jamais
-vues :
+Across the twelve invoices of the diversified set, which the policy had
+never seen:
 
-| | TEDS | champs |
+| | TEDS | fields |
 |---|---|---|
-| brut seul | 0,906 | 42/48 |
-| prétraité seul | 0,879 | 24/48 |
-| **adaptatif** | **0,942** | **44/48** |
-| *plafond (choix parfait, a posteriori)* | *0,945* | |
+| raw only | 0.906 | 42/48 |
+| pre-processed only | 0.879 | 24/48 |
+| **adaptive** | **0.942** | **44/48** |
+| *ceiling (perfect choice, in hindsight)* | *0.945* | |
 
-Elle **bat les deux variantes prises seules, sur les deux métriques**. Avec
-Chandra elle atteint **0,977, soit exactement le plafond** : la règle de
-décision ne perd plus rien du tout.
+It **beats both variants taken alone, on both metrics**. With Chandra it
+reaches **0.977, exactly the ceiling**: the decision rule loses nothing at
+all any more.
 
-Le point qui rend ça défendable : la confiance calculée sans vérité terrain
-**voit** les désastres. Sur les factures 9 et 12, elle donne 1,00 au brut
-contre 0,75 au prétraité — et le TEDS réel confirme après coup.
-
----
-
-## 4. Ce que ça coûte
-
-Une seconde lecture par page, soit environ le double de temps de calcul.
-
-`src/api.py` ne la paie pas systématiquement : il lit d'abord l'image brute,
-**note le résultat**, et ne déclenche la seconde lecture que si ce score
-doute (seuil 0,95). Sur les douze factures du jeu diversifié, la lecture
-brute marquait déjà 1,00 de confiance sur cinq d'entre elles — exactement là
-où le prétraitement n'apportait rien.
+The point that makes this defensible: the confidence computed without ground
+truth **sees** the disasters. On invoices 9 and 12 it gives 1.00 to raw
+against 0.75 to pre-processed — and the real TEDS confirms it afterwards.
 
 ---
 
-## 5. Ce que cette comparaison ne dit pas encore
+## 4. What it costs
 
-Tous ces chiffres viennent de rendus Blender sur des fonds **unis** :
-moquette, marbre, plan de travail. La détection de feuille y a la tâche
-facile — un seul grand quadrilatère clair dans l'image.
+One extra reading per page, so roughly twice the compute time.
 
-Le jeu à **fonds encombrés** demandé en réunion attaque précisément cette
-facilité. Avec d'autres documents autour de la feuille cible, le détecteur
-aura plusieurs rectangles blancs candidats, et rien ne garantit qu'il
-choisisse le bon.
+`src/api.py` does not always pay it: it reads the raw image first, **scores
+the result**, and only triggers the second reading if that score is in doubt
+(threshold 0.95). Across the twelve invoices of the diversified set, the raw
+reading already scored 1.00 confidence on five of them — exactly where
+pre-processing brought nothing.
 
-**Prédiction, écrite avant mesure** : c'est là que le prétraitement devrait
-le plus se dégrader, et donc là que l'écart entre « avec », « sans » et
-« adaptatif » devrait être le plus large. Si la politique adaptative tient
-sur ce jeu, c'est le résultat de généralisation le plus fort du stage. Si
-elle ne tient pas, il faudra un signal de confiance sur le **recadrage
-lui-même**, et pas seulement sur le tableau extrait.
+---
 
-Voir `docs/fonds_encombres.md`.
+## 5. What this comparison does not yet say
+
+All these figures come from Blender renders on **plain** backgrounds:
+carpet, marble, worktop. Sheet detection has an easy job there — a single
+large bright quadrilateral in the image.
+
+The **cluttered background** set asked for in the meeting attacks precisely
+that convenience. With other documents around the target sheet, the detector
+will have several candidate white rectangles, and nothing guarantees it
+picks the right one.
+
+**Prediction, written before measuring**: that is where pre-processing
+should degrade most, and therefore where the gap between "with", "without"
+and "adaptive" should be widest. If the adaptive policy holds on that set,
+it is the strongest generalisation result of the internship. If it does not,
+a confidence signal will be needed on the **crop itself**, and not only on
+the extracted table.
+
+See `docs/fonds_encombres.md`.

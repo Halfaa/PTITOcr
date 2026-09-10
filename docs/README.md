@@ -1,93 +1,93 @@
-# Index des documents
+# Document index
 
-Dix-huit documents écrits au fil du stage, dans l'ordre où les questions se
-sont posées. Cet index dit lequel lire pour quelle question, et **lesquels
-sont périmés** — parce qu'un chiffre juste au moment où il a été écrit
-peut avoir été remesuré depuis.
+Eighteen documents written over the course of the internship, in the order
+the questions came up. This index says which one to read for which question,
+and **which ones are out of date** — because a figure that was right when it
+was written may have been re-measured since.
 
-Trois états :
+Three states:
 
-- **à jour** — les chiffres et conclusions valent aujourd'hui
-- **historique** — vrai à sa date, dépassé depuis ; gardé pour la trace
-- **réserve** — piste étudiée puis close, ou candidat écarté
-
----
-
-## Par où commencer
-
-| document | état | pour quelle question |
-|---|---|---|
-| [`../dataset/README.md`](../dataset/README.md) | à jour | quels jeux d'images existent, contre quelle vérité terrain les noter |
-| [`resultats_teds.md`](resultats_teds.md) | à jour | les chiffres principaux : quel modèle lit le mieux nos factures |
-| [`audit_pipeline.md`](audit_pipeline.md) | à jour | où la chaîne de production peut échouer *sans le dire* |
-| [`etat_du_projet.md`](etat_du_projet.md) | **historique** | état au 28 juillet (semaine 1) — utile comme point de départ, plus comme état réel |
+- **current** — the figures and conclusions still hold
+- **historical** — true at its date, superseded since; kept for the record
+- **closed** — an avenue explored then closed, or a candidate dropped
 
 ---
 
-## Modèles : candidats, prédictions, licences
+## Where to start
 
-| document | état | contenu |
+| document | state | for which question |
 |---|---|---|
-| [`etat_de_lart_modeles.md`](etat_de_lart_modeles.md) | historique | état de l'art juillet 2026 des modèles VN+EN avec tableaux. **Réserve : HunyuanOCR y figure comme candidat, il est depuis écarté** (licence Tencent, exclut l'UE) |
-| [`chandra_ocr2.md`](chandra_ocr2.md) | à jour | pourquoi mesurer Chandra, prédictions écrites avant mesure, licence OpenRAIL-M |
-| [`glm_ocr.md`](glm_ocr.md) | **en cours** | le pari GLM-OCR (0,9 B, MIT). Mesure toujours pas faite : le premier passage a échoué en OOM sur nos images manuscrites, correctif appliqué, relance en attente |
-| [`summary_paddleocr_vl.md`](summary_paddleocr_vl.md) | historique | tout premier benchmark, sur les 10 images TabRecSet uniquement |
-| [`summary_ppstructure.md`](summary_ppstructure.md) | historique | idem pour PP-StructureV3 |
-| [`notes_benchmark_tabrecset.md`](notes_benchmark_tabrecset.md) | à jour | comment le mini-jeu TabRecSet a été choisi (10 images réelles) |
+| [`../dataset/README.md`](../dataset/README.md) | current | which image sets exist, and which ground truth to score them against |
+| [`resultats_teds.md`](resultats_teds.md) | current | the headline figures: which model reads our invoices best |
+| [`audit_pipeline.md`](audit_pipeline.md) | current | where the production chain can fail *silently* |
+| [`etat_du_projet.md`](etat_du_projet.md) | **historical** | state as of 28 July (week 1) — useful as a starting point, no longer as a status |
 
 ---
 
-## Résultats de mesure
+## Models: candidates, predictions, licences
 
-| document | état | contenu |
+| document | state | contents |
 |---|---|---|
-| [`resultats_teds.md`](resultats_teds.md) | à jour | TEDS des modèles sur les factures multi-pages déformées |
-| [`resultats_pretraitement.md`](resultats_pretraitement.md) | à jour | Phase 1 du sujet : localisation, perspective, éclairage, débruitage |
-| [`avec_sans_pretraitement.md`](avec_sans_pretraitement.md) | à jour | le comparatif demandé en réunion : le prétraitement aide-t-il vraiment |
-| [`resultats_validation.md`](resultats_validation.md) | à jour | validation arithmétique : détecter une erreur de lecture sans vérité terrain |
-| [`degradation.md`](degradation.md) | à jour | à partir de quelle qualité de photo la chaîne casse (24 paliers) |
-| [`resultats_handwriting.md`](resultats_handwriting.md) | à jour | banc HTR manuscrit VN/EN : Chandra 95,5 / 99,1 %, PaddleOCR-VL 78,2 / 90,3 % |
-| [`resultats_handwriting_en.md`](resultats_handwriting_en.md) | à jour | version anglaise courte du précédent, à envoyer telle quelle |
+| [`etat_de_lart_modeles.md`](etat_de_lart_modeles.md) | historical | July 2026 state of the art for VN+EN models with tables. **Caveat: HunyuanOCR appears there as a candidate, it has since been dropped** (Tencent licence, excludes the EU) |
+| [`chandra_ocr2.md`](chandra_ocr2.md) | current | why measure Chandra, predictions written before measuring, OpenRAIL-M licence |
+| [`glm_ocr.md`](glm_ocr.md) | **in progress** | the GLM-OCR bet (0.9 B, MIT). Still not measured: the first pass failed with OOM on our handwriting images, fix applied, re-run pending |
+| [`summary_paddleocr_vl.md`](summary_paddleocr_vl.md) | historical | the very first benchmark, on the 10 TabRecSet images only |
+| [`summary_ppstructure.md`](summary_ppstructure.md) | historical | same for PP-StructureV3 |
+| [`notes_benchmark_tabrecset.md`](notes_benchmark_tabrecset.md) | current | how the TabRecSet mini-set was chosen (10 real images) |
 
 ---
 
-## Jeux de test : conception et limites
+## Measurement results
 
-| document | état | contenu |
+| document | state | contents |
 |---|---|---|
-| [`jeu_de_test_diversifie.md`](jeu_de_test_diversifie.md) | à jour | pourquoi 6 gabarits et 12 factures plutôt qu'un seul gabarit |
-| [`fonds_encombres.md`](fonds_encombres.md) | à jour | le plus gros document du projet (18 sections) : le jeu à feuilles parasites, et **onze tentatives de recadrage qui échouent toutes**. Les §11, §16 et §18 sont les conclusions ; le reste est le chemin qui y mène |
+| [`resultats_teds.md`](resultats_teds.md) | current | TEDS of the models on warped multi-page invoices |
+| [`resultats_pretraitement.md`](resultats_pretraitement.md) | current | Phase 1 of the brief: localisation, perspective, lighting, denoising |
+| [`avec_sans_pretraitement.md`](avec_sans_pretraitement.md) | current | the comparison asked for in the meeting: does pre-processing actually help |
+| [`resultats_validation.md`](resultats_validation.md) | current | arithmetic validation: catching a reading error without ground truth |
+| [`degradation.md`](degradation.md) | current | at what photo quality the chain breaks (24 steps) |
+| [`resultats_handwriting.md`](resultats_handwriting.md) | current | handwriting HTR benchmark VN/EN: Chandra 95.5 / 99.1%, PaddleOCR-VL 78.2 / 90.3% |
+| [`resultats_handwriting_en.md`](resultats_handwriting_en.md) | current | short standalone summary of the above, ready to send as is |
+
+---
+
+## Test sets: design and limitations
+
+| document | state | contents |
+|---|---|---|
+| [`jeu_de_test_diversifie.md`](jeu_de_test_diversifie.md) | current | why 6 templates and 12 invoices rather than a single template |
+| [`fonds_encombres.md`](fonds_encombres.md) | current | the project's largest document (18 sections): the distractor-sheet set, and **eleven cropping attempts that all fail**. §11, §16 and §18 are the conclusions; the rest is the path that leads there |
 
 ---
 
 ## Application
 
-| document | état | contenu |
+| document | state | contents |
 |---|---|---|
-| [`application.md`](application.md) | à jour | le livrable API + PWA prévu semaines 11-12 |
+| [`application.md`](application.md) | current | the API + PWA deliverable planned for weeks 11-12 |
 
 ---
 
-## Réserves qui traversent plusieurs documents
+## Caveats that cut across several documents
 
-**HunyuanOCR est écarté.** Sa licence communautaire Tencent exclut l'UE, le
-Royaume-Uni et la Corée du Sud, et Kaggle ne permet pas de choisir la région
-de la machine. Il apparaît pourtant comme candidat ou comme colonne de
-tableau dans une douzaine de documents antérieurs à cette décision
+**HunyuanOCR is dropped.** Its Tencent community licence excludes the EU,
+the United Kingdom and South Korea, and Kaggle does not let you choose the
+machine's region. It nevertheless appears as a candidate, or as a table
+column, in a dozen documents predating that decision
 (`etat_du_projet.md`, `resultats_teds.md`, `resultats_pretraitement.md`,
-`etat_de_lart_modeles.md`...). Les chiffres qui y figurent restent valides —
-ils ont bien été mesurés — mais le modèle ne fait plus partie du roster.
+`etat_de_lart_modeles.md`...). The figures there remain valid — they were
+genuinely measured — but the model is no longer part of the roster.
 
-**Le recadrage sur scène encombrée est une piste close.** Onze familles de
-méthodes, un plafond d'IoU qui ne dépasse jamais 0,59 pour un atteignable
-mesuré à 0,85. Conclusion au §11 puis §16-§18 de `fonds_encombres.md` : le
-bord de la feuille est *invisible* dans nos rendus (blanc sur blanc, sans
-profondeur de champ), et la bonne réponse n'est pas un meilleur recadrage
-mais un lecteur qui segmente lui-même — ce que PaddleOCR-VL fait déjà.
+**Cropping on a cluttered scene is a closed avenue.** Eleven families of
+methods, an IoU ceiling that never exceeds 0.59 against a measured
+achievable 0.85. Conclusion in §11, then §16-§18 of `fonds_encombres.md`:
+the sheet's edge is *invisible* in our renders (white on white, with no
+depth of field), and the right answer is not a better crop but a reader that
+segments by itself — which PaddleOCR-VL already does.
 
-**Les rendus antérieurs au correctif de graine ne sont pas appariés.**
-`render_mesh_multipage.py` tirait caméra et éclairage sans initialiser
-`random` : deux rendus du même jeu donnaient des vues différentes. Corrigé
-depuis (`random.seed(zlib.crc32(...))`), mais toute comparaison image par
-image entre deux jeux rendus avant ce correctif est invalide. Détail dans
+**Renders predating the seed fix are not matched.**
+`render_mesh_multipage.py` drew camera and lighting without seeding
+`random`: two renders of the same set gave different views. Fixed since
+(`random.seed(zlib.crc32(...))`), but any image-for-image comparison between
+two sets rendered before that fix is invalid. Detail in
 `fonds_encombres.md` §3.

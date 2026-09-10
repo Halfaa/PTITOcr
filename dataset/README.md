@@ -1,182 +1,182 @@
-# Corpus du projet — 14 jeux, 547 images
+# Project corpus — 14 sets, 547 images
 
-Tout ce qui a été produit ou collecté depuis le début du stage, recensé en
-un seul endroit. `manifest.json` en est la version machine : une entrée par
-image, avec sa famille, son jeu, sa résolution et le chemin de la vérité
-terrain qui lui correspond.
+Everything produced or collected since the start of the internship, listed
+in one place. `manifest.json` is the machine-readable version: one entry per
+image, with its family, its set, its resolution and the path to the matching
+ground truth.
 
 ```powershell
-python dataset\build_manifest.py            # (re)construit manifest.json
-python dataset\build_manifest.py --resume   # juste le tableau ci-dessous
-python dataset\build_manifest.py --export corpus --zip   # copie unifiée à envoyer
+python dataset\build_manifest.py            # (re)builds manifest.json
+python dataset\build_manifest.py --resume   # just the table below
+python dataset\build_manifest.py --export corpus --zip   # unified copy, ready to send
 ```
 
-**C'est un index, pas une copie.** Les images restent où elles sont : les
-dupliquer coûterait 400 Mo dans un dépôt qui sait déjà les régénérer.
-`--export` matérialise une copie unifiée quand il en faut vraiment une
-(téléversement Kaggle, envoi à l'encadrante), en emportant la vérité
-terrain avec elle.
+**It is an index, not a copy.** The images stay where they are: duplicating
+them would cost 400 MB in a repository that already knows how to regenerate
+them. `--export` materialises a unified copy when one is genuinely needed
+(Kaggle upload, sending to the supervisor), carrying the ground truth along
+with it.
 
 ---
 
-## À lire avant de cloner : ce dépôt ne suffit pas
+## Read this before cloning: this repository is not enough
 
-`manifest.json` indexe un corpus **local**. Ses chemins ne se résolvent que
-sur une machine où le corpus a été généré — et un clone frais de PTITOcr
-n'en est pas une. Trois raisons, cumulatives :
+`manifest.json` indexes a **local** corpus. Its paths only resolve on a
+machine where the corpus was generated — and a fresh clone of PTITOcr is not
+one. Three cumulative reasons:
 
-1. **PTITOcr ne couvre que `MedicalRecord/`.** Les rendus Blender et la
-   vérité terrain des factures vivent dans deux dépôts voisins :
-   [`doc3D-renderer`](https://github.com/anhdungdo0906/doc3D-renderer) et
+1. **PTITOcr only covers `MedicalRecord/`.** The Blender renders and the
+   invoice ground truth live in two neighbouring repositories:
+   [`doc3D-renderer`](https://github.com/anhdungdo0906/doc3D-renderer) and
    [`synthetic_invoice_generator`](https://github.com/anhdungdo0906/synthetic_invoice_generator).
-2. **Ces deux dépôts ne versionnent ni leurs images ni leurs JSON de vérité
-   terrain** — vérifié : `git ls-files img/` y rend zéro fichier. Ils ne
-   contiennent que le code qui les produit.
-3. Donc **les cloner ne suffit pas non plus** : il faut rejouer la
-   génération, LaTeX puis Blender.
+2. **Neither repository versions its images or its ground-truth JSON** —
+   checked: `git ls-files img/` returns zero files there. They hold only the
+   code that produces them.
+3. So **cloning them is not enough either**: the generation has to be
+   replayed, LaTeX then Blender.
 
-Ce qui reste reconstructible depuis ce dépôt **seul** : trois jeux sur
-quatorze, soit 70 images sur 547.
+What remains reconstructible from **this repository alone**: three sets out
+of fourteen, i.e. 70 images out of 547.
 
-| jeu | comment |
+| set | how |
 |---|---|
-| `handwriting_vi` | `python handwriting/generate.py --n 30 --lignes 6 --seed 100` (MiKTeX requis) |
+| `handwriting_vi` | `python handwriting/generate.py --n 30 --lignes 6 --seed 100` (MiKTeX required) |
 | `handwriting_en` | `python handwriting_en/generate_en.py --n 30 --seed 100` |
-| `tabrecset_sample` | déjà versionné dans `data/` |
+| `tabrecset_sample` | already versioned under `data/` |
 
-`build_manifest.py` le dit lui-même au lancement : il liste les dépôts
-absents, donne les commandes de clonage, et rappelle que le clonage ne
-suffit pas. Si l'arborescence diffère de la nôtre, deux variables
-d'environnement la redressent : `DOC3D_ROOT` et `INVOICE_GEN_ROOT`.
+`build_manifest.py` says so itself on startup: it lists the missing
+repositories, gives the clone commands, and reminds you that cloning is not
+enough. If the tree differs from ours, two environment variables straighten
+it out: `DOC3D_ROOT` and `INVOICE_GEN_ROOT`.
 
-### Pour transmettre le corpus à quelqu'un
+### To hand the corpus to someone
 
-Ne pas compter sur le manifeste : produire une archive.
+Do not rely on the manifest: produce an archive.
 
 ```powershell
 python dataset\build_manifest.py --export corpus --zip
 ```
 
-Elle contient les images ET la vérité terrain, rangées par famille et par
-jeu, avec le manifeste dedans — c'est ce qui se transmet, se téléverse sur
-Kaggle et s'ouvre sans rien reconstruire.
+It contains the images AND the ground truth, arranged by family and by set,
+with the manifest inside — that is what gets sent, uploaded to Kaggle, and
+opened without rebuilding anything.
 
 ---
 
-## Les trois familles
+## The three families
 
-| famille | jeux | ce qu'elle sert à mesurer |
+| family | sets | what it measures |
 |---|---|---|
-| `facture` | 11 jeux, 477 images | la chaîne complète : localisation, dewarping, lecture de tableau, fusion multi-pages, validation arithmétique |
-| `manuscrit` | 2 jeux, 60 images | la reconnaissance d'écriture manuscrite, VN et EN |
-| `reel` | 1 jeu, 10 images | garde-fou : les seules photos non synthétiques du projet |
+| `facture` | 11 sets, 477 images | the full chain: localisation, dewarping, table reading, multi-page merging, arithmetic validation |
+| `manuscrit` | 2 sets, 60 images | handwriting recognition, VN and EN |
+| `reel` | 1 set, 10 images | sanity check: the project's only non-synthetic photographs |
 
 ---
 
-## Le détail
+## The detail
 
-| jeu | images | UV | à quoi il sert |
+| set | images | UV | what it is for |
 |---|---|---|---|
-| `multipage_test` | 17 | oui | jeu de référence historique, celui de tous les premiers chiffres |
-| `multipage_flat_1800` | 17 | — | témoin haute résolution : le plafond de lecture sans déformation |
-| `multipage_test_noillum` | 17 | — | isole l'effet de l'éclairage de celui de la déformation |
-| `multipage_test_unwarped` | 17 | — | oracle de dewarping : plafond si le dépliage était parfait |
-| `multipage_test_preprocessed_v3` | 17 | — | branche « prétraitée » du comparatif avec/sans |
-| `variants_flat` | 25 | — | 12 factures, 6 gabarits : dépendance au gabarit |
-| `variants_warped` | 25 | oui | les mêmes, déformées — le couple isole la déformation seule |
-| `variants_encombre` | 25 | oui | 3 à 6 feuilles parasites : casse la localisation |
-| `variants_encombre_recadre_contenu` | 25 | — | piste close (§18 `fonds_encombres.md`) : isole le tableau, coupe l'en-tête |
-| `batch1` | 100 | oui | lot initial, une page par facture |
-| `degradation` | 192 | — | 24 paliers × 8 pages : courbe de robustesse à la qualité photo |
-| `handwriting_vi` | 30 | — | banc HTR vietnamien (fiche PHCN page 9) |
-| `handwriting_en` | 30 | — | banc HTR anglais, 7 polices manuscrites |
-| `tabrecset_sample` | 10 | — | photos réelles annotées, garde-fou contre le sur-ajustement au synthétique |
+| `multipage_test` | 17 | yes | historical reference set, the source of all the early figures |
+| `multipage_flat_1800` | 17 | — | high-resolution control: the reading ceiling without warping |
+| `multipage_test_noillum` | 17 | — | separates the effect of lighting from the effect of warping |
+| `multipage_test_unwarped` | 17 | — | dewarping oracle: the ceiling if unwarping were perfect |
+| `multipage_test_preprocessed_v3` | 17 | — | the "pre-processed" branch of the with/without comparison |
+| `variants_flat` | 25 | — | 12 invoices, 6 templates: dependence on the template |
+| `variants_warped` | 25 | yes | the same, warped — the pair isolates warping alone |
+| `variants_encombre` | 25 | yes | 3 to 6 distractor sheets: breaks localisation |
+| `variants_encombre_recadre_contenu` | 25 | — | closed avenue (`fonds_encombres.md` §18): isolates the table, cuts the header |
+| `batch1` | 100 | yes | initial batch, one page per invoice |
+| `degradation` | 192 | — | 24 steps x 8 pages: robustness curve against photo quality |
+| `handwriting_vi` | 30 | — | Vietnamese HTR benchmark (PHCN form, page 9) |
+| `handwriting_en` | 30 | — | English HTR benchmark, 7 handwriting fonts |
+| `tabrecset_sample` | 10 | — | annotated real photographs, a guard against overfitting to the synthetic |
 
-**Colonne UV** : les jeux marqués ont un masque de vérité terrain au pixel
-près (`doc3D-renderer/uv/<jeu>`), ce qui permet de noter la localisation de
-feuille exactement — c'est ce qui rend mesurable tout le travail de
-recadrage.
-
----
-
-## Trois régimes de vérité terrain, à ne pas confondre
-
-C'est la distinction que `scripts/eval_all.py` existe pour protéger : donner
-la mauvaise vérité à un jeu ne lève aucune erreur, ça sort juste des
-nombres qui ne veulent rien dire.
-
-**`par_facture`** (tous les jeux `facture`) — un JSON par facture, plusieurs
-pages par facture. Le découpage pages → factures vient du PDF source, pas
-des sorties OCR : le dériver de l'OCR reviendrait à noter l'algorithme de
-fusion sur les données qui l'ont inspiré. Deux ensembles selon le jeu :
-`ground_truth_labels_multipage` (8 factures) ou `ground_truth_labels_variants`
-(12 factures).
-
-**`par_page`** (jeux `manuscrit`) — un `*_verite.json` par specimen, écrit
-par le générateur au moment du rendu, à côté de son image. Contient la
-valeur exacte de chaque champ manuscrit, et pour l'anglais la police
-utilisée (`police`), ce qui permet d'analyser les résultats par style
-d'écriture.
-
-**`tabrecset`** (jeu `reel`) — les annotations d'origine du jeu public,
-détection (`td_annotation`) et structure/contenu (`tsr_tcr_annotation`).
+**UV column**: the marked sets have pixel-exact ground-truth masks
+(`doc3D-renderer/uv/<set>`), which makes sheet localisation scorable
+exactly — that is what makes all the cropping work measurable.
 
 ---
 
-## Régénérer ce qui manque
+## Three ground-truth regimes, not to be confused
 
-Le dépôt ne versionne pas les images : elles pèsent des centaines de Mo et
-se reconstruisent. `build_manifest.py` liste en fin d'exécution les jeux
-absents du disque plutôt que d'échouer.
+This is the distinction `scripts/eval_all.py` exists to protect: handing a
+set the wrong truth raises no error, it just produces numbers that mean
+nothing.
 
-| jeu | commande |
+**`par_facture`** (all `facture` sets) — one JSON per invoice, several pages
+per invoice. The page-to-invoice split comes from the source PDF, not from
+the OCR output: deriving it from the OCR would mean scoring the merging
+algorithm on the very data that inspired it. Two sets of labels depending on
+the image set: `ground_truth_labels_multipage` (8 invoices) or
+`ground_truth_labels_variants` (12 invoices).
+
+**`par_page`** (`manuscrit` sets) — one `*_verite.json` per specimen,
+written by the generator at render time, next to its image. It holds the
+exact value of every handwritten field, and for English the font used
+(`police`), which is what makes it possible to analyse results by
+handwriting style.
+
+**`tabrecset`** (`reel` set) — the public dataset's own annotations,
+detection (`td_annotation`) and structure/content (`tsr_tcr_annotation`).
+
+---
+
+## Regenerating what is missing
+
+The repository does not version the images: they weigh hundreds of MB and
+can be rebuilt. `build_manifest.py` lists the sets missing from disk at the
+end of its run rather than failing.
+
+| set | command |
 |---|---|
-| rendus Blender | `doc3D-renderer/render_variants.ps1 -FolderId <jeu>` (`-Parasites -1` pour l'encombré) |
-| prétraité | `python src/preprocess.py --images-dir <jeu> --out <jeu>_preprocessed --debug` |
-| haute résolution | `python scripts/rendre_haute_resolution.py` |
-| oracle de dewarping | `python scripts/dewarp_oracle.py` |
-| dégradation | `python scripts/degrader.py --jeu variants_warped --zip` |
-| manuscrit VN | `python handwriting/generate.py --n 30 --lignes 6 --seed 100` |
-| manuscrit EN | `python handwriting_en/generate_en.py --n 30 --seed 100` |
-| recadrage par contenu | `python scripts/recadrage_par_contenu_extraire.py` |
+| Blender renders | `doc3D-renderer/render_variants.ps1 -FolderId <set>` (`-Parasites -1` for the cluttered one) |
+| pre-processed | `python src/preprocess.py --images-dir <set> --out <set>_preprocessed --debug` |
+| high resolution | `python scripts/rendre_haute_resolution.py` |
+| dewarping oracle | `python scripts/dewarp_oracle.py` |
+| degradation | `python scripts/degrader.py --jeu variants_warped --zip` |
+| handwriting VN | `python handwriting/generate.py --n 30 --lignes 6 --seed 100` |
+| handwriting EN | `python handwriting_en/generate_en.py --n 30 --seed 100` |
+| content-based crop | `python scripts/recadrage_par_contenu_extraire.py` |
 
-Les rendus Blender sont **reproductibles depuis le correctif de graine**
-(`random.seed(zlib.crc32(nom_de_page))`) : deux rendus du même jeu donnent
-les mêmes vues. Les jeux produits AVANT ce correctif ne sont pas appariés
-d'un jeu à l'autre — détaillé dans `docs/fonds_encombres.md`.
+The Blender renders are **reproducible since the seed fix**
+(`random.seed(zlib.crc32(page_name))`): two renders of the same set give the
+same views. Sets produced BEFORE that fix are not matched image-for-image
+across sets — detailed in `docs/fonds_encombres.md`.
 
 ---
 
-## Ce que ce corpus ne contient pas, et pourquoi ça compte
+## What this corpus does not contain, and why it matters
 
-**Aucune photo réelle de document médical vietnamien.** Tout le `facture` et
-tout le `manuscrit` sont synthétiques : LaTeX pour le contenu, Blender pour
-la déformation et l'éclairage, polices manuscrites pour l'écriture. C'est ce
-qui rend la vérité terrain exacte au pixel — et c'est aussi la limite
-principale des chiffres du projet.
+**No real photograph of a Vietnamese medical document.** Every `facture` and
+every `manuscrit` set is synthetic: LaTeX for the content, Blender for the
+warping and the lighting, handwriting fonts for the script. That is what
+makes the ground truth pixel-exact — and it is also the main limitation of
+the project's figures.
 
-**Pas de profondeur de champ.** Les rendus n'ont pas d'ouverture simulée,
-donc les feuilles d'arrière-plan sont aussi nettes que la cible. Mesuré
-(`docs/fonds_encombres.md` §16) : c'est ce qui rend le bord de la feuille
-littéralement invisible, et donc le jeu encombré plus dur que la réalité.
+**No depth of field.** The renders have no simulated aperture, so background
+sheets are as sharp as the target. Measured (`docs/fonds_encombres.md` §16):
+this is what makes the sheet's edge literally invisible, and therefore the
+cluttered set harder than reality.
 
-**Une seule police manuscrite pour le vietnamien** (Playwrite VN), contre
-sept pour l'anglais. L'effet de police est mesurable sur l'EN (jusqu'à
-13 points d'écart entre polices) ; sur le VN on ne peut pas le mesurer.
+**A single handwriting font for Vietnamese** (Playwrite VN), against seven
+for English. The font effect is measurable on EN (up to 13 points between
+fonts); on VN it cannot be measured at all.
 
-**TabRecSet est le seul contrepoids réel**, et il ne fait que 10 images
-annotées, dans d'autres langues. Toute conclusion tirée du synthétique reste
-à confirmer sur de vraies photos.
+**TabRecSet is the only real counterweight**, and it is only 10 annotated
+images, in other languages. Any conclusion drawn from the synthetic sets
+remains to be confirmed on real photographs.
 
 ---
 
 ## Licences
 
-Les jeux synthétiques (`facture`, `manuscrit`) sont produits par ce projet à
-partir de gabarits LaTeX et de polices libres — polices manuscrites en OFL,
-sauf Homemade Apple en Apache 2.0 (détail dans `handwriting_en/README.md`),
-Liberation Serif en OFL pour le texte imprimé.
+The synthetic sets (`facture`, `manuscrit`) are produced by this project
+from LaTeX templates and free fonts — handwriting fonts under the OFL,
+except Homemade Apple under Apache 2.0 (detail in
+`handwriting_en/README.md`), and Liberation Serif under the OFL for the
+printed text.
 
-`tabrecset_sample` provient du jeu public TabRecSet et reste soumis à sa
-licence d'origine ; seul un échantillon de 10 images est versionné ici, le
-jeu complet est ignoré par git (`data/TabRecSet/`).
+`tabrecset_sample` comes from the public TabRecSet dataset and remains under
+its original licence; only a 10-image sample is versioned here, the full set
+is git-ignored (`data/TabRecSet/`).

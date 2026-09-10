@@ -1,14 +1,14 @@
 {
  "genere_le": "2026-09-10",
- "racine": "les chemins sont relatifs au dossier PARENT de MedicalRecord (il contient MedicalRecord/, doc3D-renderer/ et synthetic_invoice_generator/)",
+ "racine": "paths are relative to the PARENT folder of MedicalRecord (it contains MedicalRecord/, doc3D-renderer/ and synthetic_invoice_generator/)",
  "prerequis": {
-  "note": "11 jeux sur 14 viennent de deux dépôts voisins, qui ne versionnent NI leurs images NI la vérité terrain : seul le code s'y trouve. Reconstruire ces jeux suppose de rejouer la génération (LaTeX puis Blender).",
+  "note": "11 of the 14 sets come from two neighbouring repositories, which version NEITHER their images NOR the ground truth: only the code is there. Rebuilding those sets means replaying the generation (LaTeX, then Blender).",
   "depots_voisins": {
    "doc3D-renderer": "https://github.com/anhdungdo0906/doc3D-renderer.git",
    "synthetic_invoice_generator": "https://github.com/anhdungdo0906/synthetic_invoice_generator.git"
   },
   "arborescence_attendue": [
-   "<parent>/MedicalRecord/   (ce dépôt)",
+   "<parent>/MedicalRecord/   (this repository)",
    "<parent>/doc3D-renderer/",
    "<parent>/synthetic_invoice_generator/"
   ],
@@ -29,8 +29,8 @@
   "multipage_test": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "8 factures, 17 pages déformées, un seul gabarit",
-   "role": "jeu de référence historique, celui de tous les premiers chiffres",
+   "titre": "8 invoices, 17 warped pages, a single template",
+   "role": "historical reference set, the source of all the early figures",
    "dossier": "doc3D-renderer/img/multipage_test",
    "generateur": "doc3D-renderer/render_mesh_multipage.py",
    "n_images": 17,
@@ -39,8 +39,8 @@
   "multipage_flat_1800": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "les mêmes 17 pages, à plat, 1800 px",
-   "role": "témoin haute résolution : le plafond de lecture sans déformation",
+   "titre": "the same 17 pages, flat, 1800 px",
+   "role": "high-resolution control: the reading ceiling without warping",
    "dossier": "doc3D-renderer/img/multipage_flat_1800",
    "generateur": "scripts/rendre_haute_resolution.py",
    "n_images": 17,
@@ -49,18 +49,18 @@
   "multipage_test_noillum": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "17 pages rendues sans éclairage",
-   "role": "isole l'effet de l'éclairage de celui de la déformation",
+   "titre": "17 pages rendered without lighting",
+   "role": "separates the effect of lighting from the effect of warping",
    "dossier": "doc3D-renderer/img/multipage_test_noillum",
-   "generateur": "doc3D-renderer, passe sans HDR",
+   "generateur": "doc3D-renderer, pass without HDR",
    "n_images": 17,
    "masque_uv": false
   },
   "multipage_test_unwarped": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "17 pages remises à plat par la vérité terrain UV",
-   "role": "oracle de dewarping : le plafond atteignable si le dépliage était parfait",
+   "titre": "17 pages flattened using the UV ground truth",
+   "role": "dewarping oracle: the ceiling if unwarping were perfect",
    "dossier": "doc3D-renderer/img/multipage_test_unwarped",
    "generateur": "scripts/dewarp_oracle.py",
    "n_images": 17,
@@ -69,8 +69,8 @@
   "multipage_test_preprocessed_v3": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "17 pages passées par le prétraitement (version courante)",
-   "role": "branche « prétraitée » du comparatif avec/sans",
+   "titre": "17 pages through the pre-processing module (current version)",
+   "role": "the 'pre-processed' branch of the with/without comparison",
    "dossier": "doc3D-renderer/img/multipage_test_preprocessed_v3",
    "generateur": "src/preprocess.py",
    "n_images": 17,
@@ -79,8 +79,8 @@
   "variants_flat": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "12 factures, 25 pages à plat, 6 gabarits",
-   "role": "jeu diversifié : mesure la dépendance au gabarit",
+   "titre": "12 invoices, 25 flat pages, 6 templates",
+   "role": "diversified set: measures how much the chain depends on the template",
    "dossier": "doc3D-renderer/img/variants_flat",
    "generateur": "synthetic_invoice_generator/create_latex_variants.py",
    "n_images": 25,
@@ -89,8 +89,8 @@
   "variants_warped": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "les mêmes 12 factures, déformées",
-   "role": "le couple à plat / déformé isole l'effet de la déformation seule",
+   "titre": "the same 12 invoices, warped",
+   "role": "the flat/warped pair isolates the effect of warping alone",
    "dossier": "doc3D-renderer/img/variants_warped",
    "generateur": "doc3D-renderer/render_variants.ps1",
    "n_images": 25,
@@ -99,8 +99,8 @@
   "variants_encombre": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "les mêmes pages, sur fond encombré (3 à 6 feuilles parasites)",
-   "role": "casse la localisation de feuille -- voir docs/fonds_encombres.md",
+   "titre": "the same pages, on a cluttered background (3 to 6 distractor sheets)",
+   "role": "breaks sheet localisation -- see docs/fonds_encombres.md",
    "dossier": "doc3D-renderer/img/variants_encombre",
    "generateur": "doc3D-renderer/render_variants.ps1 -Parasites -1",
    "n_images": 25,
@@ -109,8 +109,8 @@
   "variants_encombre_recadre_contenu": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "jeu encombré recadré sur la plus grande boîte table (×1,2)",
-   "role": "piste close : isole le tableau mais coupe l'en-tête (§18 fonds_encombres)",
+   "titre": "cluttered set cropped to the largest table box (x1.2)",
+   "role": "closed avenue: isolates the table but cuts the header (fonds_encombres section 18)",
    "dossier": "doc3D-renderer/img/variants_encombre_recadre_contenu",
    "generateur": "scripts/recadrage_par_contenu_extraire.py",
    "n_images": 25,
@@ -119,18 +119,18 @@
   "batch1": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "100 factures d'une page, premier lot",
-   "role": "jeu de volume des tout premiers essais, une page par facture",
+   "titre": "100 single-page invoices, first batch",
+   "role": "volume set from the earliest trials, one page per invoice",
    "dossier": "doc3D-renderer/img/batch1",
-   "generateur": "doc3D-renderer, lot initial",
+   "generateur": "doc3D-renderer, initial batch",
    "n_images": 100,
    "masque_uv": true
   },
   "handwriting_vi": {
    "famille": "manuscrit",
    "langue": "vi",
-   "titre": "30 fiches PHCN page 9, manuscrites (Playwrite VN)",
-   "role": "banc HTR vietnamien -- voir docs/resultats_handwriting.md",
+   "titre": "30 PHCN page-9 forms, handwritten (Playwrite VN)",
+   "role": "Vietnamese HTR benchmark -- see docs/resultats_handwriting.md",
    "dossier": "MedicalRecord/handwriting/generated",
    "generateur": "handwriting/generate.py",
    "n_images": 30,
@@ -139,8 +139,8 @@
   "handwriting_en": {
    "famille": "manuscrit",
    "langue": "en",
-   "titre": "30 dossiers de santé (pages 1-2), manuscrits, 7 polices",
-   "role": "banc HTR anglais, avec variation de police mesurable",
+   "titre": "30 health records (pages 1-2), handwritten, 7 fonts",
+   "role": "English HTR benchmark, with measurable font variation",
    "dossier": "MedicalRecord/handwriting_en/generated",
    "generateur": "handwriting_en/generate_en.py",
    "n_images": 30,
@@ -149,18 +149,18 @@
   "tabrecset_sample": {
    "famille": "reel",
    "langue": "zh/en",
-   "titre": "échantillon TabRecSet (10 images annotées)",
-   "role": "seul jeu de photos RÉELLES du projet, sert de garde-fou",
+   "titre": "TabRecSet sample (10 annotated images)",
+   "role": "the project's only REAL photographs, used as a sanity check",
    "dossier": "MedicalRecord/data/tabrecset_sample/images",
-   "generateur": "jeu public, non généré",
+   "generateur": "public dataset, not generated",
    "n_images": 10,
    "masque_uv": false
   },
   "degradation": {
    "famille": "facture",
    "langue": "vi",
-   "titre": "24 paliers de dégradation × 8 pages (flou, bruit, jpeg, exposition, résolution)",
-   "role": "courbe de robustesse à la qualité de photo -- docs/degradation.md",
+   "titre": "24 degradation steps x 8 pages (blur, noise, jpeg, exposure, resolution)",
+   "role": "robustness curve against photo quality -- docs/degradation.md",
    "dossier": "doc3D-renderer/img/degradation",
    "generateur": "scripts/degrader.py --jeu variants_warped",
    "n_images": 192,

@@ -1,153 +1,148 @@
-# Robustesse à la qualité d'image
+# Robustness to image quality
 
-**Question.** À partir de quelle qualité de photo la chaîne cesse-t-elle de
-fonctionner ?
+**Question.** At what photo quality does the chain stop working?
 
-Aujourd'hui on n'en sait rien. Tous nos chiffres — 0,967 en adaptatif sur le
-jeu multi-pages, 0,977 sur le diversifié — viennent de rendus Blender : mise
-au point parfaite, éclairage maîtrisé, PNG sans perte. On sait que la chaîne
-marche en laboratoire, et strictement rien de plus. C'est aussi, avant d'avoir
-des photos réelles, le seul moyen de savoir si 0,97 est un chiffre robuste.
+Today we have no idea. All our figures — 0.967 adaptive on the multi-page
+set, 0.977 on the diversified one — come from Blender renders: perfect
+focus, controlled lighting, lossless PNG. We know the chain works in the
+lab, and strictly nothing more. It is also, before we have real
+photographs, the only way to know whether 0.97 is a robust figure.
 
-Le livrable n'est pas une note de plus, c'est une **spécification** : le point
-de rupture de chaque dégradation dit ce qu'un contrôle qualité à la capture
-doit refuser.
+The deliverable is not one more note, it is a **specification**: each
+degradation's breaking point tells us what a capture-time quality check has
+to reject.
 
 ---
 
-## 1. Le protocole
+## 1. The protocol
 
-Base : les 8 pages des factures 1, 2, 6 et 7 du jeu `variants_warped`, donc
-quatre factures **complètes** — le TEDS se calcule sur la facture
-reconstituée, une page orpheline fausserait la mesure.
+Base: the 8 pages of invoices 1, 2, 6 and 7 from the `variants_warped` set,
+so four **complete** invoices — TEDS is computed on the reassembled invoice,
+and an orphan page would skew the measurement.
 
-Les mêmes 8 pages à tous les paliers. La comparaison est donc **appariée** :
-l'écart entre deux paliers ne peut pas venir d'un échantillon différent, ce
-qui vaut beaucoup mieux, à effectif égal, que de tirer des pages au hasard à
-chaque niveau.
+The same 8 pages at every step. The comparison is therefore **paired**: the
+gap between two steps cannot come from a different sample, which is worth
+far more, at equal sample size, than drawing random pages at each level.
 
-24 lots au total — 1 référence + 23 paliers — soit 192 pages, environ 4 h 20
-sur un T4. Lecture brute seulement : on mesure la robustesse de la **lecture**
-à la qualité d'image. Doubler pour le prétraitement répondrait à une autre
-question (la correction d'éclairage aggrave-t-elle le bruit ?) et mérite son
-propre run, une fois connus les points de rupture.
+24 batches in total — 1 reference + 23 steps — i.e. 192 pages, about 4 h 20
+on a T4. Raw reading only: what we measure is the robustness of **reading**
+to image quality. Doubling it for pre-processing would answer a different
+question (does lighting correction make noise worse?) and deserves its own
+run, once the breaking points are known.
 
-### Les cinq dégradations
+### The five degradations
 
-| | ce que ça simule | paliers |
+| | what it simulates | steps |
 |---|---|---|
-| `flou` | bougé de la main pendant la pose | 3, 6, 9, 13, 20 px |
-| `bruit` | montée en ISO en lumière faible | 500 → 8 photons à saturation |
-| `exposition` | sous-exposition puis remontée | −2 à −6 diaphragmes |
-| `resolution` | redimensionnement par une messagerie | 0,75 → 0,22 du côté long |
-| `jpeg` | compression de l'appareil | qualité 25, 10, 3 |
+| `flou` | camera shake during the exposure | 3, 6, 9, 13, 20 px |
+| `bruit` | high ISO in low light | 500 → 8 photons at saturation |
+| `exposition` | underexposure then brought back up | −2 to −6 stops |
+| `resolution` | resizing by a messaging app | 0.75 → 0.22 of the long side |
+| `jpeg` | camera compression | quality 25, 10, 3 |
 
-### Trois choix physiques qui changent le résultat
+### Three physical choices that change the result
 
-**On travaille en lumière linéaire.** Un capteur intègre des photons, pas des
-valeurs sRGB. Flouter ou bruiter directement les octets d'un PNG mélange des
-grandeurs déjà passées par la gamma : le flou sort trop sombre et le bruit mal
-réparti entre ombres et hautes lumières.
+**We work in linear light.** A sensor integrates photons, not sRGB values.
+Blurring or adding noise directly to a PNG's bytes mixes quantities that
+have already been through gamma: the blur comes out too dark and the noise
+badly distributed between shadows and highlights.
 
-**Le bruit dépend du signal.** Bruit de grenaille (Poisson, donc plus fort là
-où il y a de la lumière) plus bruit de lecture gaussien. Le réflexe habituel —
-un bruit gaussien uniforme — épargne les blancs du papier, c'est-à-dire
-précisément l'endroit où le bruit se voit.
+**Noise is signal-dependent.** Shot noise (Poisson, so stronger where there
+is light) plus Gaussian read noise. The usual reflex — uniform Gaussian
+noise — spares the white of the paper, which is precisely where noise shows.
 
-**La sous-exposition détruit par la quantification.** Assombrir puis
-ré-éclaircir est réversible à la virgule près ; ce qui ne l'est pas, c'est que
-le capteur écrit 8 bits. On assombrit, on quantifie, on ajoute le bruit de
-lecture, on ré-éclaircit. Mesuré : à −6 diaphragmes il ne reste que **32
-niveaux de gris sur 256**.
+**Underexposure destroys through quantisation.** Darkening then brightening
+again is reversible to the decimal; what is not reversible is that the
+sensor writes 8 bits. We darken, quantise, add read noise, then brighten.
+Measured: at −6 stops only **32 grey levels out of 256** remain.
 
 ---
 
-## 2. Deux grilles, parce que la première était mal calibrée
+## 2. Two scales, because the first was badly calibrated
 
-La première échelle a été jetée après contrôle visuel
-([figure 11](../demo/figures/11_paliers_degradation.png)). Deux défauts :
+The first scale was thrown out after visual inspection
+([figure 11](../demo/figures/11_paliers_degradation.png)). Two flaws:
 
-Le flou passait de lisible à illisible **entre deux paliers** — la rupture
-n'était pas encadrée, donc la courbe n'aurait rien localisé.
+Blur went from legible to illegible **between two steps** — the break was
+not bracketed, so the curve would have located nothing.
 
-Surtout, **à qualité JPEG 12 le texte restait parfaitement lisible.** Vérifié
-ensuite en descendant plus bas : l'encodeur sature à 23,8 dB de PSNR, et entre
-q=3 et q=1 plus rien ne bouge. Une page blanche à texte contrasté est
-exactement ce que le JPEG compresse bien. Cinq paliers auraient donné une
-courbe plate — 40 pages de GPU pour un non-résultat.
+Above all, **at JPEG quality 12 the text stayed perfectly legible.** Checked
+afterwards by going lower: the encoder saturates at 23.8 dB PSNR, and
+between q=3 and q=1 nothing moves any more. A white page with contrasted
+text is exactly what JPEG compresses well. Five steps would have produced a
+flat curve — 40 pages of GPU for a non-result.
 
-D'où deux corrections : le JPEG tombe à **trois** paliers, ce qui suffit à
-établir que la compression seule n'est pas la menace ; et une cinquième
-dégradation apparaît, la **résolution**, qui est ce qui tue réellement le
-petit texte quand une photo transite par une messagerie.
+Hence two corrections: JPEG drops to **three** steps, which is enough to
+establish that compression alone is not the threat; and a fifth degradation
+appears, **resolution**, which is what actually kills small text when a
+photo travels through a messaging app.
 
-La leçon vaut d'être notée : une échelle de dégradation se calibre en
-regardant les images, pas en choisissant des nombres ronds.
-
----
-
-## 3. Prédictions, écrites avant mesure
-
-Comme pour Chandra et GLM-OCR, on consigne avant de mesurer.
-
-**La résolution sera la plus brutale, et la rupture sera nette.** Un caractère
-du corps du tableau fait environ 9 px de haut sur nos rendus. À 0,40 il en
-reste 4, à 0,22 il en reste 2 — en dessous de 3 ou 4 px, aucun OCR ne lit quoi
-que ce soit, et la chute devrait être une falaise plutôt qu'une pente.
-
-**Le flou rompra vers 9–13 px.** L'ordre de grandeur qui compte est
-l'épaisseur du trait, environ 2 px : un bougé de 9 px étale un trait sur
-quatre fois sa largeur. À l'œil, le palier 3 est déjà à la limite.
-
-**Le bruit sera mieux encaissé qu'il n'en a l'air.** Un VLM moderne est
-entraîné sur des photographies réelles, souvent bruitées ; le bruit dégrade la
-netteté mesurée mais laisse la structure du tableau intacte. On s'attend à ce
-que le TEDS-Struct tienne bien après que le TEDS a chuté.
-
-**La compression JPEG ne cassera rien**, sur toute l'échelle testée. Si cette
-prédiction se vérifie, c'est un résultat utile en soi : il retire une
-contrainte du cahier des charges de la capture.
-
-**La sous-exposition tiendra plus longtemps qu'on ne le craint**, parce que la
-correction d'éclairage du prétraitement... n'est justement pas dans la boucle
-ici. En lecture brute, la rupture devrait arriver vers −5 diaphragmes, quand
-il ne reste qu'une quarantaine de niveaux.
-
-**Et la prédiction la plus intéressante, parce qu'elle est vérifiable
-autrement :** les dégradations qui préservent la *structure* du tableau
-(bruit, JPEG) devraient laisser un grand écart TEDS-Struct − TEDS, alors que
-celles qui la détruisent (résolution, flou fort) devraient faire chuter les
-deux ensemble. Si l'écart se comporte comme prévu, il devient un **indicateur
-de la nature du problème**, exploitable sans vérité terrain.
+The lesson is worth noting: a degradation scale is calibrated by looking at
+the images, not by picking round numbers.
 
 ---
 
-## 4. Comment produire les chiffres
+## 3. Predictions, written before measuring
+
+As for Chandra and GLM-OCR, we record them before measuring.
+
+**Resolution will be the most brutal, and the break will be sharp.** A
+character in the table body is about 9 px tall in our renders. At 0.40 that
+leaves 4, at 0.22 it leaves 2 — below 3 or 4 px no OCR reads anything at
+all, and the fall should be a cliff rather than a slope.
+
+**Blur will break around 9–13 px.** The order of magnitude that matters is
+stroke thickness, about 2 px: a 9 px shake spreads a stroke across four
+times its width. To the eye, step 3 is already borderline.
+
+**Noise will be absorbed better than it looks.** A modern VLM is trained on
+real photographs, often noisy; noise degrades measured sharpness but leaves
+the table structure intact. We expect TEDS-Struct to hold well after TEDS
+has fallen.
+
+**JPEG compression will break nothing**, across the whole tested range. If
+that prediction holds, it is a useful result in itself: it removes a
+constraint from the capture specification.
+
+**Underexposure will hold longer than feared**, because the pre-processing
+module's lighting correction... is precisely not in the loop here. In raw
+reading, the break should arrive around −5 stops, when only about forty
+levels remain.
+
+**And the most interesting prediction, because it is verifiable another
+way:** degradations that preserve the table's *structure* (noise, JPEG)
+should leave a large TEDS-Struct − TEDS gap, whereas those that destroy it
+(resolution, heavy blur) should bring both down together. If the gap behaves
+as predicted, it becomes an **indicator of the nature of the problem**,
+usable without ground truth.
+
+---
+
+## 4. How to produce the figures
 
 ```powershell
-# 1. Générer les 192 images (quelques minutes)
+# 1. Generate the 192 images (a few minutes)
 python scripts\degrader.py --jeu variants_warped
 
-# Contrôler les paliers avant de dépenser du GPU
+# Check the steps before spending GPU time
 python scripts\degrader.py --jeu variants_warped --calibrer
 
-# 2. L'archive Kaggle (252 Mo), puis Add Input -> Datasets, nom "degradation"
+# 2. The Kaggle archive (252 MB), then Add Input -> Datasets, name "degradation"
 python scripts\degrader.py --jeu variants_warped --zip
 
-# 3. Après le run : la courbe
+# 3. After the run: the curve
 python scripts\eval_degradation.py --figure
 ```
 
-`--zip` plutôt que `Compress-Archive` : PowerShell 5.1 écrit les
-sous-dossiers avec des antislashs et Kaggle refuse alors l'archive
-(« contains a forbidden character in name »). C'est le premier zip du projet
-à contenir des sous-dossiers.
+`--zip` rather than `Compress-Archive`: PowerShell 5.1 writes sub-folders
+with backslashes and Kaggle then rejects the archive ("contains a forbidden
+character in name"). It is the project's first zip to contain sub-folders.
 
-Si le téléversement de 252 Mo est trop lent, `--pages 1,2,11,12` réduit à deux
-factures : 96 images, moitié moins de GPU, et la courbe garde sa forme même si
-chaque point devient plus bruité.
+If uploading 252 MB is too slow, `--pages 1,2,11,12` cuts it down to two
+invoices: 96 images, half the GPU time, and the curve keeps its shape even
+though each point gets noisier.
 
-`eval_degradation.py` rend, pour chaque dégradation, le TEDS palier par palier
-et le premier palier sous 0,70 — exprimé en **grandeur physique** (« le bougé
-devient fatal au-delà de 9 px ») et non en numéro de palier, parce que c'est
-la forme qui se transporte dans un cahier des charges.
+`eval_degradation.py` returns, for each degradation, the TEDS step by step
+and the first step below 0.70 — expressed as a **physical quantity** ("shake
+becomes fatal beyond 9 px") rather than a step number, because that is the
+form that carries over into a specification.
