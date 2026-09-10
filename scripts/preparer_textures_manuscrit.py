@@ -118,11 +118,12 @@ def preparer(langue: str, n: int | None, rotation: int) -> int:
     # portrait (1654x2339), donc sans rien faire ils ressortent COUCHES --
     # constate sur le premier rendu d'essai.
     #
-    # On les tourne donc en paysage avant de les deposer. Le sens : le rendu
-    # d'essai montrait le haut du document parti vers la GAUCHE, soit une
-    # rotation de 90 degres dans le sens antihoraire ; on compense dans
-    # l'autre sens. Si l'image de verification sort a l'envers, c'est ce
-    # constat-la qui etait faux : passer --rotation 90.
+    # On les tourne donc en paysage avant de les deposer. Le SENS a ete
+    # determine par l'experience, pas par le raisonnement : le premier essai
+    # (-90) est ressorti tourne de 90 degres dans l'autre sens, donc c'est
+    # +90 qu'il faut. Le raisonnement geometrique s'etait trompe d'un
+    # demi-tour, et une image de verification l'a tranche en une minute --
+    # d'ou l'insistance a en rendre une avant tout lot.
     for img in images:
         with Image.open(img) as im:
             if rotation and im.width < im.height:
@@ -151,11 +152,11 @@ def main():
     p.add_argument("--langue", choices=["vi", "en", "toutes"], default="toutes")
     p.add_argument("--n", type=int, default=None,
                    help="Nombre de specimens à préparer (défaut : tous).")
-    p.add_argument("--rotation", type=int, default=-90, choices=[-90, 0, 90],
+    p.add_argument("--rotation", type=int, default=90, choices=[-90, 0, 90],
                    help="Rotation de pré-compensation appliquée aux pages "
-                        "portrait. -90 (défaut) les met en paysage comme les "
-                        "textures de facture ; 0 désactive ; 90 tourne dans "
-                        "l'autre sens si le rendu d'essai sort à l'envers.")
+                        "portrait. 90 (défaut) les met en paysage dans le "
+                        "sens qui ressort droit ; -90 tourne dans l'autre "
+                        "sens ; 0 désactive.")
     args = p.parse_args()
 
     if not DOC3D.is_dir():

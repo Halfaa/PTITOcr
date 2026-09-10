@@ -69,3 +69,5 @@ FastSAM-s.pt
 kaggle/images_degradation.zip
 kaggle/images_handwriting_vi_degradation.zip
 kaggle/images_handwriting_en_degradation.zip
+kaggle/images_handwriting_vi_warped.zip
+kaggle/images_handwriting_en_warped.zip
