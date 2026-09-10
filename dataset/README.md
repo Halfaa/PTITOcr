@@ -19,6 +19,50 @@ terrain avec elle.
 
 ---
 
+## À lire avant de cloner : ce dépôt ne suffit pas
+
+`manifest.json` indexe un corpus **local**. Ses chemins ne se résolvent que
+sur une machine où le corpus a été généré — et un clone frais de PTITOcr
+n'en est pas une. Trois raisons, cumulatives :
+
+1. **PTITOcr ne couvre que `MedicalRecord/`.** Les rendus Blender et la
+   vérité terrain des factures vivent dans deux dépôts voisins :
+   [`doc3D-renderer`](https://github.com/anhdungdo0906/doc3D-renderer) et
+   [`synthetic_invoice_generator`](https://github.com/anhdungdo0906/synthetic_invoice_generator).
+2. **Ces deux dépôts ne versionnent ni leurs images ni leurs JSON de vérité
+   terrain** — vérifié : `git ls-files img/` y rend zéro fichier. Ils ne
+   contiennent que le code qui les produit.
+3. Donc **les cloner ne suffit pas non plus** : il faut rejouer la
+   génération, LaTeX puis Blender.
+
+Ce qui reste reconstructible depuis ce dépôt **seul** : trois jeux sur
+quatorze, soit 70 images sur 547.
+
+| jeu | comment |
+|---|---|
+| `handwriting_vi` | `python handwriting/generate.py --n 30 --lignes 6 --seed 100` (MiKTeX requis) |
+| `handwriting_en` | `python handwriting_en/generate_en.py --n 30 --seed 100` |
+| `tabrecset_sample` | déjà versionné dans `data/` |
+
+`build_manifest.py` le dit lui-même au lancement : il liste les dépôts
+absents, donne les commandes de clonage, et rappelle que le clonage ne
+suffit pas. Si l'arborescence diffère de la nôtre, deux variables
+d'environnement la redressent : `DOC3D_ROOT` et `INVOICE_GEN_ROOT`.
+
+### Pour transmettre le corpus à quelqu'un
+
+Ne pas compter sur le manifeste : produire une archive.
+
+```powershell
+python dataset\build_manifest.py --export corpus --zip
+```
+
+Elle contient les images ET la vérité terrain, rangées par famille et par
+jeu, avec le manifeste dedans — c'est ce qui se transmet, se téléverse sur
+Kaggle et s'ouvre sans rien reconstruire.
+
+---
+
 ## Les trois familles
 
 | famille | jeux | ce qu'elle sert à mesurer |

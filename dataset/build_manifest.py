@@ -32,13 +32,36 @@ présent et signale explicitement ce qui manque, plutôt que d'échouer.
 
 import argparse
 import json
+import os
 import shutil
 from datetime import date
 from pathlib import Path
 
 RACINE = Path(__file__).resolve().parent.parent
-DOC3D = RACINE.parent / "doc3D-renderer"
-GEN = RACINE.parent / "synthetic_invoice_generator" / "hospital_pharmacy"
+
+# Les deux dépôts VOISINS dont dépendent onze jeux sur quatorze.
+#
+# Ce dépôt-ci (PTITOcr) ne couvre que MedicalRecord/. Les rendus Blender et
+# la vérité terrain des factures vivent dans deux autres dépôts, et --
+# c'est le point important -- NI L'UN NI L'AUTRE ne versionne ses images ou
+# ses JSON : les deux ne contiennent que le code qui les produit. Un clone
+# frais de PTITOcr ne peut donc reconstruire que les trois jeux dont la
+# source est ici (handwriting_vi, handwriting_en, tabrecset_sample).
+#
+# Les chemins se surchargent par variable d'environnement, pour une
+# arborescence différente de la nôtre (les deux dépôts ailleurs, un disque
+# séparé pour les rendus) :
+#     $env:DOC3D_ROOT = "D:/rendus"
+#     $env:INVOICE_GEN_ROOT = "D:/factures"
+DEPOTS_VOISINS = {
+    "doc3D-renderer": "https://github.com/anhdungdo0906/doc3D-renderer.git",
+    "synthetic_invoice_generator":
+        "https://github.com/anhdungdo0906/synthetic_invoice_generator.git",
+}
+
+DOC3D = Path(os.environ.get("DOC3D_ROOT") or RACINE.parent / "doc3D-renderer")
+GEN = Path(os.environ.get("INVOICE_GEN_ROOT")
+           or RACINE.parent / "synthetic_invoice_generator") / "hospital_pharmacy"
 
 try:
     from PIL import Image
@@ -304,6 +327,24 @@ def construire():
         "racine": "les chemins sont relatifs au dossier PARENT de MedicalRecord "
                   "(il contient MedicalRecord/, doc3D-renderer/ et "
                   "synthetic_invoice_generator/)",
+        # Le manifeste indexe un corpus LOCAL : les images n'étant versionnées
+        # dans aucun des trois dépôts, ces chemins ne se résolvent que sur une
+        # machine où le corpus a été généré. Pour transmettre le corpus à
+        # quelqu'un, c'est `--export corpus --zip` qu'il faut, pas ce fichier.
+        "prerequis": {
+            "note": "11 jeux sur 14 viennent de deux dépôts voisins, qui ne "
+                    "versionnent NI leurs images NI la vérité terrain : seul "
+                    "le code s'y trouve. Reconstruire ces jeux suppose de "
+                    "rejouer la génération (LaTeX puis Blender).",
+            "depots_voisins": DEPOTS_VOISINS,
+            "arborescence_attendue": [
+                "<parent>/MedicalRecord/   (ce dépôt)",
+                "<parent>/doc3D-renderer/",
+                "<parent>/synthetic_invoice_generator/",
+            ],
+            "surcharge": ["DOC3D_ROOT", "INVOICE_GEN_ROOT"],
+            "autonomes": ["handwriting_vi", "handwriting_en", "tabrecset_sample"],
+        },
         "n_jeux": len(jeux_sortie),
         "n_images": len(images_sortie),
         "jeux_absents": manquants,
@@ -350,6 +391,35 @@ def exporter(manifeste, destination: Path):
     return n
 
 
+def diagnostiquer_racines():
+    """Dire tout de suite ce qui manque, et comment y remédier.
+
+    Sans ça, un clone frais de PTITOcr affiche « 3 jeux, 70 images » et une
+    liste de onze absents, sans que rien n'explique pourquoi -- alors que la
+    cause est structurelle : les images ne sont versionnées dans AUCUN des
+    trois dépôts, ni ici, ni chez les deux voisins.
+    """
+    absents = [(nom, chemin) for nom, chemin in
+               (("doc3D-renderer", DOC3D),
+                ("synthetic_invoice_generator", GEN.parent))
+               if not chemin.is_dir()]
+    if not absents:
+        return
+    print("Dépôt(s) voisin(s) introuvable(s) :")
+    for nom, chemin in absents:
+        print(f"  {nom:<30} attendu à {chemin}")
+    print("\nLes jeux qui en dépendent seront simplement absents du manifeste.")
+    print("Pour les récupérer, à côté de MedicalRecord :")
+    for nom, url in DEPOTS_VOISINS.items():
+        if any(nom == a for a, _ in absents):
+            print(f"    git clone {url}")
+    print("\nAttention : ces dépôts ne contiennent que le CODE de génération,")
+    print("pas les images ni la vérité terrain. Les cloner ne suffit pas --")
+    print("il faut rejouer la génération (LaTeX puis Blender). Voir")
+    print("dataset/README.md, section « Reconstituer le corpus ».")
+    print("Si tes dossiers sont ailleurs : $env:DOC3D_ROOT / $env:INVOICE_GEN_ROOT\n")
+
+
 def resumer(m):
     print(f"{m['n_jeux']} jeux, {m['n_images']} images\n")
     print(f"{'jeu':<36}{'famille':<11}{'langue':<8}{'images':>7}  {'UV':<4}titre")
@@ -372,6 +442,7 @@ def main():
                    help="Zipper l'export (implique --export).")
     args = p.parse_args()
 
+    diagnostiquer_racines()
     manifeste = construire()
     resumer(manifeste)
 

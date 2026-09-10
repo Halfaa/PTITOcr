@@ -1,6 +1,27 @@
 {
- "genere_le": "2026-09-07",
+ "genere_le": "2026-09-10",
  "racine": "les chemins sont relatifs au dossier PARENT de MedicalRecord (il contient MedicalRecord/, doc3D-renderer/ et synthetic_invoice_generator/)",
+ "prerequis": {
+  "note": "11 jeux sur 14 viennent de deux dépôts voisins, qui ne versionnent NI leurs images NI la vérité terrain : seul le code s'y trouve. Reconstruire ces jeux suppose de rejouer la génération (LaTeX puis Blender).",
+  "depots_voisins": {
+   "doc3D-renderer": "https://github.com/anhdungdo0906/doc3D-renderer.git",
+   "synthetic_invoice_generator": "https://github.com/anhdungdo0906/synthetic_invoice_generator.git"
+  },
+  "arborescence_attendue": [
+   "<parent>/MedicalRecord/   (ce dépôt)",
+   "<parent>/doc3D-renderer/",
+   "<parent>/synthetic_invoice_generator/"
+  ],
+  "surcharge": [
+   "DOC3D_ROOT",
+   "INVOICE_GEN_ROOT"
+  ],
+  "autonomes": [
+   "handwriting_vi",
+   "handwriting_en",
+   "tabrecset_sample"
+  ]
+ },
  "n_jeux": 14,
  "n_images": 547,
  "jeux_absents": [],
