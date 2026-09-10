@@ -38,7 +38,9 @@ prose was translated.
 import argparse
 import json
 import os
+import re
 import shutil
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -357,6 +359,120 @@ def construire():
     }
 
 
+def _numero_page(chemin: str):
+    """Page number from a `page_12-concave_mesh_...png` style name."""
+    m = re.match(r"page_(\d+)", Path(chemin).name)
+    return int(m.group(1)) if m else None
+
+
+def _groupes_factures(pdf: Path):
+    """Page-to-invoice split, read from the source PDF.
+
+    Imported lazily: it pulls in eval_teds, hence PyMuPDF, which the plain
+    manifest has no need of. A sampling run without the PDF is not an error
+    -- it falls back to taking whole sets, and says so.
+    """
+    try:
+        sys.path.insert(0, str(RACINE / "src"))
+        import eval_teds as E
+        return E.page_groups_from_pdf(pdf)
+    except Exception as e:
+        print(f"  (page-to-invoice split unavailable: {type(e).__name__}) ")
+        return None
+
+
+def echantillonner(manifeste, n_factures=1, n_specimens=3, n_reel=3,
+                   n_pages_degradation=1):
+    """Cut the corpus down to a small but COMPLETE sample.
+
+    The subtlety that dictates the whole function: invoice ground truth is
+    per INVOICE, not per page. Sampling isolated pages would produce a
+    dataset whose truth cannot be used -- an invoice JSON describes a table
+    spread over two or three pages, and scoring it against one of them is
+    meaningless. So we sample whole invoices, pages included.
+
+    Degradation is sampled the other way round: the SAME page is kept at all
+    24 steps, because what the set is for is the curve. Two pages at three
+    steps would be more images and less information.
+
+    Handwriting and TabRecSet carry per-page truth, so they can be sampled
+    image by image without precaution.
+    """
+    par_jeu = {}
+    for e in manifeste["images"]:
+        par_jeu.setdefault(e["jeu"], []).append(e)
+
+    retenus, resume = [], {}
+
+    for jeu, entrees in par_jeu.items():
+        famille = entrees[0]["famille"]
+
+        if jeu == "degradation":
+            pages = sorted({_numero_page(e["chemin"]) for e in entrees
+                            if _numero_page(e["chemin"]) is not None})
+            gardees = set(pages[:n_pages_degradation])
+            choisis = [e for e in entrees if _numero_page(e["chemin"]) in gardees]
+            resume[jeu] = (f"{len(choisis)} images = {len(gardees)} page(s) "
+                           f"x {len({e['palier'] for e in choisis})} steps")
+
+        elif famille == "facture":
+            verite = entrees[0].get("verite") or {}
+            pdf = RACINE.parent / verite["pdf_decoupage"] if verite.get("pdf_decoupage") else None
+            groupes = _groupes_factures(pdf) if pdf and pdf.exists() else None
+            if groupes:
+                voulues = set()
+                for groupe in groupes[:n_factures]:
+                    voulues.update(groupe)
+                choisis = [e for e in entrees if _numero_page(e["chemin"]) in voulues]
+                resume[jeu] = (f"{len(choisis)} images = {min(n_factures, len(groupes))} "
+                               f"complete invoice(s)")
+            elif all(_numero_page(e["chemin"]) is None for e in entrees):
+                # No `page_N` numbering: this set is one invoice per image
+                # (batch1, `invoice_1-...png`). Each image is therefore
+                # self-contained, and taking the first N loses nothing.
+                choisis = entrees[:n_factures]
+                resume[jeu] = f"{len(choisis)} images = {len(choisis)} single-page invoice(s)"
+            else:
+                # Multi-page set whose split we cannot read: say so loudly
+                # rather than ship a truncated invoice, which is exactly the
+                # trap this function exists to avoid.
+                choisis = entrees[:2]
+                resume[jeu] = f"{len(choisis)} images (SPLIT UNAVAILABLE: partial truth)"
+
+        elif famille == "manuscrit":
+            choisis = entrees[:n_specimens]
+            resume[jeu] = f"{len(choisis)} specimens"
+
+        else:
+            choisis = entrees[:n_reel]
+            resume[jeu] = f"{len(choisis)} images"
+
+        retenus.extend(choisis)
+
+    echantillon = dict(manifeste)
+    echantillon["images"] = retenus
+    echantillon["n_images"] = len(retenus)
+    echantillon["echantillon"] = {
+        "note": "Sampled subset of the full corpus. Invoice sets are sampled "
+                "by WHOLE INVOICE (ground truth is per invoice, not per "
+                "page); the degradation set keeps the same page across every "
+                "step, so the robustness curve stays readable.",
+        "par_jeu": resume,
+        "corpus_complet": {"n_images": manifeste["n_images"],
+                           "n_jeux": manifeste["n_jeux"]},
+    }
+    # Set-level counts have to follow, otherwise the manifest announces 547
+    # images next to a folder holding 60.
+    jeux = {}
+    for cle, j in manifeste["jeux"].items():
+        n = len([e for e in retenus if e["jeu"] == cle])
+        if n:
+            jeux[cle] = {**j, "n_images": n}
+    echantillon["jeux"] = jeux
+    echantillon["n_jeux"] = len(jeux)
+    return echantillon
+
+
 def exporter(manifeste, destination: Path):
     """Materialise a unified copy: <dest>/<family>/<set>/<image>."""
     destination.mkdir(parents=True, exist_ok=True)
@@ -392,7 +508,75 @@ def exporter(manifeste, destination: Path):
 
     (destination / "manifest.json").write_text(
         json.dumps(manifeste, ensure_ascii=False, indent=1), encoding="utf-8")
+    (destination / "README.md").write_text(_lisezmoi(manifeste), encoding="utf-8")
     return n
+
+
+def _lisezmoi(manifeste) -> str:
+    """A README written INTO the export, so the archive explains itself.
+
+    An archive that travels without its instructions gets opened six months
+    later by someone who has no idea which truth goes with which image --
+    and the three ground-truth regimes below are exactly the kind of thing
+    nobody guesses right.
+    """
+    ech = manifeste.get("echantillon")
+    lignes = [
+        "# Medical document corpus" + (" — sample" if ech else ""),
+        "",
+        f"{manifeste['n_images']} images across {manifeste['n_jeux']} sets, "
+        "with their ground truth.",
+        "",
+    ]
+    if ech:
+        lignes += [
+            f"Sampled from a full corpus of {ech['corpus_complet']['n_images']} "
+            f"images. {ech['note']}",
+            "",
+            "| set | sample |",
+            "|---|---|",
+        ]
+        lignes += [f"| `{jeu}` | {detail} |"
+                   for jeu, detail in sorted(ech["par_jeu"].items())]
+        lignes.append("")
+
+    lignes += [
+        "## Layout",
+        "",
+        "```",
+        "facture/     <set>/          invoice pages, synthetic (LaTeX + Blender)",
+        "manuscrit/   <set>/          handwritten forms, VN and EN",
+        "reel/        <set>/          real photographs (TabRecSet sample)",
+        "verite_terrain/              per-invoice ground truth + source PDFs",
+        "manifest.json                one entry per image",
+        "```",
+        "",
+        "## Ground truth: three regimes",
+        "",
+        "**Invoices** — one JSON per INVOICE, in `verite_terrain/`, covering "
+        "several pages. The page-to-invoice split comes from the source PDF, "
+        "also included. Invoices are sampled whole, so every page of a "
+        "sampled invoice is here.",
+        "",
+        "**Handwriting** — one `*_verite.json` per image, right next to it, "
+        "holding the exact value of every handwritten field (and, for "
+        "English, the handwriting font used).",
+        "",
+        "**Real photographs** — the TabRecSet annotations, detection and "
+        "structure, under their original folders.",
+        "",
+        "Ground truth for invoices is shipped in full (all invoices of each "
+        "set), not only the sampled ones: the files are small, and having "
+        "the extras costs nothing while a missing one would be fatal.",
+        "",
+        "## Caveats",
+        "",
+        "Everything except `reel/` is synthetic. The renders have no depth of "
+        "field, so background sheets are as sharp as the target — measurably "
+        "harder than reality for sheet localisation. Vietnamese handwriting "
+        "uses a single font, English uses seven.",
+    ]
+    return "\n".join(lignes) + "\n"
 
 
 def diagnostiquer_racines():
@@ -437,23 +621,68 @@ def resumer(m):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--sortie", default=str(Path(__file__).resolve().parent / "manifest.json"))
+    # Left at None so that sample mode can tell "the user asked for this
+    # path" from "nobody said anything". Without that distinction, a sample
+    # run overwrites manifest.json -- the index of the FULL corpus -- with a
+    # 71-image manifest, and the repository then advertises a corpus it no
+    # longer describes.
+    p.add_argument("--sortie", default=None)
     p.add_argument("--resume", action="store_true",
                    help="Print the summary without writing the manifest.")
     p.add_argument("--export", default=None,
                    help="Materialise a unified copy in this folder.")
     p.add_argument("--zip", action="store_true",
                    help="Zip the export (implies --export).")
+    p.add_argument("--echantillon", action="store_true",
+                   help="Keep only a small representative sample of each set "
+                        "(whole invoices, see echantillonner()).")
+    p.add_argument("--n-factures", type=int, default=2,
+                   help="Complete invoices per invoice set (default 2).")
+    p.add_argument("--n-specimens", type=int, default=3,
+                   help="Specimens per handwriting set (default 3).")
+    p.add_argument("--n-reel", type=int, default=3,
+                   help="Images from the real-photograph set (default 3).")
+    p.add_argument("--n-pages-degradation", type=int, default=1,
+                   help="Pages kept across ALL degradation steps (default 1).")
     args = p.parse_args()
 
     diagnostiquer_racines()
     manifeste = construire()
+
+    if args.echantillon:
+        manifeste = echantillonner(
+            manifeste, n_factures=args.n_factures,
+            n_specimens=args.n_specimens, n_reel=args.n_reel,
+            n_pages_degradation=args.n_pages_degradation)
+        print("SAMPLE mode\n")
+
     resumer(manifeste)
 
+    if args.echantillon:
+        print("\nSample composition:")
+        for jeu, detail in sorted(manifeste["echantillon"]["par_jeu"].items()):
+            print(f"  {jeu:<36}{detail}")
+        complet = manifeste["echantillon"]["corpus_complet"]
+        print(f"\n  {manifeste['n_images']} images kept out of "
+              f"{complet['n_images']} in the full corpus")
+
     if not args.resume:
-        Path(args.sortie).write_text(
-            json.dumps(manifeste, ensure_ascii=False, indent=1), encoding="utf-8")
-        print(f"\n-> {args.sortie}")
+        if args.sortie:
+            sortie = Path(args.sortie)
+        elif args.echantillon:
+            # The sample's own manifest already travels inside the export;
+            # writing a second copy next to the full one only invites
+            # confusion about which is which.
+            sortie = None
+        else:
+            sortie = Path(__file__).resolve().parent / "manifest.json"
+        if sortie:
+            sortie.write_text(
+                json.dumps(manifeste, ensure_ascii=False, indent=1), encoding="utf-8")
+            print(f"\n-> {sortie}")
+        else:
+            print("\n(sample mode: manifest.json left untouched, the sample's "
+                  "manifest goes inside the export)")
 
     if args.export or args.zip:
         dest = Path(args.export or (Path(__file__).resolve().parent / "corpus"))
