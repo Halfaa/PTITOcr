@@ -107,6 +107,17 @@ NOMS_ANNOTATIONS = {
     "ground_truth_labels_variants": "invoices_variants",
 }
 
+# Family names in the EXPORT. The archive is a standalone deliverable, read
+# by people outside this project, so it carries no French: images all sit
+# under `imgs/`, annotations under `annotations/`. Inside the repository the
+# `famille` values stay as they are -- they are dictionary keys, and the
+# whole codebase reads them.
+NOMS_FAMILLES = {
+    "facture": "invoice",
+    "manuscrit": "handwriting",
+    "reel": "real",
+}
+
 JEUX = {
     # -- Invoices, Blender renders -----------------------------------------
     "multipage_test": {
@@ -501,13 +512,15 @@ def exporter(manifeste, destination: Path):
         source = RACINE.parent / entree["chemin"]
         if not source.exists():
             continue
-        sous = destination / entree["famille"] / entree["jeu"]
+        famille = NOMS_FAMILLES.get(entree["famille"], entree["famille"])
+        sous = destination / "imgs" / famille / entree["jeu"]
         if entree.get("palier"):
             sous = sous / entree["palier"]
         sous.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, sous / source.name)
 
         sortie = dict(entree)
+        sortie["famille"] = famille
         sortie["chemin"] = (sous.relative_to(destination) / source.name).as_posix()
 
         v = dict(entree.get("verite") or {})
@@ -539,8 +552,8 @@ def exporter(manifeste, destination: Path):
                             sortie["page"] = page
                             break
         elif v.get("type") == "tabrecset":
-            v["td"] = f"reel/{entree['jeu']}/td_annotation"
-            v["tsr_tcr"] = f"reel/{entree['jeu']}/tsr_tcr_annotation"
+            v["td"] = f"imgs/real/{entree['jeu']}/td_annotation"
+            v["tsr_tcr"] = f"imgs/real/{entree['jeu']}/tsr_tcr_annotation"
         sortie["verite"] = v
         images_exportees.append(sortie)
         n += 1
@@ -549,8 +562,9 @@ def exporter(manifeste, destination: Path):
     for jeu in {e["jeu"] for e in manifeste["images"] if e["famille"] == "reel"}:
         base = RACINE / "data" / jeu
         for nom in ("td_annotation", "tsr_tcr_annotation"):
-            if (base / nom).is_dir() and not (destination / "reel" / jeu / nom).exists():
-                shutil.copytree(base / nom, destination / "reel" / jeu / nom)
+            cible = destination / "imgs" / "real" / jeu / nom
+            if (base / nom).is_dir() and not cible.exists():
+                shutil.copytree(base / nom, cible)
 
     manifeste = {**manifeste, "images": images_exportees}
     manifeste["racine"] = "paths are relative to the root of this archive"
@@ -626,11 +640,11 @@ def _lisezmoi(manifeste) -> str:
         "## Layout",
         "",
         "```",
-        "facture/     <set>/          invoice pages, synthetic (LaTeX + Blender)",
-        "manuscrit/   <set>/          handwritten forms, VN and EN",
-        "reel/        <set>/          real photographs (TabRecSet sample)",
-        "annotations/                 per-invoice labels + source PDFs",
-        "manifest.json                one entry per image",
+        "imgs/  invoice/<set>/       invoice pages, synthetic (LaTeX + Blender)",
+        "       handwriting/<set>/   handwritten forms, VN and EN",
+        "       real/<set>/          real photographs (TabRecSet sample)",
+        "annotations/                per-invoice labels + source PDFs",
+        "manifest.json               one entry per image",
         "```",
         "",
         "## Where are the images for a given annotation?",
@@ -645,7 +659,7 @@ def _lisezmoi(manifeste) -> str:
         "| annotation folder | image folders it scores |",
         "|---|---|",
     ] + [
-        f"| `annotations/{gt}/` | {', '.join('`facture/' + j + '/`' for j in sorted(jeux))} |"
+        f"| `annotations/{gt}/` | {', '.join('`imgs/invoice/' + j + '/`' for j in sorted(jeux))} |"
         for gt, jeux in sorted(_correspondance(manifeste).items())
     ] + [
         "",
