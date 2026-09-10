@@ -32,6 +32,20 @@ dans `src/eval_handwriting.py` retombe sur la partie avant le premier tiret
 pour cette raison — sans quoi un run sur le manuscrit déformé ne trouverait
 aucune vérité et sortirait un zéro qu'on lirait comme un échec du modèle.
 
+Pourquoi les textures sont tournées
+------------------------------------
+Le maillage applique lui-même une rotation de 90° à la texture. Les pages de
+facture sont stockées en **paysage** (1800x1269) et ressortent **droites**
+dans un rendu portrait ; nos specimens, en portrait, ressortaient donc
+**couchés** — constaté sur le premier rendu d'essai. Ce script les tourne en
+paysage avant de les déposer (`--rotation`, -90° par défaut).
+
+Ce n'est pas cosmétique : un document couché mélangerait l'effet de la
+déformation avec celui de l'orientation, que les modèles encaissent très
+inégalement. Et le §7 de `docs/fonds_encombres.md` a déjà montré qu'une
+page qui sort de travers ne se rattrape pas en aval — l'ambiguïté à 180°
+est insoluble par heuristique.
+
 Deux réserves à lever AVANT de lancer le lot complet
 -----------------------------------------------------
 **La résolution de rendu est codée en dur à 900x1200** dans
@@ -68,7 +82,7 @@ SOURCES = {
 }
 
 
-def preparer(langue: str, n: int | None) -> int:
+def preparer(langue: str, n: int | None, rotation: int) -> int:
     source = SOURCES[langue]
     if not source.is_dir():
         print(f"  {source} absent -- générer d'abord les specimens.")
@@ -94,15 +108,35 @@ def preparer(langue: str, n: int | None) -> int:
     if anciens:
         print(f"  {len(anciens)} texture(s) précédente(s) retirée(s)")
 
-    for img in images:
-        shutil.copy2(img, destination / img.name)
-
     from PIL import Image
-    with Image.open(images[0]) as im:
+
+    # Rotation de pre-compensation.
+    #
+    # Le maillage applique lui-meme une rotation de 90 degres a la texture :
+    # les pages de facture sont stockees en PAYSAGE (1800x1269) et
+    # ressortent DROITES dans un rendu portrait. Nos specimens sont en
+    # portrait (1654x2339), donc sans rien faire ils ressortent COUCHES --
+    # constate sur le premier rendu d'essai.
+    #
+    # On les tourne donc en paysage avant de les deposer. Le sens : le rendu
+    # d'essai montrait le haut du document parti vers la GAUCHE, soit une
+    # rotation de 90 degres dans le sens antihoraire ; on compense dans
+    # l'autre sens. Si l'image de verification sort a l'envers, c'est ce
+    # constat-la qui etait faux : passer --rotation 90.
+    for img in images:
+        with Image.open(img) as im:
+            if rotation and im.width < im.height:
+                im = im.transpose(Image.ROTATE_270 if rotation == -90
+                                  else Image.ROTATE_90)
+            im.save(destination / img.name)
+
+    with Image.open(destination / images[0].name) as im:
         taille = im.size
     print(f"  {len(images)} textures -> {destination}")
     print(f"  résolution des specimens : {taille[0]}x{taille[1]}")
-    if taille[0] > 900:
+    if rotation:
+        print(f"  rotation de pré-compensation : {rotation}° (portrait -> paysage)")
+    if max(taille) > 900:
         print(f"  ATTENTION : le rendu est codé en dur à 900x1200, soit "
               f"{900 / taille[0]:.0%} de cette largeur.")
         print("  Relever resolution_x/resolution_y dans "
@@ -117,6 +151,11 @@ def main():
     p.add_argument("--langue", choices=["vi", "en", "toutes"], default="toutes")
     p.add_argument("--n", type=int, default=None,
                    help="Nombre de specimens à préparer (défaut : tous).")
+    p.add_argument("--rotation", type=int, default=-90, choices=[-90, 0, 90],
+                   help="Rotation de pré-compensation appliquée aux pages "
+                        "portrait. -90 (défaut) les met en paysage comme les "
+                        "textures de facture ; 0 désactive ; 90 tourne dans "
+                        "l'autre sens si le rendu d'essai sort à l'envers.")
     args = p.parse_args()
 
     if not DOC3D.is_dir():
@@ -129,7 +168,7 @@ def main():
     total = 0
     for langue in langues:
         print(f"\n{langue} :")
-        total += preparer(langue, args.n)
+        total += preparer(langue, args.n, args.rotation)
 
     if not total:
         return
