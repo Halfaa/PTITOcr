@@ -353,7 +353,12 @@ def main():
     report_path = run_dir / "report.html"
     output_root.mkdir(parents=True, exist_ok=True)
 
-    images = sorted(images_dir.glob("*.png"), key=natural_sort_key) + sorted(images_dir.glob("*.jpg"), key=natural_sort_key)
+    # .jpeg included: public line datasets (Cinnamon and others) use it, and a
+    # silent "No image found" on a Kaggle run is an hour lost for one letter.
+    images = []
+    for motif in ("*.png", "*.jpg", "*.jpeg", "*.PNG", "*.JPG", "*.JPEG"):
+        images += sorted(images_dir.glob(motif), key=natural_sort_key)
+    images = sorted(set(images), key=natural_sort_key)
     if args.limit:
         images = images[: args.limit]
     if not images:

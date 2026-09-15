@@ -47,6 +47,9 @@ Three states:
 | [`resultats_validation.md`](resultats_validation.md) | current | arithmetic validation: catching a reading error without ground truth |
 | [`degradation.md`](degradation.md) | current | at what photo quality the chain breaks (24 steps) |
 | [`resultats_handwriting.md`](resultats_handwriting.md) | current | handwriting HTR benchmark VN/EN: Chandra 95.5 / 99.1%, PaddleOCR-VL 78.2 / 90.3% |
+| [`degradation_handwriting.md`](degradation_handwriting.md) | current | where Chandra breaks on handwriting: noise/exposure/JPEG cost nothing, blur and resolution break it — with a capture specification |
+| [`notion_handwriting_results.md`](notion_handwriting_results.md) | current | the degradation results as a slide-style summary, ready to paste into Notion |
+| [`notion_deformation_3d.md`](notion_deformation_3d.md) | current | 3D deformation: −35.7 points, why it is the worst failure mode, and why the figure is a lower bound |
 | [`resultats_handwriting_en.md`](resultats_handwriting_en.md) | current | short standalone summary of the above, ready to send as is |
 
 ---

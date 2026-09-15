@@ -228,7 +228,16 @@ def transcription_for(pages_dir: Path, stem: str):
     return max(md, key=lambda p: p.stat().st_mtime).read_text(encoding="utf-8")
 
 
-def evaluer_run(run_dir: Path, lang: str, verite_dir: VeriteDir, detail: bool):
+def evaluer_run(run_dir: Path, lang: str, verite_dir: VeriteDir, detail: bool,
+                specimens=None):
+    """`specimens` restreint la notation a une liste de stems.
+
+    Sert a rendre une comparaison APPARIEE. Le jeu deforme ne compte que 8
+    pages quand le jeu a plat en compte 30 : comparer 59,9 % a 95,6 % melange
+    l'effet de la deformation avec le fait que ce ne sont pas les memes
+    pages. Restreindre les deux runs aux memes specimens supprime cette
+    confusion, et c'est la seule facon de chiffrer la deformation seule.
+    """
     pages_dir = run_dir / "pages"
     if not pages_dir.is_dir():
         print(f"{run_dir.name:<40} (pas de dossier pages/)")
@@ -244,6 +253,11 @@ def evaluer_run(run_dir: Path, lang: str, verite_dir: VeriteDir, detail: bool):
         if not specimen_dir.is_dir():
             continue
         stem = specimen_dir.name
+        # Le rendu Blender nomme ses sorties <specimen>-<maillage> : on
+        # compare donc sur la partie avant le tiret, sinon un filtre passe
+        # sur le jeu a plat ne retrouverait rien sur le jeu deforme.
+        if specimens and stem.split("-")[0] not in specimens:
+            continue
         texte = transcription_for(pages_dir, stem)
         verite = verite_dir.get(stem)
         if texte is None or verite is None:
@@ -301,7 +315,15 @@ def main():
                           "(ex. handwriting_en/generated).")
     ap.add_argument("--lang", required=True, choices=["vi", "en"])
     ap.add_argument("--detail", action="store_true")
+    ap.add_argument("--specimens", default=None,
+                     help="Stems separes par des virgules (ex. "
+                          "specimen_000,specimen_001). Restreint la notation "
+                          "a ces pages, pour comparer deux runs de tailles "
+                          "differentes SUR LES MEMES pages.")
     args = ap.parse_args()
+
+    specimens = (set(s.strip() for s in args.specimens.split(",") if s.strip())
+                 if args.specimens else None)
 
     verite_dir = VeriteDir(Path(args.verite_dir).resolve())
     if not verite_dir.par_stem:
@@ -319,7 +341,7 @@ def main():
         return
 
     for run_dir in runs:
-        evaluer_run(run_dir, args.lang, verite_dir, args.detail)
+        evaluer_run(run_dir, args.lang, verite_dir, args.detail, specimens)
 
 
 if __name__ == "__main__":

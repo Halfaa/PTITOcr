@@ -1,13 +1,13 @@
 {
-  "name": "Extraction de factures médicales",
-  "short_name": "Factures",
-  "description": "Photographier une facture, obtenir le tableau vérifié et son JSON.",
+  "name": "Medical Invoice Extraction",
+  "short_name": "Invoices",
+  "description": "Photograph an invoice, get the verified table and its JSON.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#111418",
-  "theme_color": "#111418",
-  "lang": "fr",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "lang": "en",
   "icons": [
     { "src": "/static/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "/static/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }

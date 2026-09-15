@@ -217,6 +217,23 @@ JEUX = {
         "verite": "par_specimen",
         "generateur": "handwriting_en/generate_en.py",
     },
+    "handwriting_vi_warped": {
+        "famille": "manuscrit", "langue": "vi",
+        "titre": "handwritten VN forms projected on curved meshes (Blender)",
+        "role": "3D deformation on handwriting -- docs/notion_deformation_3d.md; "
+                "the first handwriting set to carry UV masks",
+        "dossier": DOC3D / "img" / "handwriting_vi_warped",
+        "verite": "par_specimen",
+        "generateur": "scripts/preparer_textures_manuscrit.py + render_variants.ps1",
+    },
+    "handwriting_en_warped": {
+        "famille": "manuscrit", "langue": "en",
+        "titre": "same, English (not rendered yet)",
+        "role": "English counterpart of the deformation set",
+        "dossier": DOC3D / "img" / "handwriting_en_warped",
+        "verite": "par_specimen",
+        "generateur": "scripts/preparer_textures_manuscrit.py + render_variants.ps1",
+    },
     # -- Real data ---------------------------------------------------------
     "tabrecset_sample": {
         "famille": "reel", "langue": "zh/en",
@@ -613,8 +630,14 @@ def exporter(manifeste, destination: Path):
     # and redundant once they sit under `annotations/`. `annotations/` is
     # also the name public datasets use (COCO and the rest), so anyone
     # opening the archive already knows what is inside.
+    # Seulement si l'export contient vraiment des pages de facture. Un
+    # paquet manuscrit n'a que faire de la verite terrain des factures, et
+    # la joindre ferait douter de ce qu'on envoie.
     annotations = destination / "annotations"
-    for spec in (FACTURES_MULTIPAGE, FACTURES_VARIANTS, FACTURES_SIMPLES):
+    specs = ((FACTURES_MULTIPAGE, FACTURES_VARIANTS, FACTURES_SIMPLES)
+             if any((e.get("verite") or {}).get("type") == "par_facture"
+                    for e in images_exportees) else ())
+    for spec in specs:
         if spec["gt"].is_dir():
             cible = annotations / NOMS_ANNOTATIONS.get(spec["gt"].name, spec["gt"].name)
             if not cible.exists():
@@ -652,9 +675,13 @@ def _lisezmoi(manifeste) -> str:
     and the three ground-truth regimes below are exactly the kind of thing
     nobody guesses right.
     """
-    ech = manifeste.get("echantillon")
+    # `echantillon` vient du mode --echantillon, `envoi` du paquet monte par
+    # scripts/preparer_envoi.py : les deux decrivent un sous-ensemble, et le
+    # README doit le dire dans les deux cas plutot que d'annoncer un corpus
+    # complet qui n'est pas dans l'archive.
+    ech = manifeste.get("echantillon") or manifeste.get("envoi")
     lignes = [
-        "# Medical document corpus" + (" — sample" if ech else ""),
+        "# Medical document corpus" + (" — subset" if ech else ""),
         "",
         f"{manifeste['n_images']} images across {manifeste['n_jeux']} sets, "
         "with their ground truth.",
@@ -662,27 +689,38 @@ def _lisezmoi(manifeste) -> str:
     ]
     if ech:
         lignes += [
-            f"Sampled from a full corpus of {ech['corpus_complet']['n_images']} "
+            f"Drawn from a full corpus of {ech['corpus_complet']['n_images']} "
             f"images. {ech['note']}",
             "",
-            "| set | sample |",
+            "| set | what is included |",
             "|---|---|",
         ]
         lignes += [f"| `{jeu}` | {detail} |"
                    for jeu, detail in sorted(ech["par_jeu"].items())]
         lignes.append("")
 
-    lignes += [
-        "## Layout",
-        "",
-        "```",
-        "imgs/  invoice/<set>/       invoice pages, synthetic (LaTeX + Blender)",
-        "       handwriting/<set>/   handwritten forms, VN and EN",
-        "       real/<set>/          real photographs (TabRecSet sample)",
-        "annotations/                per-invoice labels + source PDFs",
-        "manifest.json               one entry per image",
-        "```",
-        "",
+    # Un paquet manuscrit n'a ni dossier `annotations/` ni page de facture :
+    # decrire une arborescence qui n'est pas dans l'archive ferait chercher
+    # des fichiers absents.
+    familles = {e["famille"] for e in manifeste["images"]}
+    familles |= {NOMS_FAMILLES.get(f, f) for f in familles}
+    avec_factures = bool(_correspondance(manifeste))
+
+    plan = ["```"]
+    if "invoice" in familles or "facture" in familles:
+        plan.append("imgs/  invoice/<set>/       invoice pages, synthetic (LaTeX + Blender)")
+    if "handwriting" in familles or "manuscrit" in familles:
+        plan.append("       handwriting/<set>/   handwritten forms, VN and EN")
+    if "real" in familles or "reel" in familles:
+        plan.append("       real/<set>/          real photographs (TabRecSet sample)")
+    if avec_factures:
+        plan.append("annotations/                per-invoice labels + source PDFs")
+    plan += ["manifest.json               one entry per image", "```", ""]
+
+    lignes += ["## Layout", ""] + plan
+
+    if avec_factures:
+        lignes += [
         "## Where are the images for a given annotation?",
         "",
         "`annotations/` holds only JSON, and that surprises people. The "
@@ -714,29 +752,41 @@ def _lisezmoi(manifeste) -> str:
         "    print(e['page'], e['chemin'])",
         "```",
         "",
-        "## Ground truth: three regimes",
-        "",
-        "**Invoices** — one JSON per INVOICE, in `annotations/`, covering "
-        "several pages. Invoices are sampled whole, so every page of a "
-        "sampled invoice is here.",
-        "",
-        "**Handwriting** — one `*_verite.json` per image, right next to it, "
-        "holding the exact value of every handwritten field (and, for "
-        "English, the handwriting font used).",
-        "",
-        "**Real photographs** — the TabRecSet annotations, detection and "
-        "structure, under their original folders.",
-        "",
-        "Ground truth for invoices is shipped in full (all invoices of each "
-        "set), not only the sampled ones: the files are small, and having "
-        "the extras costs nothing while a missing one would be fatal.",
-        "",
+    ]
+
+    lignes += ["## Ground truth", ""]
+    if avec_factures:
+        lignes += [
+            "**Invoices** — one JSON per INVOICE, in `annotations/`, covering "
+            "several pages. Invoices are sampled whole, so every page of a "
+            "sampled invoice is here. The invoice labels are shipped in full, "
+            "not only for the sampled ones: the files are small, and a missing "
+            "one would be fatal.",
+            "",
+        ]
+    if "handwriting" in familles or "manuscrit" in familles:
+        lignes += [
+            "**Handwriting** — one `*_verite.json` per image, right next to "
+            "it, holding the exact value of every handwritten field (and, for "
+            "English, the handwriting font used). Degraded and warped pages "
+            "keep the truth of their source specimen: the degradation only "
+            "touches pixels.",
+            "",
+        ]
+    if "real" in familles or "reel" in familles:
+        lignes += [
+            "**Real photographs** — the TabRecSet annotations, detection and "
+            "structure, under their original folders.",
+            "",
+        ]
+
+    lignes += [
         "## Caveats",
         "",
-        "Everything except `reel/` is synthetic. The renders have no depth of "
-        "field, so background sheets are as sharp as the target — measurably "
-        "harder than reality for sheet localisation. Vietnamese handwriting "
-        "uses a single font, English uses seven.",
+        "Every synthetic set is generated: LaTeX for the content, Blender for "
+        "warping and lighting, handwriting fonts for the script. That is what "
+        "makes the ground truth exact — and it is also the main limitation. "
+        "Vietnamese handwriting uses a single font, English uses seven.",
     ]
     return "\n".join(lignes) + "\n"
 
