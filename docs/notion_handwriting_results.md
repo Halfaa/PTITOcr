@@ -187,5 +187,5 @@ Lighting is not the problem.
 | 3 specimens per level (~141 field observations) | curve shape is solid, exact thresholds are indicative |
 | English only — Vietnamese degradation not measured | **these are the optimistic figures**; VN is already 3.6 pts lower on clean pages, and diacritics are what blur destroys first |
 | no printed-invoice curve measured | the "handwriting breaks earlier than print" prediction is still unverified |
-| synthetic pages, handwriting fonts | not real handwriting, not real photographs |
+| synthetic pages, handwriting fonts | not real handwriting, not real photographs — now addressed separately in [`notion_real_handwriting.md`](notion_real_handwriting.md), on 250 photographed lines of real Vietnamese handwriting |
 | warped set rotated 90° | deformation figure is a lower bound |
