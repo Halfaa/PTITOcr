@@ -12,19 +12,26 @@ tourner autrement plutot que d'importer a moitie.
 Ce que ca produit
 -------------------
     <sortie>/images/<scripteur>_<index>.png
-    <sortie>/labels.json      {"0003_00001.png": "khuỷu", ...}
+    <sortie>/labels.json      {"0003_00001.png": "khuỷu vận động cột sống", ...}
 
 Le `labels.json` a EXACTEMENT la forme de celui du jeu Cinnamon, donc
 `src/eval_lignes.py` et `charger_labels()` le lisent sans modification. Ce
 n'est pas un detail de confort : deux formats d'annotation pour la meme tache
 finissent toujours par produire deux chiffres qu'on ne peut plus comparer.
 
-Pourquoi des mots et pas des lignes
--------------------------------------
+Mots ou lignes
+----------------
 L'alphabet vietnamien de WriteViT compte 197 caracteres et ne contient NI
-espace NI ponctuation. Le modele ne sait produire qu'un mot a la fois. Leur
+espace NI ponctuation : le modele ne sait produire qu'un mot a la fois. Leur
 propre `_generate_page` compose les lignes en concatenant les images de mots
-avec un ecart de 16 px ; `--lignes` fait la meme chose ici.
+avec 16 px de blanc entre elles, et `--mots-min` / `--mots-max` font pareil.
+
+Ce n'est pas cosmetique. Le jeu de reference du projet (Cinnamon) est fait de
+LIGNES dont les labels portent des espaces. Un jeu de mots isoles ne s'y
+compare pas, et un CRNN entraine dessus n'aurait jamais vu d'espace.
+
+    --mots-min 1 --mots-max 1     mots isoles (defaut)
+    --mots-min 3 --mots-max 8     lignes, comme le jeu reel
 
 Le controle qui decide de tout
 --------------------------------
@@ -37,6 +44,7 @@ reproche que le papier WriteViT fait a ScrabbleGAN.
 
 import argparse
 import json
+import os
 from collections import Counter
 import random
 import sys
@@ -73,8 +81,19 @@ def charger_modele(depot: Path, checkpoint: Path):
     import torch
     from models.model import WriteViT
 
-    modele = WriteViT(batch_size=1, backbone=params.BACKBONE).to(params.DEVICE)
-    etat = torch.load(str(checkpoint), map_location=params.DEVICE)
+    # `models/Unifront.py` ouvre "./File/unifont.pickle", un chemin relatif au
+    # REPERTOIRE COURANT et non au depot. Le modele ne se construit donc que
+    # si on se place dans WriteViT/. On y va le temps du chargement, et on
+    # revient : les chemins de sortie des appelants sont relatifs a leur
+    # propre repertoire.
+    ancien = os.getcwd()
+    os.chdir(depot)
+    try:
+        modele = WriteViT(batch_size=1,
+                          backbone=params.BACKBONE).to(params.DEVICE)
+        etat = torch.load(str(checkpoint), map_location=params.DEVICE)
+    finally:
+        os.chdir(ancien)
     if isinstance(etat, dict) and "state_dict" in etat:
         etat = etat["state_dict"]
     manquants, inattendus = modele.load_state_dict(etat, strict=False)
@@ -182,6 +201,24 @@ def filtrer_generables(lexique, vus, seuil, sans_chiffres=True):
     return gardes, rejetes
 
 
+def assembler(images, hauteur, ecart):
+    """Concatene des images de mots en une LIGNE, avec un blanc entre eux.
+
+    WriteViT ne sait produire qu'un mot : son alphabet vietnamien ne contient
+    pas l'espace. Leur propre `_generate_page` compose les lignes exactement
+    ainsi, en intercalant 16 px de blanc. On reproduit ce chemin, parce que
+    c'est ce qui rend le jeu comparable a Cinnamon, dont les labels sont des
+    lignes avec des espaces -- un jeu de mots isoles ne se compare a rien.
+    """
+    blanc = np.ones((hauteur, ecart), dtype=np.float32)
+    morceaux = []
+    for i, im in enumerate(images):
+        if i:
+            morceaux.append(blanc)
+        morceaux.append(im)
+    return np.concatenate(morceaux, axis=1)
+
+
 def _png(a):
     return Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8), mode="L")
 
@@ -226,6 +263,14 @@ def main():
     ap.add_argument("--scripteurs", type=int, default=0,
                     help="0 = tous les scripteurs d'entrainement.")
     ap.add_argument("--lot", type=int, default=32, help="Mots par appel.")
+    ap.add_argument("--mots-min", type=int, default=1,
+                    help="Mots minimum par image. 1 = mots isoles.")
+    ap.add_argument("--mots-max", type=int, default=1,
+                    help="Mots maximum par image. Au-dessus de 1, les images "
+                         "sont des LIGNES et les labels portent des espaces, "
+                         "comme le jeu reel de reference.")
+    ap.add_argument("--ecart", type=int, default=16,
+                    help="Blanc entre deux mots d'une ligne, en pixels.")
     ap.add_argument("--graine", type=int, default=12345)
     ap.add_argument("--apercu", action="store_true",
                     help="Ne genere que la planche de controle diacritiques.")
@@ -291,23 +336,44 @@ def main():
         # On repartit la cible equitablement entre scripteurs : un jeu ou un
         # seul style domine entrainerait le CRNN sur une ecriture, pas sur
         # l'ecriture manuscrite.
-        part = min(args.n - faits, -(-args.n // len(refs)))
-        for debut in range(0, part, args.lot):
+        cible = min(args.n - faits, -(-args.n // len(refs)))
+
+        def tirer_mot():
             # Le tirage respecte --part-medicale a chaque mot : le jeu reste
             # melange d'un bout a l'autre, plutot que medical au debut et
             # generique a la fin -- ce qui biaiserait toute coupe du jeu.
-            mots = []
-            for _ in range(min(args.lot, part - debut)):
-                source = (medical if alea.random() < args.part_medicale
-                          or not appoint else appoint)
-                mot = alea.choice(source)
-                mots.append(mot.upper()
-                            if alea.random() < args.part_majuscules else mot)
-            for m, im in zip(mots, generer(modele, params, torch, style, mots)):
+            source = (medical if alea.random() < args.part_medicale
+                      or not appoint else appoint)
+            mot = alea.choice(source)
+            return (mot.upper() if alea.random() < args.part_majuscules
+                    else mot)
+
+        produites = 0
+        while produites < cible:
+            # On prepare plusieurs lignes d'un coup : le generateur traite un
+            # lot de mots par appel, et appeler mot par mot serait dix fois
+            # plus lent pour le meme resultat.
+            groupes = []
+            while (sum(len(g) for g in groupes) < args.lot
+                   and produites + len(groupes) < cible):
+                k = alea.randint(args.mots_min, args.mots_max)
+                groupes.append([tirer_mot() for _ in range(k)])
+
+            plats = [m for g in groupes for m in g]
+            images = generer(modele, params, torch, style, plats)
+
+            curseur = 0
+            for g in groupes:
+                bloc = images[curseur:curseur + len(g)]
+                curseur += len(g)
                 faits += 1
+                produites += 1
                 nom = f"{wid}_{faits:06d}.png"
-                _png(im).save(sortie / "images" / nom)
-                labels[nom] = m
+                _png(assembler(bloc, params.IMG_HEIGHT, args.ecart)).save(
+                    sortie / "images" / nom)
+                # Le label porte les espaces : c'est la forme de Cinnamon, donc
+                # celle que `src/eval_lignes.py` sait lire sans adaptation.
+                labels[nom] = " ".join(g)
         print(f"  {wid}  {faits}/{args.n}")
 
     (sortie / "labels.json").write_text(

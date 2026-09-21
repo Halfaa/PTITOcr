@@ -20,8 +20,7 @@ July - September 2026
 | 5 | Handwriting | real Vietnamese, CER 6.84% zero-shot against 4.80% published | measured |
 | 6 | Geometric deformation | −2.0 points on real captured paper, against −35.7 simulated | open |
 | 7 | Generating medical handwriting | words yes, digits no | open |
-| 8 | Open items | six | - |
-| 9 | Methodological notes | five recurring traps | - |
+| 8 | What comes next | the remaining gap is training, not architecture | - |
 
 Each part is a numbered list of points. Every point states what was done,
 the figure obtained, and one of four states: **measured** (a number exists and
@@ -576,54 +575,120 @@ character counts. Of the splits with the right count, 132 of 300 had the cuts
 in the wrong places, an accent detached as a word while two words merged. The
 naive version accepted all of them.
 
+### 7.6 Filling the real form with generated handwriting · measured
+
+The deliverable is not a pile of word images. It is the **actual PHCN form**
+(27/BV1-P3), filled with handwriting produced by the GAN, with its exact
+ground truth beside it.
+
+The implementation is deliberately small. Every handwritten field of the
+existing generator goes through one function, `hw()`. Replacing it is enough:
+instead of wrapping text in a handwriting font, it emits **one image per
+word**, separated by real LaTeX spaces.
+
+That last detail is what makes it work. A single image per field could not be
+broken across lines, and the description column of the table is narrow: its
+text runs onto two or three lines. With one word per image and ordinary spaces
+between them, **LaTeX keeps doing the line breaking**, the column widths and
+the alignment. Nothing else in the template changes.
+
+**One writer per document.** A real sheet is filled in by one person. Mixing
+styles within a page would produce a document that cannot exist.
+
+**The ground truth is paired.** Each generated document reuses the ground
+truth of its font-rendered twin, so the two carry identical content in an
+identical layout, and only the handwriting differs. That is the only way to
+attribute a difference in reading score to the handwriting itself.
+
+> 📎 Drop in `demo/figures/20_document_gan.png`
+
+### 7.7 What the digits cost, and what would fix them · measured
+
+Digits are written in the **handwriting font**, not by the GAN. They account
+for **141 of the 397 distinct words** of the corpus, 36%: dates, durations,
+room and bed numbers, ages.
+
+The fine-tuning of §7.4 did not recover them. Raising their share of the
+training data from 2.83% to 30.9% left `1972` and `15` as shapeless strokes on
+the control plate, before and after. The cursive survived intact, so this is
+not catastrophic forgetting: it is a failure to learn.
+
+Two reasons, and they point at different fixes.
+
+**Volume, not proportion.** Rebalancing changed the ratio but not the absolute
+quantity: VNOnDB contains 1,892 word images with a digit in them, and the
+rarest digits appear barely more than a hundred times each (`8` 110, `6` 128,
+`9` 126). A generator that has seen a glyph a hundred times can recognise it;
+drawing it convincingly is a harder demand. **More data would plausibly
+help here, and it is the cheapest lever** — digits are trivial to collect or
+to synthesise compared with cursive Vietnamese.
+
+**Structure.** The model learns joined writing: ligatures, a shared baseline,
+transitions between letters. Digits have none of that. They are isolated
+shapes with their own proportions, closer to printing than to cursive. A
+model whose entire training signal is connected script has little reason to
+represent them well, whatever their frequency.
+
+The pragmatic answer, and the one applied here, is to write them with the
+font. The document stays legible and coherent. The limitation is named rather
+than hidden, and the fallback rate is printed for every document produced.
+
 ---
 
-## Part 8. Open items
+## Part 8. What comes next
 
-| # | item | why it matters |
-|---|---|---|
-| 1 | GLM-OCR never measured | the only MIT-licensed candidate, OOM fixed, re-run pending |
-| 2 | UVDoc oracle re-run | would settle whether dewarping is worth adding at all |
-| 3 | Vietnamese degradation set | only English was measured, so current thresholds are the **optimistic** case |
-| 4 | GAN digit fine-tuning | running, decides whether the synthetic set is usable for medical data |
-| 5 | CRNN trained on synthetic data | the experiment the generation exists for: real / synthetic / both |
-| 6 | Cluttered set with depth of field | the current one has an invisible sheet edge (§4.2) |
+The generator works. What it does not yet do is a matter of training, not of
+architecture, and that is the useful thing to say at the end of this work.
 
----
+### 8.1 Train the generator longer, and on more digits
 
-## Part 9. Methodological notes
+The fine-tuning of §7.4 was deliberately short: 30 epochs at a reduced
+learning rate, on 6,132 rebalanced samples. It was meant to answer one
+question — does raising the share of digits help — and it answered no at that
+scale.
 
-Five traps that cost time and would cost it again.
+**But the evidence points at an undertrained model rather than an incapable
+one.** The cursive came through the fine-tuning untouched, so nothing was
+saturated or destroyed; there was capacity left. And the absolute volume of
+digit data stayed tiny: 1,892 word images in total, with the rarest digits
+seen barely more than a hundred times each (`8` 110, `6` 128, `9` 126). A
+model cannot learn to draw convincingly from a hundred examples.
 
-**1 · Unicode normalisation.** `ệ` can be one code point or three. They look
-identical. A composed/decomposed mismatch would have turned a 4% CER into over
-30% without a single wrong letter. Both sides are normalised to NFC before any
-comparison.
+Three levers, in order of cost:
 
-**2 · Vietnamese tone-mark convention.** `hoà` and `hòa` are the same word
-under two valid spellings. Left alone, this inflated CER by 0.33 points, 5%
-of all errors. The fix does not decide which spelling is right, since the tone
-belongs to the syllable rather than to a vowel. It moves the mark to one
-arbitrary but *identical* position on both sides.
+| lever | why it should help |
+|---|---|
+| **more epochs** | 30 is short for a GAN; the published checkpoint was trained for 200 |
+| **more digit data** | digits are trivial to collect or synthesise next to cursive Vietnamese |
+| **a digit-specific loss or curriculum** | the recogniser already scores content; weighting numeric samples would push the generator where it is weak |
 
-**3 · Paired comparisons must actually be paired.** Three separate incidents:
-11 degradation steps with 4 images instead of 5 after an interrupted run,
-30 flat pages against 26 deformed after 4 OOM failures, and a run matched against
-the wrong language's ground truth because a shell filter used `_en` while the
-runs were named with hyphens. In each case the numbers looked plausible.
+None of these requires changing the model. That is the argument for expecting
+improvement: **the ceiling reached so far is a training ceiling.**
 
-**4 · Verify the scorer before blaming the model.** The 18-point handwriting
-bug (§5.2) was in the scorer. So was a manifest that reported the wrong image
-size, and a resume check that accepted a truncated PNG because it only tested
-`exists()`.
+### 8.2 Train a CRNN on the generated set
 
-**5 · Measure the constraint that binds.** The generation work checked lexicon
-coverage when the binding constraint was the generator's training
-distribution (§7.3). The right check is rarely the convenient one.
+This is the experiment the whole generation effort exists for, and the one
+step still missing. The protocol is already fixed: the same CRNN trained in
+three conditions — real only, synthetic only, real plus synthetic — and scored
+with `src/eval_lignes.py`.
+
+Two reference points are already in hand and make the result readable
+immediately: a **CRNN published at CER 4.80%** on the real dataset, and
+**Chandra at 6.84% zero-shot**. A small model trained partly on generated
+handwriting, placed against those two, answers the question the supervisor
+asked at the start of this phase.
 
 ---
 
 ## Sources
+
+### This work
+
+- **Repository** — [github.com/Halfaa/PTITOcr](https://github.com/Halfaa/PTITOcr)
+  Every figure in this report is reproducible from it: the generators, the
+  evaluation scripts, the Kaggle notebooks and the dataset manifest.
+
+### External
 
 - WriteViT: [arXiv 2505.13235](https://arxiv.org/abs/2505.13235) · [repository](https://github.com/hnam-1765/WriteViT) (MIT)
 - ScrabbleGAN: [CVPR 2020](https://arxiv.org/abs/2003.10557)

@@ -1,0 +1,70 @@
+{
+  "patient": {
+    "ten": "Hoàng Thị Yến",
+    "nam_sinh": 1969,
+    "gioi": "Nữ",
+    "tuoi": "57",
+    "khoa": "Phục hồi chức năng",
+    "buong": "4",
+    "giuong": "6",
+    "chan_doan": "Thoái hóa cột sống thắt lưng đau thần kinh tọa",
+    "so_y_te": "Bộ Y tế"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "15h30 10 09",
+      "mo_ta": "Thăng bằng đứng tĩnh tốt hơn cần trợ giúp khi đi",
+      "ky_thuat": "Kỹ thuật kiểm soát tư thế ngồi bò đứng đi",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS Lê Văn Cường",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "15h30 11 09",
+      "mo_ta": "Bệnh nhân mệt sau 15 phút tập giảm cường độ buổi tới",
+      "ky_thuat": "Kỹ thuật tập vận động trên máy chức năng",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS Trần Thị Bích",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "15h45 12 09",
+      "mo_ta": "Bệnh nhân mệt sau 15 phút tập giảm cường độ buổi tới",
+      "ky_thuat": "Thủy trị liệu có thuốc",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS Trần Thị Bích",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "15h15 12 09",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế cần một người trợ giúp",
+      "ky_thuat": "Kỹ thuật xoa bóp bằng máy",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS Lê Văn Cường",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "15h30 12 09",
+      "mo_ta": "Phù nề giảm tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Kỹ thuật xoa bóp toàn thân",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS Hoàng Văn Đức",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "15h45 13 09",
+      "mo_ta": "Dáng đi cải thiện giảm lệch trọng tâm sang bên lành",
+      "ky_thuat": "Kỹ thuật tập vận động trên máy chức năng",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS Hoàng Văn Đức",
+      "xac_nhan": "Đồng ý"
+    }
+  ],
+  "scripteur": "0011"
+}

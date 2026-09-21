@@ -1,0 +1,70 @@
+{
+  "patient": {
+    "ten": "Trần Thị Bảy",
+    "nam_sinh": 1972,
+    "gioi": "Nữ",
+    "tuoi": "54",
+    "khoa": "Phục hồi chức năng",
+    "buong": "2",
+    "giuong": "7",
+    "chan_doan": "Viêm quanh khớp vai phải",
+    "so_y_te": "Sở Y tế Hải Phòng"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "14h00 02 06",
+      "mo_ta": "Khả năng tự xoay trở trên giường tốt hơn",
+      "ky_thuat": "Kỹ thuật tập vận động trên máy chức năng",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS Trần Thị Bích",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "14h30 03 06",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện chưa đau khi vận động",
+      "ky_thuat": "Điều trị bằng bồn tắm tương phản nóng lạnh",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS Phạm Thị Dung",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "14h30 04 06",
+      "mo_ta": "Khả năng tự xoay trở trên giường tốt hơn",
+      "ky_thuat": "Kỹ thuật tư vấn tâm lý cho người bệnh hoặc người nhà",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Đỗ Thị Lan",
+      "bs_chi_dinh": "BS Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "14h15 05 06",
+      "mo_ta": "Bệnh nhân mệt sau 15 phút tập giảm cường độ buổi tới",
+      "ky_thuat": "Điều trị bằng laser công suất thấp chiếu ngoài",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS Hoàng Văn Đức",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "14h00 06 06",
+      "mo_ta": "Dáng đi cải thiện giảm lệch trọng tâm sang bên lành",
+      "ky_thuat": "Kỹ thuật tập vận động trên máy chức năng",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "14h15 07 06",
+      "mo_ta": "Bệnh nhân mệt sau 15 phút tập giảm cường độ buổi tới",
+      "ky_thuat": "Điều trị chườm ngải cứu",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "Đồng ý"
+    }
+  ],
+  "scripteur": "0014"
+}

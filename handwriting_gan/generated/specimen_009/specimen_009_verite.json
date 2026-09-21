@@ -1,0 +1,70 @@
+{
+  "patient": {
+    "ten": "Trần Thị Bảy",
+    "nam_sinh": 1972,
+    "gioi": "Nữ",
+    "tuoi": "54",
+    "khoa": "Phục hồi chức năng",
+    "buong": "1",
+    "giuong": "2",
+    "chan_doan": "Di chứng tai biến mạch máu não liệt nửa người trái",
+    "so_y_te": "Sở Y tế TP Hồ Chí Minh"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "9h15 13 05",
+      "mo_ta": "Phù nề giảm tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Tập với máy tập thăng bằng",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS Lê Văn Cường",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "9h00 14 05",
+      "mo_ta": "Sức cơ tứ đầu đùi 3 5 tiếp tục bài tập chủ động có trợ giúp",
+      "ky_thuat": "Kỹ thuật điều trị bằng máy ép khí ngắt quãng",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS Lê Văn Cường",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "9h30 15 05",
+      "mo_ta": "Còn khó khăn khi đứng dậy từ ghế cần một người trợ giúp",
+      "ky_thuat": "Kỹ thuật tập thở với dụng cụ",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS Lê Văn Cường",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "9h45 16 05",
+      "mo_ta": "Phù nề giảm tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Kỹ thuật tập mạnh cơ đáy chậu cơ sàn chậu bằng dụng cụ",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS Lê Văn Cường",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "9h00 17 05",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện chưa đau khi vận động",
+      "ky_thuat": "Tập dưỡng sinh",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS Lê Văn Cường",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "9h00 18 05",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện chưa đau khi vận động",
+      "ky_thuat": "Kỹ thuật tập ngồi đứng dậy từ sàn nhà",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Hoàng Văn Tùng",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "Đồng ý"
+    }
+  ],
+  "scripteur": "0010"
+}

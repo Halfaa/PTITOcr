@@ -1,0 +1,70 @@
+{
+  "patient": {
+    "ten": "Lê Văn Hòa",
+    "nam_sinh": 1965,
+    "gioi": "Nam",
+    "tuoi": "61",
+    "khoa": "Phục hồi chức năng",
+    "buong": "7",
+    "giuong": "3",
+    "chan_doan": "Viêm quanh khớp vai phải",
+    "so_y_te": "Sở Y tế Đà Nẵng"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "16h00 08 11",
+      "mo_ta": "Bệnh nhân mệt sau 15 phút tập giảm cường độ buổi tới",
+      "ky_thuat": "Kỹ thuật xoa bóp dẫn lưu",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Đỗ Thị Lan",
+      "bs_chi_dinh": "BS Phạm Thị Dung",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h30 09 11",
+      "mo_ta": "Còn co cứng cơ nhị đầu tập kéo giãn thêm",
+      "ky_thuat": "Tập đi với gậy",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS Phạm Thị Dung",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h30 10 11",
+      "mo_ta": "Sức cơ tứ đầu đùi 3 5 tiếp tục bài tập chủ động có trợ giúp",
+      "ky_thuat": "Điều trị bằng điện vi dòng",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h15 10 11",
+      "mo_ta": "Tầm vận động khớp vai tăng nhẹ so với buổi trước",
+      "ky_thuat": "Kỹ thuật tập mạnh cơ đáy chậu cơ sàn chậu bằng dụng cụ",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS Trần Thị Bích",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "16h45 11 11",
+      "mo_ta": "Sức cơ tứ đầu đùi 3 5 tiếp tục bài tập chủ động có trợ giúp",
+      "ky_thuat": "Tập dưỡng sinh",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h15 12 11",
+      "mo_ta": "Cơ lực chi dưới cải thiện còn hạn chế duỗi gối",
+      "ky_thuat": "Kỹ thuật tập vận động trên máy chức năng",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS Hoàng Văn Đức",
+      "xac_nhan": "Đồng ý"
+    }
+  ],
+  "scripteur": "0009"
+}

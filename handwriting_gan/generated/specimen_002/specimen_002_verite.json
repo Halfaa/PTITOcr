@@ -1,0 +1,70 @@
+{
+  "patient": {
+    "ten": "Trần Thị Bảy",
+    "nam_sinh": 1972,
+    "gioi": "Nữ",
+    "tuoi": "54",
+    "khoa": "Phục hồi chức năng",
+    "buong": "1",
+    "giuong": "8",
+    "chan_doan": "Di chứng tai biến mạch máu não liệt nửa người trái",
+    "so_y_te": "Sở Y tế TP Hồ Chí Minh"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "7h00 08 03",
+      "mo_ta": "Tầm vận động khớp vai tăng nhẹ so với buổi trước",
+      "ky_thuat": "Điều trị bằng bồn xoa bóp thủy lực",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS Lê Văn Cường",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "7h45 08 03",
+      "mo_ta": "Cơ lực chi dưới cải thiện còn hạn chế duỗi gối",
+      "ky_thuat": "Kỹ thuật tập sức bền có gắn theo dõi tim mạch",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS Phạm Thị Dung",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "7h15 08 03",
+      "mo_ta": "Phù nề giảm tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Kỹ thuật tập mạnh cơ với máy Isokinetic",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Vũ Thị Ngọc",
+      "bs_chi_dinh": "BS Trần Thị Bích",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "7h00 08 03",
+      "mo_ta": "Phù nề giảm tiếp tục dẫn lưu bạch huyết",
+      "ky_thuat": "Tập vận động cột sống",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Đỗ Thị Lan",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "7h00 09 03",
+      "mo_ta": "Sức cơ tứ đầu đùi 3 5 tiếp tục bài tập chủ động có trợ giúp",
+      "ky_thuat": "Tập vận động cột sống",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Đỗ Thị Lan",
+      "bs_chi_dinh": "BS Lê Văn Cường",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "7h30 09 03",
+      "mo_ta": "Còn co cứng cơ nhị đầu tập kéo giãn thêm",
+      "ky_thuat": "Tập dưỡng sinh",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS Trần Thị Bích",
+      "xac_nhan": "Đồng ý"
+    }
+  ],
+  "scripteur": "0003"
+}
