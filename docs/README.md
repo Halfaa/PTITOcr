@@ -17,6 +17,7 @@ Three states:
 
 | document | state | for which question |
 |---|---|---|
+| [`notion_final_report.md`](notion_final_report.md) | current | **the final report** — every workstream, its figure and its status, July to September |
 | [`../dataset/README.md`](../dataset/README.md) | current | which image sets exist, and which ground truth to score them against |
 | [`resultats_teds.md`](resultats_teds.md) | current | the headline figures: which model reads our invoices best |
 | [`audit_pipeline.md`](audit_pipeline.md) | current | where the production chain can fail *silently* |
