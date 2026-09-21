@@ -137,6 +137,68 @@ def generer(modele, params, torch, style, mots):
     return images
 
 
+def couverture(medical, appoint, part, n_images, params, part_maj=0.25,
+               seuil=30):
+    """Verifie que tous les caracteres de l'alphabet seront ecrits, et assez.
+
+    Le lexique medical seul couvre 109 des 197 caracteres. Les 88 autres --
+    dont presque toutes les majuscules accentuees -- ne seraient JAMAIS
+    generes, et un CRNN entraine dessus ne saurait pas les lire. Le defaut ne
+    se verrait qu'a l'evaluation finale, sous la forme d'erreurs inexplicables
+    sur certaines lettres.
+
+    D'ou le melange : le medical apporte le domaine, le generique la
+    couverture. On compte ici les occurrences ATTENDUES de chaque caractere,
+    pour le tirage qui va etre fait, et on nomme ce qui reste sous le seuil.
+    """
+    from collections import Counter
+
+    def frequences(mots):
+        c = Counter(ch for m in mots for ch in m)
+        total = sum(c.values()) or 1
+        moyenne = sum(len(m) for m in mots) / max(len(mots), 1)
+        return {k: v / total for k, v in c.items()}, moyenne
+
+    f_med, long_med = frequences(medical)
+    f_app, long_app = frequences(appoint) if appoint else ({}, 0.0)
+
+    # Les majuscules ACCENTUEES (Ế, Ộ, Ớ, Ự...) sont absentes des deux
+    # lexiques : le medical est en minuscules et vn_words.txt n'a que des
+    # capitales non accentuees. Aucun dosage entre les deux ne les fera
+    # apparaitre. On en ecrit donc une part en capitales -- ce qui est aussi
+    # ce que contiennent les en-tetes de formulaires hospitaliers.
+    def melanger(freq, mots, part_maj):
+        haut = Counter(ch for m in mots for ch in m.upper())
+        total = sum(haut.values()) or 1
+        haut = {k: v / total for k, v in haut.items()}
+        return {ch: (1 - part_maj) * freq.get(ch, 0.0)
+                    + part_maj * haut.get(ch, 0.0)
+                for ch in set(freq) | set(haut)}
+
+    f_med = melanger(f_med, medical, part_maj)
+    if appoint:
+        f_app = melanger(f_app, appoint, part_maj)
+
+    caracteres = n_images * (part * long_med + (1 - part) * long_app)
+    attendu = {}
+    for ch in params.ALPHABET:
+        attendu[ch] = caracteres * (part * f_med.get(ch, 0.0)
+                                    + (1 - part) * f_app.get(ch, 0.0))
+
+    absents = [c for c in params.ALPHABET if attendu[c] < 1]
+    rares = [c for c in params.ALPHABET if 1 <= attendu[c] < seuil]
+    print(f"couverture attendue : "
+          f"{len(params.ALPHABET) - len(absents)}/{len(params.ALPHABET)} "
+          f"caracteres, {len(rares)} sous {seuil} occurrences")
+    if absents:
+        print(f"  JAMAIS generes : {''.join(absents)}")
+    if rares:
+        print(f"  rares          : {''.join(rares)}")
+    if absents:
+        print("  -> ces caracteres seront illisibles pour le modele entraine. "
+              "Baisse --part-medicale ou complete le lexique d'appoint.")
+
+
 def _png(a):
     return Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8), mode="L")
 
@@ -159,6 +221,16 @@ def main():
     ap.add_argument("--checkpoint", default="File/vn_ckpt.pth")
     ap.add_argument("--pickle", default="File/VN.pickle")
     ap.add_argument("--mots", default="File/vn_medical_words.txt")
+    ap.add_argument("--appoint", default="File/vn_words.txt",
+                    help="Lexique generique, pour la couverture des lettres "
+                         "que le medical n'emploie jamais.")
+    ap.add_argument("--part-majuscules", type=float, default=0.25,
+                    help="Part des mots ecrits en CAPITALES. Sans elle, les "
+                         "majuscules accentuees (Ế, Ộ, Ớ...) ne sont jamais "
+                         "generees : aucun lexique n'en contient.")
+    ap.add_argument("--part-medicale", type=float, default=0.6,
+                    help="Part des mots tires du lexique medical. 1.0 = que "
+                         "du medical, au prix de 88 caracteres jamais ecrits.")
     ap.add_argument("--sortie", default="../datasets/manuscrit_synth_vn")
     ap.add_argument("--n", type=int, default=25000, help="Nombre d'images.")
     ap.add_argument("--scripteurs", type=int, default=0,
@@ -186,13 +258,23 @@ def main():
               "tons sur ỗ / ậ / ư, et « đ » qui doit avoir sa barre.")
         return
 
-    lexique = [l.strip() for l in
-               (depot / args.mots).read_text(encoding="utf-8").splitlines()
-               if l.strip()]
+    def lire(nom):
+        chemin = depot / nom
+        if not chemin.exists():
+            raise SystemExit(f"{chemin} introuvable.")
+        return [l.strip() for l in
+                chemin.read_text(encoding="utf-8").splitlines() if l.strip()]
+
+    medical = lire(args.mots)
+    appoint = lire(args.appoint) if args.part_medicale < 1.0 else []
+    lexique = medical + appoint
     hors = [m for m in lexique if not set(m) <= set(params.ALPHABET)]
     if hors:
         raise SystemExit(f"{len(hors)} mot(s) hors alphabet : {hors[:5]}")
-    print(f"{len(lexique)} mots au lexique")
+    print(f"{len(medical)} mots medicaux + {len(appoint)} d'appoint")
+
+    couverture(medical, appoint, args.part_medicale, args.n, params,
+               args.part_majuscules)
 
     alea = random.Random(args.graine)
     refs = list(styles(depot / args.pickle, args.scripteurs, args.graine))
@@ -209,8 +291,16 @@ def main():
         # l'ecriture manuscrite.
         part = min(args.n - faits, -(-args.n // len(refs)))
         for debut in range(0, part, args.lot):
-            mots = [alea.choice(lexique)
-                    for _ in range(min(args.lot, part - debut))]
+            # Le tirage respecte --part-medicale a chaque mot : le jeu reste
+            # melange d'un bout a l'autre, plutot que medical au debut et
+            # generique a la fin -- ce qui biaiserait toute coupe du jeu.
+            mots = []
+            for _ in range(min(args.lot, part - debut)):
+                source = (medical if alea.random() < args.part_medicale
+                          or not appoint else appoint)
+                mot = alea.choice(source)
+                mots.append(mot.upper()
+                            if alea.random() < args.part_majuscules else mot)
             for m, im in zip(mots, generer(modele, params, torch, style, mots)):
                 faits += 1
                 nom = f"{wid}_{faits:06d}.png"
