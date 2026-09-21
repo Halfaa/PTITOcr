@@ -37,6 +37,7 @@ reproche que le papier WriteViT fait a ScrabbleGAN.
 
 import argparse
 import json
+from collections import Counter
 import random
 import sys
 from pathlib import Path
@@ -137,66 +138,48 @@ def generer(modele, params, torch, style, mots):
     return images
 
 
-def couverture(medical, appoint, part, n_images, params, part_maj=0.25,
-               seuil=30):
-    """Verifie que tous les caracteres de l'alphabet seront ecrits, et assez.
+def frequences_entrainement(pickle_path):
+    """Combien de fois le generateur a VU chaque caractere.
 
-    Le lexique medical seul couvre 109 des 197 caracteres. Les 88 autres --
-    dont presque toutes les majuscules accentuees -- ne seraient JAMAIS
-    generes, et un CRNN entraine dessus ne saurait pas les lire. Le defaut ne
-    se verrait qu'a l'evaluation finale, sous la forme d'erreurs inexplicables
-    sur certaines lettres.
-
-    D'ou le melange : le medical apporte le domaine, le generique la
-    couverture. On compte ici les occurrences ATTENDUES de chaque caractere,
-    pour le tirage qui va etre fait, et on nomme ce qui reste sous le seuil.
+    C'est la seule contrainte qui compte, et ce n'est pas celle que je
+    verifiais au depart. Un lexique peut bien contenir « Ế » : si le modele ne
+    l'a jamais rencontre a l'entrainement, il ne sait pas le dessiner et rend
+    autre chose, sans erreur. Mesure faite sur VNOnDB (368 217 caracteres) :
+    les chiffres pesent 1,7 %, les majuscules accentuees 0,38 % pour 20 formes
+    distinctes seulement, et 51 des 197 caracteres de l'alphabet n'apparaissent
+    jamais.
     """
-    from collections import Counter
+    import pickle
+    d = pickle.load(open(pickle_path, "rb"))
+    return Counter(ch for split in d for w in d[split]
+                   for e in d[split][w] for ch in e["label"])
 
-    def frequences(mots):
-        c = Counter(ch for m in mots for ch in m)
-        total = sum(c.values()) or 1
-        moyenne = sum(len(m) for m in mots) / max(len(mots), 1)
-        return {k: v / total for k, v in c.items()}, moyenne
 
-    f_med, long_med = frequences(medical)
-    f_app, long_app = frequences(appoint) if appoint else ({}, 0.0)
+def filtrer_generables(lexique, vus, seuil, sans_chiffres=True):
+    """Ne garde que les mots dont TOUS les caracteres sont assez appris.
 
-    # Les majuscules ACCENTUEES (Ế, Ộ, Ớ, Ự...) sont absentes des deux
-    # lexiques : le medical est en minuscules et vn_words.txt n'a que des
-    # capitales non accentuees. Aucun dosage entre les deux ne les fera
-    # apparaitre. On en ecrit donc une part en capitales -- ce qui est aussi
-    # ce que contiennent les en-tetes de formulaires hospitaliers.
-    def melanger(freq, mots, part_maj):
-        haut = Counter(ch for m in mots for ch in m.upper())
-        total = sum(haut.values()) or 1
-        haut = {k: v / total for k, v in haut.items()}
-        return {ch: (1 - part_maj) * freq.get(ch, 0.0)
-                    + part_maj * haut.get(ch, 0.0)
-                for ch in set(freq) | set(haut)}
-
-    f_med = melanger(f_med, medical, part_maj)
-    if appoint:
-        f_app = melanger(f_app, appoint, part_maj)
-
-    caracteres = n_images * (part * long_med + (1 - part) * long_app)
-    attendu = {}
-    for ch in params.ALPHABET:
-        attendu[ch] = caracteres * (part * f_med.get(ch, 0.0)
-                                    + (1 - part) * f_app.get(ch, 0.0))
-
-    absents = [c for c in params.ALPHABET if attendu[c] < 1]
-    rares = [c for c in params.ALPHABET if 1 <= attendu[c] < seuil]
-    print(f"couverture attendue : "
-          f"{len(params.ALPHABET) - len(absents)}/{len(params.ALPHABET)} "
-          f"caracteres, {len(rares)} sous {seuil} occurrences")
-    if absents:
-        print(f"  JAMAIS generes : {''.join(absents)}")
-    if rares:
-        print(f"  rares          : {''.join(rares)}")
-    if absents:
-        print("  -> ces caracteres seront illisibles pour le modele entraine. "
-              "Baisse --part-medicale ou complete le lexique d'appoint.")
+    Un seul caractere mal maitrise suffit a rendre le mot faux, et une paire
+    (image, label) fausse apprend au CRNN a lire de travers -- c'est pire que
+    de ne pas avoir le mot du tout.
+    """
+    gardes, rejetes = [], Counter()
+    for mot in lexique:
+        # Les CHIFFRES sont exclus quoi qu'en dise le comptage. La planche de
+        # controle du 21 septembre les a rendus faux meme pour « 1 » (1073
+        # occurrences) et « 5 » (441) : « 1972 » sortait « Mth », « 15 »
+        # sortait « lb ». La frequence ne suffit donc pas -- un generateur
+        # entraine sur de la cursive vietnamienne ne forme pas les chiffres,
+        # qui n'ont pas de liaison et pas de ligne de base commune.
+        if sans_chiffres and any(c.isdigit() for c in mot):
+            rejetes["<chiffres>"] += 1
+            continue
+        faibles = [c for c in mot if vus[c] < seuil]
+        if faibles:
+            for c in faibles:
+                rejetes[c] += 1
+        else:
+            gardes.append(mot)
+    return gardes, rejetes
 
 
 def _png(a):
@@ -224,10 +207,17 @@ def main():
     ap.add_argument("--appoint", default="File/vn_words.txt",
                     help="Lexique generique, pour la couverture des lettres "
                          "que le medical n'emploie jamais.")
-    ap.add_argument("--part-majuscules", type=float, default=0.25,
-                    help="Part des mots ecrits en CAPITALES. Sans elle, les "
-                         "majuscules accentuees (Ế, Ộ, Ớ...) ne sont jamais "
-                         "generees : aucun lexique n'en contient.")
+    ap.add_argument("--part-majuscules", type=float, default=0.0,
+                    help="Part des mots en CAPITALES. Laisse a 0 : VNOnDB ne "
+                         "contient que 20 majuscules accentuees sur ~67, le "
+                         "modele ne sait pas dessiner les autres.")
+    ap.add_argument("--avec-chiffres", action="store_true",
+                    help="Inclure les mots contenant des chiffres. Deconseille : "
+                         "le generateur ne sait pas les former (verifie sur "
+                         "planche), meme pour les plus frequents.")
+    ap.add_argument("--seuil-occurrences", type=int, default=200,
+                    help="Nombre minimal d'occurrences a l'entrainement pour "
+                         "qu'un caractere soit juge fiable.")
     ap.add_argument("--part-medicale", type=float, default=0.6,
                     help="Part des mots tires du lexique medical. 1.0 = que "
                          "du medical, au prix de 88 caracteres jamais ecrits.")
@@ -273,8 +263,20 @@ def main():
         raise SystemExit(f"{len(hors)} mot(s) hors alphabet : {hors[:5]}")
     print(f"{len(medical)} mots medicaux + {len(appoint)} d'appoint")
 
-    couverture(medical, appoint, args.part_medicale, args.n, params,
-               args.part_majuscules)
+    vus = frequences_entrainement(depot / args.pickle)
+    medical, rej_m = filtrer_generables(medical, vus, args.seuil_occurrences,
+                                        not args.avec_chiffres)
+    appoint, rej_a = filtrer_generables(appoint, vus, args.seuil_occurrences,
+                                        not args.avec_chiffres)
+    print(f"generables (>= {args.seuil_occurrences} occurrences vues) : "
+          f"{len(medical)} medicaux, {len(appoint)} d'appoint")
+    bloquants = (rej_m + rej_a).most_common(8)
+    if bloquants:
+        print("  caracteres trop peu appris, mots ecartes :")
+        for c, n in bloquants:
+            print(f"    '{c}' vu {vus[c]}x -> {n} mot(s)")
+    if not medical:
+        raise SystemExit("plus aucun mot medical generable : seuil trop haut.")
 
     alea = random.Random(args.graine)
     refs = list(styles(depot / args.pickle, args.scripteurs, args.graine))
