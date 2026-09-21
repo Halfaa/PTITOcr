@@ -87,6 +87,14 @@ def _lire_image(chemin: Path) -> np.ndarray:
     return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 
+def _lire_image_ou_none(chemin: Path):
+    """Comme `_lire_image`, mais rend None si le fichier manque ou est illisible."""
+    if not chemin.exists():
+        return None
+    data = np.fromfile(str(chemin), dtype=np.uint8)
+    return cv2.imdecode(data, cv2.IMREAD_COLOR)
+
+
 def _ecrire_image(chemin: Path, img_rgb: np.ndarray) -> None:
     bgr = cv2.cvtColor(img_rgb.astype(np.uint8), cv2.COLOR_RGB2BGR)
     ok, buf = cv2.imencode(".png", bgr)
@@ -116,6 +124,29 @@ def deformer(texture: np.ndarray, uvmap: np.ndarray) -> np.ndarray:
     return cv2.remap(texture, map_x, map_y, cv2.INTER_LINEAR,
                      borderMode=cv2.BORDER_CONSTANT,
                      borderValue=(255, 255, 255)).astype(np.float32)
+
+
+def echelle_pour(seg: np.ndarray, largeur_page: int) -> float:
+    """Facteur qui amene le DOCUMENT a `largeur_page` pixels de large.
+
+    On normalise sur la largeur du document, pas sur celle de l'image. Les
+    captures UVDoc n'ont pas toutes la meme taille (1041 a 1462 px de large
+    selon la prise), donc un facteur d'agrandissement constant produirait un
+    jeu ou la resolution varie d'une page a l'autre -- alors que la reference
+    plate, elle, est fixe. La resolution deviendrait un facteur parasite : on
+    ne saurait plus si l'ecart mesure vient de la deformation ou du nombre de
+    pixels, et c'est precisement la question qu'on pose.
+
+    Deux contraintes fixent la valeur a demander :
+      - au-dessus de 950 px, notre plancher de lecture mesure ;
+      - sous ~3,8 Mpx par image, plafond au-dela duquel Chandra tombe en
+        CUDA OOM sur un T4 de 16 Go (mesure : 3,80 Mpx passe, 4,06 casse).
+    1400 px tient les deux avec de la marge.
+    """
+    colonnes = np.nonzero(seg.any(axis=0))[0]
+    if colonnes.size == 0:
+        raise ValueError("masque vide")
+    return largeur_page / float(colonnes[-1] - colonnes[0] + 1)
 
 
 def agrandir(geom, seg, uvmap, echelle: float):
@@ -247,10 +278,11 @@ def main():
                     help="0 = aucune ombre, 1 = ombrage de la photo en entier.")
     ap.add_argument("--refaire", action="store_true",
                     help="Recomposer meme ce qui existe deja.")
-    ap.add_argument("--echelle", type=float, default=1.8,
-                    help="Facteur d'agrandissement de la scene. Les captures "
-                         "UVDoc font ~900 px de large, sous le plancher de "
-                         "lecture de 950 px ; 1.8 les porte vers 1600.")
+    ap.add_argument("--largeur-page", type=int, default=1400,
+                    help="Largeur du DOCUMENT, en pixels, identique des deux "
+                         "cotes. Au-dessus du plancher de lecture (950 px) et "
+                         "sous le plafond memoire de Chandra sur T4 "
+                         "(~3,8 Mpx par image).")
     args = ap.parse_args()
 
     racine = Path(args.raw)
@@ -283,16 +315,22 @@ def main():
         # depasse la plupart des delais d'execution. Le tirage etant
         # reproductible, ce qui est deja ecrit est exactement ce qu'on
         # reecrirait -- on le garde et on reprend la suite.
-        deja = (sortie / "deforme" / f"{nom}.png").exists()
-        if deja and not args.refaire:
-            taille_d = _lire_image(sortie / "deforme" / f"{nom}.png").shape[:2]
-            taille_p = _lire_image(texture_p).shape[:2]
-            manifeste.append({"nom": nom, "texture": texture_p.name,
-                              "geometrie": geom_id,
-                              "taille_deforme": list(taille_d[::-1]),
-                              "taille_plat": list(taille_p[::-1])})
-            print(f"  [{i}/{len(paires)}] {nom}  deja compose")
-            continue
+        #
+        # On RELIT les deux images au lieu de tester leur existence. Un
+        # processus tue entre les deux ecritures laisse un PNG tronque, que
+        # `exists()` accepte : la paire serait sautee et le jeu contiendrait
+        # une image illisible, decouverte seulement au moment du benchmark.
+        if not args.refaire:
+            paire = [_lire_image_ou_none(sortie / c / f"{nom}.png")
+                     for c in ("deforme", "plat")]
+            if all(x is not None for x in paire):
+                manifeste.append({
+                    "nom": nom, "texture": texture_p.name,
+                    "geometrie": geom_id,
+                    "taille_deforme": list(paire[0].shape[:2][::-1]),
+                    "taille_plat": list(paire[1].shape[:2][::-1])})
+                print(f"  [{i}/{len(paires)}] {nom}  deja compose")
+                continue
 
         try:
             geom = _lire_image(dossiers["rgb"] / f"{geom_id}.png")
@@ -307,14 +345,22 @@ def main():
             continue
 
         texture = _lire_image(texture_p)
-        geom, seg, uvmap = agrandir(geom, seg, uvmap, args.echelle)
+        geom, seg, uvmap = agrandir(
+            geom, seg, uvmap, echelle_pour(seg, args.largeur_page))
         img = composer(geom, seg, uvmap, texture, args.force_ombre)
 
         _ecrire_image(sortie / "deforme" / f"{nom}.png", img)
-        # La reference « plat » est la texture d'origine, INTACTE : c'est ce
-        # qu'un dewarping parfait rendrait. La redimensionner ici fausserait
-        # le plafond qu'on cherche a mesurer.
-        _ecrire_image(sortie / "plat" / f"{nom}.png", texture)
+
+        # La reference « plat » est ramenee a la MEME largeur de page que la
+        # version deformee. Garder la texture native (1654 px) donnerait a la
+        # reference un avantage de resolution, et l'ecart mesure melangerait
+        # deformation et finesse -- ce qu'on cherche justement a separer.
+        h_t, l_t = texture.shape[:2]
+        plat = cv2.resize(
+            texture,
+            (args.largeur_page, int(round(h_t * args.largeur_page / l_t))),
+            interpolation=cv2.INTER_AREA)
+        _ecrire_image(sortie / "plat" / f"{nom}.png", plat)
         np.savez_compressed(sortie / "uv" / f"{nom}.npz", uv=uvmap)
 
         manifeste.append({"nom": nom, "texture": texture_p.name,

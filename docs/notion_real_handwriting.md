@@ -114,12 +114,47 @@ in this setting than one that degrades into fluent fiction.
 arithmetic validation on invoices, and `src/qualite_capture.py` at capture
 time. **Chandra's output should never be treated as read without a check.**
 
-> ⚠️ Honest status of this section: the pattern is clear on the twelve worst
-> lines, inspected by eye. It is an observation, not yet a measurement. It can
-> be quantified — the 1838 labels form a lexicon of Vietnamese addresses, so
-> each substituted word can be tested for membership: a real word that was not
-> written is a hallucination, a string that exists nowhere is a reading error.
-> Not done yet.
+### Measured, not just observed
+
+The 1838 labels form a lexicon of Vietnamese addresses. Every substituted word
+can be tested against it, and against its distance from the word that was
+actually written.
+
+| of 439 word substitutions | | |
+|---|---|---|
+| lands on a real word of the corpus | 300 | 68.3% |
+| ↳ within 2 characters of the truth | 232 | 77.3% of those |
+| ↳ **further than 2 characters** | **68** | **22.7% of those** |
+
+**Why the first number alone proves nothing.** Vietnamese is dense: nearly
+every legal syllable carrying a valid tone *is* a word. Getting one accent
+wrong therefore lands on a real word without any language model being
+involved. `hưng → hùng`, `bình → bính`, `thạnh → thành` are misreadings that
+happen to be words.
+
+**The distance is what discriminates.** A neighbour at one or two characters
+is consistent with bad reading. A distant real word is not — the pixels cannot
+produce it. That leaves **68 substitutions, 15.5% of all of them**, that
+require a prior about what the sentence should say.
+
+And they are not random. The furthest ones replace a word with another word
+**from the same semantic slot**:
+
+| written | read as | both are |
+|---|---|---|
+| tổ | phường | administrative units |
+| lương | huyện | administrative units |
+| dương | nguyễn | surnames |
+| quỳnh | nguyễn | surnames |
+| quyền | đại | given-name syllables |
+
+A CTC decoder cannot do this. Category-consistent substitution is the
+signature of a language model filling a gap it cannot see.
+
+> Remaining caveat: the lexicon is built from the dataset's own labels, so it
+> covers addresses well and nothing else. A hallucinated word from outside
+> this domain would be counted as a reading error, which makes 15.5% a
+> **lower bound**.
 
 ---
 
@@ -173,5 +208,5 @@ ships with the numbers rather than beside them.
 | **"zero-shot" cannot be fully verified** | this is a public dataset; we know Chandra was not fine-tuned on it, but we cannot rule out that it appeared in pretraining. The gap may be flattering |
 | 250 of 1838 lines | >10 000 characters, so CER is stable to a few tenths; WER and especially SER are noisier |
 | addresses only | proper nouns and toponyms — the vocabulary that most invites a language model to guess. Medical fields (dosages, dates, numbers) may behave differently, in either direction |
-| hallucination rate not measured | §4 is qualitative |
+| hallucination lexicon is address-only | a hallucinated word from another domain counts as a reading error, so 15.5% is a lower bound |
 | single model | no second data point on this set yet. PaddleOCR-VL (0.9 B) runs locally and would test whether its diacritic weakness reappears on real handwriting |

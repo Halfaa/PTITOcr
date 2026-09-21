@@ -291,20 +291,40 @@ def analyser_substitutions(par_ligne: list, lexique: set, n_exemples=10):
     t_longs, n_longs, d_longs = taux(longs)
 
     print(f"\n  Substitutions de mots : {len(subs)}")
-    print(f"    mot reel du lexique  {t_tous:6.1%}  ({n_tous}/{d_tous})"
-          "   -- devine plutot que mal lu")
+    print(f"    mot reel du lexique  {t_tous:6.1%}  ({n_tous}/{d_tous})")
     print(f"    idem, mots >= 4 car. {t_longs:6.1%}  ({n_longs}/{d_longs})"
           "   -- hors coincidence sur les mots courts")
     print(f"    lexique : {len(lexique)} mots")
 
-    inventes = [p for p in longs if p[1] in lexique][:n_exemples]
-    if inventes:
-        print("\n    Exemples de mots reels substitues :")
-        for mot_ref, mot_hyp in inventes:
-            print(f"      {mot_ref:<18} -> {mot_hyp}")
+    # « Le mot rendu existe » ne suffit PAS a conclure a l'hallucination. Le
+    # vietnamien est dense : presque toute syllabe legale portant un ton
+    # valide est un mot. Se tromper d'un accent tombe donc sur un vrai mot
+    # sans qu'aucun modele de langue soit intervenu.
+    #
+    # Ce qui discrimine, c'est la DISTANCE. Un voisin a un ou deux caracteres
+    # est compatible avec une lecture malheureuse ; un mot eloigne, comme
+    # « Hà Đông » rendu « Hồ Chí Minh », ne s'explique pas par les pixels --
+    # il faut un a priori sur ce qu'une adresse contient.
+    reels = [(r, h) for r, h in subs if h in lexique]
+    proches = [p for p in reels if levenshtein(p[0], p[1]) <= 2]
+    lointains = [p for p in reels if levenshtein(p[0], p[1]) > 2]
+    if reels:
+        print(f"\n    Parmi les {len(reels)} mots reels substitues :")
+        print(f"      a <= 2 caracteres  {len(proches) / len(reels):6.1%}"
+              f"  ({len(proches)})   voisin : lecture plausible")
+        print(f"      a  > 2 caracteres  {len(lointains) / len(reels):6.1%}"
+              f"  ({len(lointains)})   eloigne : le modele a DEVINE")
+
+    if lointains:
+        print("\n    Les plus eloignes (mot reel, mais pas un voisin) :")
+        for mot_ref, mot_hyp in sorted(
+                lointains, key=lambda p: -levenshtein(p[0], p[1]))[:n_exemples]:
+            d = levenshtein(mot_ref, mot_hyp)
+            print(f"      {mot_ref:<18} -> {mot_hyp:<18} (distance {d})")
 
     return {"n_substitutions": len(subs), "taux_mot_reel": t_tous,
-            "taux_mot_reel_longs": t_longs}
+            "taux_mot_reel_longs": t_longs,
+            "n_mots_reels": len(reels), "n_eloignes": len(lointains)}
 
 
 def transcription(pages_dir: Path, stem: str):
