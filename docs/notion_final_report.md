@@ -3,9 +3,22 @@
 **Final internship report**
 
 IMT Mines Alès · Imperato Julien
-PTIT · supervisor Thanh-Ha DO
+PTIT/Thinkslab · supervisor Thanh-Ha DO
 
 July - September 2026
+
+---
+
+## Objective
+
+Reading Vietnamese hospital paperwork automatically: invoices and
+rehabilitation follow-up forms, photographed rather than scanned, part printed
+and part handwritten. The question asked at the start was which model reads
+them and what has to happen to the image before it does.
+
+Real records cannot be published, so the project builds its own documents with
+exact ground truth, measures readers against them, and ends by generating the
+handwriting itself so that a reader can be trained on it.
 
 ---
 
@@ -19,7 +32,7 @@ July - September 2026
 | 4 | Cluttered backgrounds | cropping is not solvable here, IoU ceiling 0.59 | closed |
 | 5 | Handwriting | real Vietnamese, CER 6.84% zero-shot against 4.80% published | measured |
 | 6 | Geometric deformation | −2.0 points on real captured paper, against −35.7 simulated | open |
-| 7 | Generating medical handwriting | words yes, digits no | open |
+| 7 | Generating medical handwriting | real handwriting costs Chandra **37.7 points** against a font | measured |
 | 8 | What comes next | the remaining gap is training, not architecture | - |
 
 Each part is a numbered list of points. Every point states what was done,
@@ -139,22 +152,18 @@ outputs, which had inspired the algorithm:
 | PP-StructureV3 | 7 | **0** | 0 | 100% | 100% | **100%** |
 | PaddleOCR-VL | 7 | **0** | 1 | 100% | 88% | 93% |
 
-One page of the set yields no table at all for any model, and PP-StructureV3
-loses a second one. Continuations involving those pages are out of the
-algorithm's reach, which is why the totals differ by a unit: that is an
-upstream reading failure, not a merging failure.
+One page yields no table for any model, and PP-StructureV3 loses a second one, which
+is why the totals differ by a unit. It is an upstream reading failure,
+not a merging failure.
 
 **Zero false positives for all four models, and that is the number to read.**
-A missed merge leaves two tables that a human immediately sees as incomplete.
-A wrong merge manufactures a single plausible table mixing two different
-invoices, an error that survives every downstream check and that nobody
-notices.
+A missed merge leaves two visibly incomplete tables. A wrong merge manufactures
+one plausible table mixing two invoices, an error that survives every
+downstream check.
 
-The most discriminating signal is a restart of the `STT` (line-number) column
-at one. It also rescues cases where the OCR mangled the end of the previous
-table.
-It is a **domain assumption**: it holds for this invoice format and must be
-re-validated on any other.
+The most discriminating signal is a restart of the `STT` column at one. It is a
+**domain assumption**: valid for this invoice format, to be re-validated on any
+other.
 
 ### 2.5 An audit of silent failures, and the worst bug of the project · measured
 
@@ -298,7 +307,7 @@ case, and the one where every localisation method collapses.
 | clean background (25 pages) | 0.86 | **0.84** | **22/25** |
 | cluttered background (20 pages) | 0.51 | **0.37** | **0/20** |
 
-### 4.2 Eleven method families, all failing · closed
+### 4.2 Eleven attempts, seven method families, all failing · closed
 
 Contours, corners, saliency, depth, line detection, colour segmentation and
 combinations. IoU ceiling never above 0.59 against a measured achievable 0.85.
@@ -396,14 +405,14 @@ Quantified against the dataset's own lexicon, on 439 word substitutions:
 | ↳ within 2 characters of the truth | 232 | 77.3% of those |
 | ↳ **further than 2 characters** | **68** | **22.7% of those** |
 
-The first number alone proves nothing: Vietnamese is dense, so a single wrong
+The first number alone proves nothing: Vietnamese is dense, so one wrong
 accent lands on a real word by chance. **Distance is what discriminates.**
 68 substitutions, **15.5% of all of them**, cannot be produced by the pixels.
 
 And they are not random. The furthest ones swap a word for another **from the
-same semantic slot**: `tổ → phường` and `lương → huyện` (administrative
-units), `dương → nguyễn` and `quỳnh → nguyễn` (surnames). Category-consistent
-substitution is the signature of a language model filling a gap it cannot see.
+same semantic slot**: `tổ → phường` and `lương → huyện` (administrative units),
+`dương → nguyễn` (surnames). Category-consistent substitution is the signature
+of a language model filling a gap it cannot see.
 
 **Why this matters more than the CER.** A CRNN decodes frame by frame through
 a CTC head and cannot swap in a different city. Chandra generates
@@ -437,14 +446,14 @@ so the figure mixed deformation with orientation.
 
 UVDoc (SIGGRAPH Asia 2023, MIT) publishes photographs of real bent sheets with
 the exact `uvmap` linking every pixel to its position on the flat page.
-Geometry is decoupled from content, so our documents can be projected onto
-**real** paper deformation, with the real shadows, lens blur and sensor noise
-of the capture.
+Geometry being decoupled from content, our documents can be projected onto
+**real** paper deformation, with the shadows, lens blur and sensor noise of the
+capture.
 
-This yields two images of each document, one deformed and one perfectly flat. The
-flat one is not a reconstruction: it is what a **perfect** dewarping would
-return. The gap between the two is therefore the **ceiling** of what geometric
-correction can ever recover.
+That yields two images of each document, one deformed and one flat. The flat
+one is not a reconstruction: it is what a **perfect** dewarping would return,
+so the gap between them is the **ceiling** of what geometric correction can
+recover.
 
 First measurement, 26 paired specimens:
 
@@ -615,23 +624,76 @@ not catastrophic forgetting: it is a failure to learn.
 
 Two reasons, and they point at different fixes.
 
-**Volume, not proportion.** Rebalancing changed the ratio but not the absolute
-quantity: VNOnDB contains 1,892 word images with a digit in them, and the
-rarest digits appear barely more than a hundred times each (`8` 110, `6` 128,
-`9` 126). A generator that has seen a glyph a hundred times can recognise it;
-drawing it convincingly is a harder demand. **More data would plausibly
-help here, and it is the cheapest lever** — digits are trivial to collect or
-to synthesise compared with cursive Vietnamese.
+**Volume, not proportion.** Rebalancing changed the ratio, not the quantity:
+VNOnDB holds 1,892 word images containing a digit, and the rarest appear barely
+more than a hundred times each (`8` 110, `6` 128, `9` 126). **More data is the
+cheapest lever**, digits being trivial to collect next to cursive Vietnamese.
 
 **Structure.** The model learns joined writing: ligatures, a shared baseline,
 transitions between letters. Digits have none of that. They are isolated
-shapes with their own proportions, closer to printing than to cursive. A
-model whose entire training signal is connected script has little reason to
-represent them well, whatever their frequency.
+shapes, closer to printing than to cursive, and a model trained entirely on
+connected script has little reason to represent them well.
 
-The pragmatic answer, and the one applied here, is to write them with the
-font. The document stays legible and coherent. The limitation is named rather
-than hidden, and the fallback rate is printed for every document produced.
+The pragmatic answer, applied here, is to write them with the font. The
+document stays coherent, and the fallback rate is printed for every document.
+
+### 7.8 What the generated documents cost Chandra · measured
+
+The 20 generated documents were read by Chandra and scored against the same
+metric, the same ground truth and the same 20 specimens as their
+font-rendered twins. Only the handwriting differs.
+
+| | handwritten fields read | mean field score |
+|---|---|---|
+| **font** (PlaywriteVN) | **95.3%** | 97.2 |
+| **GAN**, real writer styles | **57.6%** | 84.7 |
+
+**A drop of 37.7 points**, the largest single effect measured in the project.
+
+**The font specimens were far too easy.** A font redraws each letter
+identically everywhere, a real writer never does. The 95.5% of §5.1, the
+thresholds of §3.3 and the capture specification of §3.4 all rest on that
+material. They are not wrong, but they describe a best case real handwriting
+does not reach.
+
+**The model is not blind, it is imprecise.** The mean field score stays at
+**84.7** out of 100: Chandra recovers most characters and misses exact
+equality.
+
+Where the loss concentrates, over the failing fields:
+
+| field | mean score when failed |
+|---|---|
+| `xac_nhan` (one word, often a single `X`) | 42 |
+| `mo_ta` (long free-text description) | 51 |
+| `ky_thuat` (technique name) | 62 |
+| `ngay_gio` (date and time) | 73 |
+| `bs_chi_dinh` (doctor name) | 73 |
+
+**Very short fields fail hardest**: no context to resolve an ambiguous stroke,
+and one wrong character loses the field. Long descriptions fail next, since a
+single error anywhere is enough. What holds up best are the rigidly formatted
+fields, where the expected shape constrains the reading.
+
+*A caveat that cuts the other way:* 14% of the word occurrences on these
+pages are digits, written
+with the font (§7.7) and therefore read under the easy regime. **The true cost
+is larger than 37.7 points, not smaller.**
+
+> 📎 Drop in `demo/figures/21_lecture_documents_gan.png`
+
+**The failure mode is the one of §5.4, now on our own documents.** Third line
+of the figure: the form records a note about elbow flexion, Chandra returns an
+order for a lumbar spine radiography. Nothing on the page mentions an X-ray.
+It did not misread those words, it replaced them with a plausible medical
+sentence.
+
+Same mechanism in smaller doses elsewhere: `Trần Thị Bảy` becomes
+`Trần Thị Bảo`, a physiotherapist becomes `Bác sĩ Nguyễn Văn`, a moxibustion
+treatment becomes generic `chăm sóc`.
+
+**Every one of these reads as a valid entry in a medical record**, and none
+would be caught from the output alone.
 
 ---
 
@@ -644,12 +706,12 @@ architecture, and that is the useful thing to say at the end of this work.
 
 The fine-tuning of §7.4 was deliberately short: 30 epochs at a reduced
 learning rate, on 6,132 rebalanced samples. It was meant to answer one
-question — does raising the share of digits help — and it answered no at that
+question, does raising the share of digits help, and it answered no at that
 scale.
 
 **But the evidence points at an undertrained model rather than an incapable
 one.** The cursive came through the fine-tuning untouched, so nothing was
-saturated or destroyed; there was capacity left. And the absolute volume of
+saturated or destroyed and there was capacity left. And the absolute volume of
 digit data stayed tiny: 1,892 word images in total, with the rarest digits
 seen barely more than a hundred times each (`8` 110, `6` 128, `9` 126). A
 model cannot learn to draw convincingly from a hundred examples.
@@ -658,9 +720,9 @@ Three levers, in order of cost:
 
 | lever | why it should help |
 |---|---|
-| **more epochs** | 30 is short for a GAN; the published checkpoint was trained for 200 |
+| **more epochs** | 30 is short for a GAN, the published checkpoint was trained for 200 |
 | **more digit data** | digits are trivial to collect or synthesise next to cursive Vietnamese |
-| **a digit-specific loss or curriculum** | the recogniser already scores content; weighting numeric samples would push the generator where it is weak |
+| **a digit-specific loss or curriculum** | the recogniser already scores content, and weighting numeric samples would push the generator where it is weak |
 
 None of these requires changing the model. That is the argument for expecting
 improvement: **the ceiling reached so far is a training ceiling.**
@@ -669,7 +731,7 @@ improvement: **the ceiling reached so far is a training ceiling.**
 
 This is the experiment the whole generation effort exists for, and the one
 step still missing. The protocol is already fixed: the same CRNN trained in
-three conditions — real only, synthetic only, real plus synthetic — and scored
+three conditions, real only, synthetic only, real plus synthetic, and scored
 with `src/eval_lignes.py`.
 
 Two reference points are already in hand and make the result readable
@@ -684,7 +746,7 @@ asked at the start of this phase.
 
 ### This work
 
-- **Repository** — [github.com/Halfaa/PTITOcr](https://github.com/Halfaa/PTITOcr)
+- **Repository** · [github.com/Halfaa/PTITOcr](https://github.com/Halfaa/PTITOcr)
   Every figure in this report is reproducible from it: the generators, the
   evaluation scripts, the Kaggle notebooks and the dataset manifest.
 

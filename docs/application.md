@@ -1,5 +1,11 @@
 # L'application — API et PWA
 
+> **Code retiré du dépôt en septembre 2026.** `webapp/` et `src/api.py` sont
+> dans `archive/retire_2026-09/`. Le prototype a fonctionné et ce document le
+> décrit, mais il ne fait pas partie du rendu final : le rapport porte sur la
+> lecture et la génération, pas sur l'interface. À restaurer depuis l'archive
+> ou depuis l'historique git si le sujet revient.
+
 Photo au téléphone, tableau vérifié et JSON en retour. C'est le livrable
 « prototype UI/API » du sujet, prévu semaines 11–12.
 

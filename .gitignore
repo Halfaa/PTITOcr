@@ -60,14 +60,25 @@ venv_sam/
 FastSAM-s.pt
 *.pt
 
-# Archives des etudes de degradation : 195 a 252 Mo, au-dela de la limite
-# GitHub. Le bruit sur des PNG de 1654x2339 est incompressible, d'ou la
-# taille. Se regenerent avec :
+# Archives d'entree Kaggle : 248 Mo au total, pour zero information nouvelle.
+# Ce sont des re-empaquetages d'images deja presentes ailleurs dans le depot
+# ou regenerables. Un clone n'a aucune raison de les telecharger, et GitHub
+# refuse les fichiers au-dela de 100 Mo de toute facon.
+#
+# Se regenerent avec :
 #   python scripts/degrader.py --jeu variants_warped --zip
 #   python scripts/degrader.py --images-dir handwriting/generated --n 3 \
 #       --out ../doc3D-renderer/img/handwriting_vi_degradation
-kaggle/images_degradation.zip
-kaggle/images_handwriting_vi_degradation.zip
-kaggle/images_handwriting_en_degradation.zip
-kaggle/images_handwriting_vi_warped.zip
-kaggle/images_handwriting_en_warped.zip
+#   python scripts/uvdoc_composer.py        (uvdoc_manuscrit_vn.zip)
+kaggle/*.zip
+
+# Sous-produits de compilation LaTeX des generateurs de specimens.
+*.aux
+*.log
+*.out
+*.synctex.gz
+
+# Archive livrable du jeu GAN : 5 Mo reconstruits a la demande depuis
+# handwriting_gan/generated, qui est deja versionne fichier par fichier.
+# Commande dans handwriting_gan/README.md.
+documents_gan.zip

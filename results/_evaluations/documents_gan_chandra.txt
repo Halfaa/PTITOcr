@@ -1,0 +1,39 @@
+GAN handwriting against a handwriting font, read by Chandra OCR 2
+=================================================================
+
+The paired measurement behind section 7.8 of docs/notion_final_report.md.
+
+Same 20 specimens on both sides, same ground truth, same metric. The GAN
+documents reuse the ground truth of their font-rendered twins, so the content
+and the layout are identical and only the handwriting differs. That is what
+makes the gap attributable to the handwriting itself.
+
+                              handwritten fields ok    mean field score
+  font (Playwrite VN)                     95.3 %               97.2
+  GAN (WriteViT, 20 writers)              57.6 %               84.7
+  ------------------------------------------------------------------
+  cost of real handwriting              -37.7 pts             -12.5
+
+Reproduce:
+
+    python src/eval_handwriting.py --run documents_gan_chandra \
+        --verite-dir results/documents_gan_chandra/verite --lang vi
+
+    python src/eval_handwriting.py --run handwriting_vi_chandra \
+        --verite-dir handwriting/generated --lang vi \
+        --specimens specimen_000,...,specimen_019
+
+The second command needs --specimens because the font run covers 30 documents
+and this one covers 20. Scoring them over different pages would compare two
+different test sets and the 37.7 points would mean nothing.
+
+Two readings to carry with the number
+-------------------------------------
+The font specimens were far too easy. Every earlier handwriting figure in the
+project rests on them, so they describe a best case that real handwriting does
+not reach.
+
+The true cost is larger than 37.7 points, not smaller. 14 % of the word
+occurrences on these pages are digits, which the generator cannot draw and
+which are therefore written with the font. Those are read under the easy
+regime on both sides.

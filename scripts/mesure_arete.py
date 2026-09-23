@@ -185,19 +185,19 @@ def figure(pages, sortie):
     fig, axes = plt.subplots(1, len(pages), figsize=(5.2 * len(pages), 6.0))
     if len(pages) == 1:
         axes = [axes]
-    for ax, (n, petit, contour, segs) in zip(axes, pages):
+    for ax, (n, petit, contour, segs, ok) in zip(axes, pages):
         ax.imshow(cv2.cvtColor(petit, cv2.COLOR_BGR2RGB))
         for x1, y1, x2, y2 in segs:
             ax.plot([x1, x2], [y1, y2], color="#d62728", lw=1.1, alpha=0.85)
         ax.plot(np.append(contour[:, 0], contour[0, 0]),
                 np.append(contour[:, 1], contour[0, 1]),
                 color="#2ca02c", lw=2.6)
-        ax.set_title(f"page {n} — {len(segs)} segments, 0 sur le bord",
+        ax.set_title(f"page {n} - {len(segs)} segments, {ok} on the edge",
                      fontsize=11)
         ax.set_xticks([])
         ax.set_yticks([])
-    fig.suptitle("Vert : le vrai bord de la feuille cible.   "
-                 "Rouge : les droites que Hough trouve.", fontsize=13)
+    fig.suptitle("Green: the true edge of the target sheet.   "
+                 "Red: the straight lines Hough finds.", fontsize=13)
     fig.tight_layout()
     sortie.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(sortie, dpi=130, bbox_inches="tight")
@@ -283,7 +283,7 @@ def main():
         segs_ref, ok_ref = par_seuil[0]
 
         if args.figure and len(pour_figure) < 3:
-            pour_figure.append((num(chemin), petit, contour, segs_ref))
+            pour_figure.append((num(chemin), petit, contour, segs_ref, ok_ref))
 
         lignes.append((precision, hasard, gain, pct_cote, ecart))
         print(f"{num(chemin):<6}{precision:>10.1%}{hasard:>9.1%}{gain:>7.2f}"

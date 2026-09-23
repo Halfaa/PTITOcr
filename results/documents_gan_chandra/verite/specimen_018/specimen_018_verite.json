@@ -1,0 +1,70 @@
+{
+  "patient": {
+    "ten": "Trần Thị Bảy",
+    "nam_sinh": 1972,
+    "gioi": "Nữ",
+    "tuoi": "54",
+    "khoa": "Phục hồi chức năng",
+    "buong": "1",
+    "giuong": "6",
+    "chan_doan": "Thoái hóa cột sống thắt lưng đau thần kinh tọa",
+    "so_y_te": "Sở Y tế Hải Phòng"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "16h30 04 01",
+      "mo_ta": "Tầm vận động khớp vai tăng nhẹ so với buổi trước",
+      "ky_thuat": "Kỹ thuật kiểm soát tư thế ngồi bò đứng đi",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS Hoàng Văn Đức",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h15 04 01",
+      "mo_ta": "Bệnh nhân hợp tác tốt mức độ đau giảm rõ",
+      "ky_thuat": "Điều trị bằng bồn xoa bóp thủy lực",
+      "thoi_gian": "15",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS Trần Thị Bích",
+      "xac_nhan": "Đồng ý"
+    },
+    {
+      "ngay_gio": "16h45 05 01",
+      "mo_ta": "Tầm vận động khớp vai tăng nhẹ so với buổi trước",
+      "ky_thuat": "Điều trị bằng laser công suất thấp chiếu ngoài",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h45 06 01",
+      "mo_ta": "Cơ lực chi dưới cải thiện còn hạn chế duỗi gối",
+      "ky_thuat": "Kỹ thuật xoa bóp bằng máy",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Phạm Văn Hùng",
+      "bs_chi_dinh": "BS Hoàng Văn Đức",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h45 07 01",
+      "mo_ta": "Cơ lực chi dưới cải thiện còn hạn chế duỗi gối",
+      "ky_thuat": "Điều trị bằng laser công suất thấp chiếu ngoài",
+      "thoi_gian": "60",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS Phạm Thị Dung",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h15 07 01",
+      "mo_ta": "Bệnh nhân mệt sau 15 phút tập giảm cường độ buổi tới",
+      "ky_thuat": "Điều trị bằng laser công suất thấp chiếu ngoài",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS Hoàng Văn Đức",
+      "xac_nhan": "Đã ký"
+    }
+  ],
+  "scripteur": "0019"
+}

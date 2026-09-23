@@ -217,6 +217,19 @@ JEUX = {
         "verite": "par_specimen",
         "generateur": "handwriting_en/generate_en.py",
     },
+    "handwriting_gan": {
+        "famille": "manuscrit", "langue": "vi",
+        "titre": "20 PHCN forms filled with GAN-generated handwriting "
+                 "(WriteViT, one real VNOnDB writer per document)",
+        "role": "the final deliverable of the internship. Paired one-for-one "
+                "with handwriting_vi: same text, same layout, only the "
+                "handwriting differs, which is what makes the -37.7 point "
+                "drop attributable to the handwriting itself -- see "
+                "docs/notion_final_report.md section 7.6",
+        "dossier": RACINE / "handwriting_gan" / "generated",
+        "verite": "par_specimen",
+        "generateur": "scripts/remplir_gan.py",
+    },
     "handwriting_vi_warped": {
         "famille": "manuscrit", "langue": "vi",
         "titre": "handwritten VN forms projected on curved meshes (Blender)",

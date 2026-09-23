@@ -1,0 +1,70 @@
+{
+  "patient": {
+    "ten": "Hoàng Thị Yến",
+    "nam_sinh": 1969,
+    "gioi": "Nữ",
+    "tuoi": "57",
+    "khoa": "Phục hồi chức năng",
+    "buong": "11",
+    "giuong": "1",
+    "chan_doan": "Di chứng tai biến mạch máu não liệt nửa người trái",
+    "so_y_te": "Bộ Y tế"
+  },
+  "lignes": [
+    {
+      "ngay_gio": "16h45 12 06",
+      "mo_ta": "Cơ lực chi dưới cải thiện còn hạn chế duỗi gối",
+      "ky_thuat": "Kỹ thuật tư vấn tâm lý cho người bệnh hoặc người nhà",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h30 12 06",
+      "mo_ta": "Biên độ gấp khuỷu cải thiện chưa đau khi vận động",
+      "ky_thuat": "Thủy trị liệu có thuốc",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Nguyễn Thị Hoa",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h45 13 06",
+      "mo_ta": "Tầm vận động khớp vai tăng nhẹ so với buổi trước",
+      "ky_thuat": "Tập dưỡng sinh",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Bùi Văn Sơn",
+      "bs_chi_dinh": "BS Trần Thị Bích",
+      "xac_nhan": "Đã ký"
+    },
+    {
+      "ngay_gio": "16h30 13 06",
+      "mo_ta": "Bệnh nhân hợp tác tốt mức độ đau giảm rõ",
+      "ky_thuat": "Kỹ thuật kiểm soát tư thế ngồi bò đứng đi",
+      "thoi_gian": "45",
+      "nguoi_thuc_hien": "Lê Thị Mai",
+      "bs_chi_dinh": "BS Phạm Thị Dung",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h00 13 06",
+      "mo_ta": "Khả năng tự xoay trở trên giường tốt hơn",
+      "ky_thuat": "Kỹ thuật xoa bóp bằng máy",
+      "thoi_gian": "20",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS Hoàng Văn Đức",
+      "xac_nhan": "X"
+    },
+    {
+      "ngay_gio": "16h45 14 06",
+      "mo_ta": "Bệnh nhân mệt sau 15 phút tập giảm cường độ buổi tới",
+      "ky_thuat": "Kỹ thuật thư giãn",
+      "thoi_gian": "30",
+      "nguoi_thuc_hien": "Trần Văn Nam",
+      "bs_chi_dinh": "BS Nguyễn Văn An",
+      "xac_nhan": "Đã ký"
+    }
+  ],
+  "scripteur": "0004"
+}

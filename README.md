@@ -1,160 +1,158 @@
-# MedicalRecord — détection & extraction de tableaux sur documents médicaux
+# PTITOcr — reading photographed Vietnamese medical documents
 
-Stage IMT / PTIT — encadrement Thanh-Ha DO.
-Objectif : évaluer des modèles OCR/structure sur des factures médicales
-vietnamiennes photographiées, et traiter le cas des **tableaux qui s'étendent
-sur plusieurs pages**.
+Research internship, July to September 2026.
+IMT Mines Alès · Imperato Julien — PTIT/Thinkslab · supervisor Thanh-Ha DO.
+
+Reading Vietnamese hospital paperwork automatically: pharmacy invoices and
+rehabilitation follow-up forms, **photographed rather than scanned**, part
+printed and part handwritten. The project asks which model reads them, what
+has to happen to the image first, and how far generated handwriting can stand
+in for training data that does not exist.
+
+**The full report is `docs/notion_final_report.md`.** Everything below is the
+map of the repository that backs it.
 
 ---
 
-## Arborescence
+## Headline results
+
+| question | answer | where |
+|---|---|---|
+| which reader | **Chandra OCR 2**, TEDS 0.916 | `docs/resultats_teds.md` |
+| tables split across pages | merging is worth **+0.275** TEDS, zero false merges | `src/table_merge.py` |
+| pre-processing | adaptive per image **0.942**, against a 0.945 ceiling | `docs/avec_sans_pretraitement.md` |
+| cluttered backgrounds | not solvable here, IoU ceiling **0.59** vs 0.85 oracle | `docs/fonds_encombres.md` |
+| real Vietnamese handwriting | CER **6.84 %** zero-shot, against 4.80 % for a trained CRNN | `docs/notion_real_handwriting.md` |
+| capture quality | blur and resolution are fatal, noise and exposure are free | `docs/degradation.md` |
+| geometric deformation | **−2.0 points** on real captured paper, against −35.7 simulated | `docs/notion_deformation_3d.md` |
+| real handwriting vs a font | **−37.7 points** for Chandra | `results/_evaluations/documents_gan_chandra.txt` |
+
+The finding that matters most for a medical setting is in section 5.4 of the
+report: **15.5 % of the word substitutions cannot be produced by the pixels.**
+The model replaces a word with another word from the same semantic category.
+On a patient record, every one of those reads as a valid entry.
+
+---
+
+## Layout
 
 ```
-MedicalRecord/
-├── README.md              ← ce fichier
-├── TODO.md                ← ce qu'il reste à faire
-├── requirements.txt
-├── venv/
+PTITOcr/MedicalRecord/
 │
-├── src/                   ← code de recherche (la contribution)
-│   ├── table_merge.py              algo de détection + fusion des tableaux coupés
-│   ├── merge_multipage_results.py  applique l'algo à un run de results/
-│   ├── eval_multipage_merge.py     chiffre la fusion (précision / rappel / F1)
-│   ├── teds.py                     métrique TEDS + TEDS-Struct
-│   ├── eval_teds.py                score les sorties OCR contre la vérité terrain JSON
-│   ├── invoice_parse.py            tableau HTML → champs typés
-│   ├── invoice_validate.py         validation arithmétique (qté × prix = total)
-│   ├── eval_validation.py          mesure ce que la validation détecte
-│   └── report_merge_demo.py        rapport HTML de démonstration de la fusion
+├── src/                  research code, the contribution
+│   ├── table_merge.py            detects and merges tables split across pages
+│   ├── teds.py                   TEDS and TEDS-Struct metrics
+│   ├── eval_teds.py              scores OCR output against JSON ground truth
+│   ├── eval_handwriting.py       scores handwritten fields, per field
+│   ├── eval_lignes.py            CER/WER per line, plus substitution analysis
+│   ├── preprocess.py  adaptive.py     image pre-processing, and the per-image policy
+│   ├── invoice_parse.py  invoice_validate.py   HTML table to typed fields, then arithmetic checks
+│   └── qualite_capture.py        capture-quality gate (blur, resolution)
 │
-├── scripts/               ← lanceurs de benchmark (à exécuter à la main)
-│   ├── bench_tabrecset_paddleocr_vl.py
-│   ├── bench_tabrecset_ppstructure.py
-│   ├── bench_tabrecset_chandra.py
-│   ├── bench_deformed.py           benchmark sur les images déformées doc3D
-│   └── legacy/                     scripts d'exploration du début, gardés pour référence
+├── scripts/              runnable pipelines, one job each
+│   ├── eval_all.py               single entry point for scoring a run
+│   ├── bench_deformed.py         benchmark over a folder of images
+│   ├── degrader.py               builds the 24 degradation steps
+│   ├── remplir_gan.py            fills the real PHCN form with GAN handwriting
+│   ├── writevit_generer.py       WriteViT inference (words, lines, style transfer)
+│   ├── vnondb_rebalancer_chiffres.py   rebalances VNOnDB towards digits
+│   ├── lexique_medical.py        builds the medical word list, measures the gap
+│   ├── uvdoc_composer.py         projects our documents onto real captured paper
+│   └── mesure_arete.py           is the sheet edge visible at all? (it is not)
 │
-├── data/
-│   ├── tabrecset_sample/  10 images réelles + annotations (mini-dataset de départ)
-│   │   ├── images/  td_annotation/  tsr_tcr_annotation/
-│   ├── TabRecSet/         dataset complet (volumineux)
-│   └── Facture_pharmacie_fictive_structure_complete.pdf
+├── handwriting/          VN specimen generator, handwriting FONT
+├── handwriting_en/       EN specimen generator, 7 fonts
+├── handwriting_gan/      VN specimens, handwriting GENERATED by WriteViT  ← final deliverable
 │
-├── results/               ← un dossier par run de benchmark
-│   └── <nom_du_run>/
-│       ├── pages/<nom_image>/   sorties brutes du modèle (json, md, image annotée)
-│       ├── report.html          rapport visuel image ↔ extraction
-│       └── merge_report.html    (multipage seulement) décisions de fusion
-│
-└── docs/
-    ├── summary_paddleocr_vl.md      synthèse du benchmark PaddleOCR-VL
-    ├── summary_ppstructure.md       synthèse du benchmark PP-StructureV3
-    └── notes_benchmark_tabrecset.md
+├── kaggle/               notebooks run on Kaggle GPUs (the input archives are not versioned)
+├── dataset/              unified corpus: manifest.json, 18 sets, 719 images
+├── data/                 the project's only real photographs (TabRecSet sample)
+├── results/              one folder per benchmark run, plus _evaluations/
+├── docs/                 every measurement written up, including the final report
+├── demo/figures/         the figures used in the reports
+└── archive/              superseded material, not versioned
 ```
 
-**Tous les scripts résolvent leurs chemins depuis la racine du projet** : on peut
-les lancer depuis n'importe quel répertoire, il n'y a plus de `cd` piégeux.
+Every script resolves its paths from the project root, so they run from any
+working directory.
 
 ---
 
-## Les runs présents dans `results/`
+## The handwriting generation phase
 
-| Run | Données | Modèle | Statut |
-|---|---|---|---|
-| `tabrecset_paddleocr_vl` | 10 images réelles | PaddleOCR-VL | terminé |
-| `tabrecset_ppstructure` | 10 images réelles | PP-StructureV3 | terminé |
-| `tabrecset_chandra` | 10 images réelles | Chandra OCR 2 (CPU) | partiel (~15 min/image) |
-| `deformed_batch1_paddleocr_vl` | fausses factures déformées 3D | PaddleOCR-VL | 14 images |
-| `multipage_paddleocr_vl` | factures multi-pages déformées | PaddleOCR-VL | 5 pages |
-| `multipage_ppstructure` | factures multi-pages déformées | PP-StructureV3 | 17 pages (complet) |
-| `_premiers_tests` | — | — | bacs à sable du tout début |
+The last and largest part of the internship. Short version:
+
+Real Vietnamese handwriting data exists (Cinnamon, VNOnDB) but it is
+**addresses**, not medical vocabulary. Measured: of 323 medical words, 10 %
+are missing from a general dictionary but **59 % never appear in the training
+data at all**. That is the gap generation has to fill.
+
+**WriteViT** was chosen over ScrabbleGAN on published VNOnDB FID (6.18 against
+19.23). ScrabbleGAN is the reflex choice and is the worst of four on
+Vietnamese, with frequent loss of tone marks.
+
+It works for words and fails for digits. On VNOnDB, only **2.83 %** of words
+contain a digit. Rebalancing that to 30.9 % and fine-tuning did not fix it,
+and the cursive survived intact, so this is not catastrophic forgetting but a
+failure to learn: only 1,892 digit-bearing word images exist in total. Digits
+therefore fall back to the handwriting font, and the fallback rate is printed
+for every document produced.
+
+See `handwriting_gan/README.md` for the dataset itself.
 
 ---
 
-## Commandes usuelles
+## Common commands
 
-Depuis `MedicalRecord/`, venv activé :
+```bash
+# Score a benchmark run
+python scripts/eval_all.py --run <run_name>
 
-```powershell
-# Benchmark sur les images déformées (reprend un run interrompu sans réinférence)
-python scripts\bench_deformed.py --model ppstructure `
-       --images-dir "..\doc3D-renderer\img\multipage_test" --limit 6 `
-       --output multipage_ppstructure
+# Handwritten fields, per field
+python src/eval_handwriting.py --run <run_name> --verite-dir handwriting/generated --lang vi
 
-# Fusion des tableaux multi-pages sur un run existant
-python src\merge_multipage_results.py --run multipage_ppstructure
+# Line-level CER/WER, with the substitution analysis
+python src/eval_lignes.py --run <run_name> --lexique <wordlist>
 
-# Évaluation chiffrée de la fusion (précision / rappel / F1)
-python src\eval_multipage_merge.py --run multipage_ppstructure
+# Generate the GAN-filled forms (needs the WriteViT checkpoint and xelatex)
+python scripts/remplir_gan.py --depot-writevit ../WriteViT --n 20
 
-# Qualité d'extraction TEDS, et gain apporté par la fusion
-python src\eval_teds.py --run multipage_ppstructure
+# Rebuild the corpus manifest
+python dataset/build_manifest.py
 ```
 
-Le rapport de benchmark est réécrit **après chaque image** : une interruption
-ne fait perdre au maximum qu'une image, et relancer la même commande reprend
-là où ça s'était arrêté.
+Benchmark reports are rewritten after every image, so an interruption costs at
+most one image and relaunching the same command resumes where it stopped.
 
 ---
 
-## Résultats
+## Upstream repositories
 
-Trois modèles, 8 factures, 17 pages, même jeu de test. Détail complet et
-limites dans `docs/resultats_teds.md`.
+The test images come from two neighbouring repositories, neither of which
+versions its output:
 
-| Modèle | TEDS | TEDS-Struct | Gain de la fusion | F1 détection |
-|---|---|---|---|---|
-| **HunyuanOCR-1.5** | **0.928** | **0.949** | +0.260 | **100 %** |
-| PaddleOCR-VL | 0.909 | 0.933 | +0.251 | 93 % |
-| PP-StructureV3 | 0.557 | 0.857 | +0.132 | 100 % |
+1. `../synthetic_invoice_generator/` — generates the fake Vietnamese invoices
+   (ground-truth JSON → LaTeX → PDF → PNG), single-page and multi-page.
+2. `../doc3D-renderer/` — applies the 3D deformation and the realistic
+   backgrounds (Blender 2.79, run locally). Output in `img/<batch>/`.
 
-Trois enseignements. HunyuanOCR et PaddleOCR-VL sont au coude à coude ;
-PP-StructureV3 décroche, et son écart TEDS / TEDS-Struct de 0.300 (contre
-0.02 pour les deux autres) montre que son problème est la lecture des
-caractères vietnamiens, pas la reconstruction de la grille. Enfin la fusion
-apporte un gain du même ordre pour les trois modèles, donc elle n'est pas
-calibrée sur l'un d'eux — et **zéro faux positif partout**, ce qui compte
-plus que le rappel : fusionner deux factures à tort est bien plus grave que
-manquer une continuation.
+A fresh clone of this repository alone can rebuild the three sets whose source
+is here: `handwriting_vi`, `handwriting_en`, `handwriting_gan`. The rest needs
+the two repositories above. Paths are overridable:
 
-**Validation arithmétique** — détail dans `docs/resultats_validation.md`.
-Une facture se vérifie elle-même (`qté × prix = total`, somme des lignes =
-`Tổng tiền`), donc **sans vérité terrain**. Avec HunyuanOCR : sur 215 lignes,
-12 sont à relire (6 %) et elles contiennent **100 % des erreurs numériques**,
-avec **zéro fausse alerte**. C'est ce qui rend un TEDS de 0,93 exploitable en
-pratique.
-
-Deux réserves. Les erreurs de **libellé** échappent par construction à
-l'arithmétique (« Xetoprofen » pour *Ketoprofen*) : il faudrait un
-dictionnaire de médicaments. Et la **correction automatique** n'est sûre que
-si le modèle est bon — 97 % de corrections exactes avec PaddleOCR-VL, mais
-9 % avec PP-StructureV3, où elle rend les erreurs invisibles en les rendant
-cohérentes.
-
-**Hypothèse métier assumée** par l'algorithme : la colonne STT redémarre à 1
-à chaque nouvelle facture. C'est le signal le plus discriminant (« B commence
-à 20 → la numérotation vient forcément d'ailleurs »), et c'est lui qui
-rattrape les cas où l'OCR a massacré la fin du tableau précédent. À
-revalider sur des factures d'un autre format.
+```bash
+export DOC3D_ROOT=/path/to/doc3D-renderer
+export INVOICE_GEN_ROOT=/path/to/synthetic_invoice_generator
+```
 
 ---
 
-## Pipeline amont (hors de ce dossier)
+## A note on the numbers
 
-Les images de test sont produites par les deux repos voisins :
+Everything here is measured against ground truth that is **exact and free**,
+because the documents are generated rather than collected. No figure in this
+repository rests on a human annotation that would itself need checking.
 
-1. `../synthetic_invoice_generator/` → génère les fausses factures
-   vietnamiennes (JSON de vérité terrain → LaTeX → PDF → PNG), version
-   mono-page et version multi-pages (`longtable`).
-2. `../doc3D-renderer/` → applique la déformation 3D + fonds réalistes
-   (Blender 2.79, à lancer sur la machine locale). Sortie : `img/<batch>/`.
-
----
-
-## Nettoyage restant
-
-Deux dossiers vides (`benchmark/`, `benchmark_deformed/`) et `__pycache__/`
-n'ont pas pu être supprimés automatiquement (fichiers verrouillés côté
-Windows) — à supprimer à la main. `data/TabRecSet/` : le dataset complet est
-resté à la racine pour la même raison, à déplacer dans `data/` quand il n'est
-plus ouvert par un autre programme.
+Where a result is provisional it says so, and abandoned avenues are written up
+with the reason rather than deleted. A measured negative result still narrows
+the search space.
